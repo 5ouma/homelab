@@ -1,0 +1,94 @@
+{
+  "image": {
+    "thumbnailSize": 1080,
+    "thumbnailFormat": "webp",
+    "previewSize": 2160,
+    "previewFormat": "jpeg",
+    "quality": 100,
+    "colorspace": "p3"
+  },
+  "job": {
+    "thumbnailGeneration": { "concurrency": 5 },
+    "metadataExtraction": { "concurrency": 5 },
+    "library": { "concurrency": 5 },
+    "sidecar": { "concurrency": 5 },
+    "search": { "concurrency": 5 },
+    "smartSearch": { "concurrency": 2 },
+    "faceDetection": { "concurrency": 2 },
+    "videoConversion": { "concurrency": 1 },
+    "migration": { "concurrency": 5 },
+    "backgroundTask": { "concurrency": 5 }
+  },
+  "library": {
+    "watch": { "enabled": false },
+    "scan": { "enabled": true, "cronExpression": "0 0 * * *" }
+  },
+  "logging": { "enabled": true, "level": "log" },
+  "machineLearning": {
+    "enabled": true,
+    "url": "http://immich-machine-learning:3003",
+    "clip": { "enabled": true, "modelName": "ViT-B-32__openai" },
+    "facialRecognition": {
+      "enabled": true,
+      "modelName": "buffalo_l",
+      "minScore": 0.7,
+      "maxDistance": 0.5,
+      "minFaces": 3
+    }
+  },
+  "map": {
+    "enabled": true,
+    "lightStyle": "",
+    "darkStyle": ""
+  },
+  "reverseGeocoding": { "enabled": true },
+  "oauth": {
+    "autoLaunch": false,
+    "autoRegister": true,
+    "buttonText": "Login with OAuth",
+    "clientId": "",
+    "clientSecret": "",
+    "defaultStorageQuota": 0,
+    "enabled": false,
+    "issuerUrl": "",
+    "mobileOverrideEnabled": false,
+    "mobileRedirectUri": "",
+    "scope": "openid email profile",
+    "signingAlgorithm": "RS256",
+    "storageLabelClaim": "preferred_username",
+    "storageQuotaClaim": "immich_quota"
+  },
+  "passwordLogin": { "enabled": true },
+  "server": { "externalDomain": "", "loginPageMessage": "" },
+  "storageTemplate": {
+    "enabled": true,
+    "hashVerificationEnabled": true,
+    "template": "{{y}}/{{MM}}-{{dd}}/{{filename}}"
+  },
+  "theme": { "customCss": "" },
+  "trash": { "enabled": true, "days": 30 },
+  "user": { "deleteDelay": 7 },
+  "newVersionCheck": { "enabled": true },
+  "ffmpeg": {
+    "crf": 23,
+    "preset": "ultrafast",
+    "targetAudioCodec": "aac",
+    "acceptedAudioCodecs": ["aac", "mp3", "libopus"],
+    "targetVideoCodec": "h264",
+    "acceptedVideoCodecs": ["h264", "hevc", "vp9"],
+    "targetResolution": "original",
+    "maxBitrate": "0",
+    "threads": 0,
+    "transcode": "all",
+    "tonemap": "hable",
+    "twoPass": false,
+    "accel": "disabled",
+    "cqMode": "auto",
+    "temporalAQ": false,
+    "preferredHwDevice": "auto",
+    "npl": 0,
+    "bframes": -1,
+    "refs": 0,
+    "gopSize": 0
+  }
+}
