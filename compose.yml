@@ -75,6 +75,7 @@ services:
       - ./db_dumps:/db_dumps
     depends_on:
       - database
+    restart: always
 
 volumes:
   pgdata:
