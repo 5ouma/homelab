@@ -58,6 +58,24 @@ services:
       - pgdata:/var/lib/postgresql/data
     restart: always
 
+  backup:
+    container_name: immich_db_dumper
+    image: prodrigestivill/postgres-backup-local:14
+    env_file:
+      - .env
+    environment:
+      POSTGRES_HOST: database
+      POSTGRES_CLUSTER: "TRUE"
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      SCHEDULE: "@daily"
+      POSTGRES_EXTRA_OPTS: "--clean --if-exists"
+      BACKUP_DIR: /db_dumps
+    volumes:
+      - ./db_dumps:/db_dumps
+    depends_on:
+      - database
+
 volumes:
   pgdata:
   model-cache:
