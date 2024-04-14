@@ -81,10 +81,13 @@ services:
     container_name: immich_tailscale
     hostname: immich
     image: tailscale/tailscale:latest
+    env_file:
+      - .env
     environment:
       - TS_STATE_DIR=/var/lib/tailscale
       - TS_SERVE_CONFIG=/config/tailscale.json
     volumes:
+      - ./tailscale-state:/var/lib/tailscale
       - /dev/net/tun:/dev/net/tun
       - ./config/tailscale.json:/config/tailscale.json
     cap_add:
@@ -95,3 +98,5 @@ services:
 volumes:
   pgdata:
   model-cache:
+  tailscale-state:
+    driver: local
