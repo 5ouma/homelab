@@ -82,7 +82,7 @@ services:
       TS_STATE_DIR: /var/lib/tailscale
       TS_SERVE_CONFIG: /config/tailscale.json
     volumes:
-      - ./tailscale-state:/var/lib/tailscale
+      - tailscale-state:/var/lib/tailscale
       - /dev/net/tun:/dev/net/tun
       - ./config/tailscale.json:/config/tailscale.json:ro
     cap_add:
@@ -94,4 +94,3 @@ volumes:
   pgdata:
   model-cache:
   tailscale-state:
-    driver: local
