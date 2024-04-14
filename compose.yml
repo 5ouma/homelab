@@ -3,7 +3,7 @@ name: immich
 services:
   immich-server:
     container_name: immich_server
-    image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
+    image: ghcr.io/immich-app/immich-server:release
     command: ["start.sh", "immich"]
     env_file: [".env"]
     volumes:
@@ -19,7 +19,7 @@ services:
 
   immich-microservices:
     container_name: immich_microservices
-    image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
+    image: ghcr.io/immich-app/immich-server:release
     command: ["start.sh", "microservices"]
     env_file: [".env"]
     volumes:
@@ -33,7 +33,7 @@ services:
 
   immich-machine-learning:
     container_name: immich_machine_learning
-    image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION:-release}
+    image: ghcr.io/immich-app/immich-machine-learning:release
     env_file: [".env"]
     volumes:
       - model-cache:/cache
@@ -41,12 +41,12 @@ services:
 
   redis:
     container_name: immich_redis
-    image: registry.hub.docker.com/library/redis:6.2-alpine@sha256:51d6c56749a4243096327e3fb964a48ed92254357108449cb6e23999c37773c5
+    image: redis:latest
     restart: always
 
   database:
     container_name: immich_postgres
-    image: registry.hub.docker.com/tensorchord/pgvecto-rs:pg14-v0.2.0@sha256:90724186f0a3517cf6914295b5ab410db9ce23190a2d9d0b9dd6463e3fa298f0
+    image: tensorchord/pgvecto-rs:pg16-v0.2.1
     environment:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -57,7 +57,7 @@ services:
 
   backup:
     container_name: immich_db_dumper
-    image: prodrigestivill/postgres-backup-local:14
+    image: prodrigestivill/postgres-backup-local:latest
     env_file: [".env"]
     environment:
       POSTGRES_HOST: database
