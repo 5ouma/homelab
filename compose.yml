@@ -5,12 +5,12 @@ services:
     container_name: immich_server
     image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
     command: ["start.sh", "immich"]
+    env_file:
+      - .env
     volumes:
       - ${UPLOAD_LOCATION}:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
       - ./config/immich.json:/config/immich.json
-    env_file:
-      - .env
     depends_on:
       - redis
       - database
@@ -22,12 +22,12 @@ services:
     container_name: immich_microservices
     image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
     command: ["start.sh", "microservices"]
+    env_file:
+      - .env
     volumes:
       - ${UPLOAD_LOCATION}:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
       - ./config/immich.json:/config/immich.json
-    env_file:
-      - .env
     depends_on:
       - redis
       - database
@@ -36,10 +36,10 @@ services:
   immich-machine-learning:
     container_name: immich_machine_learning
     image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION:-release}
-    volumes:
-      - model-cache:/cache
     env_file:
       - .env
+    volumes:
+      - model-cache:/cache
     restart: always
 
   redis:
@@ -84,8 +84,8 @@ services:
     env_file:
       - .env
     environment:
-      - TS_STATE_DIR=/var/lib/tailscale
-      - TS_SERVE_CONFIG=/config/tailscale.json
+      TS_STATE_DIR: /var/lib/tailscale
+      TS_SERVE_CONFIG: /config/tailscale.json
     volumes:
       - ./tailscale-state:/var/lib/tailscale
       - /dev/net/tun:/dev/net/tun
