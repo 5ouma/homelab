@@ -1,0 +1,54 @@
+ci:
+  autofix_commit_msg: |
+    chore(fix): Auto fixes from pre-commit.com hooks
+
+    For more information, see https://pre-commit.ci.
+  autoupdate_commit_msg: "chore(deps): Bump pre-commit hook"
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: check-json
+      - id: check-toml
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.5.5
+    hooks:
+      - id: remove-tabs
+        args: [--whitespaces-count, "2"]
+
+  - repo: https://github.com/crate-ci/typos
+    rev: v1.20.4
+    hooks:
+      - id: typos
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.2
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.6.27
+    hooks:
+      - id: actionlint
+
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.39.0
+    hooks:
+      - id: markdownlint-fix
+        args: ["--disable", "MD013", "MD023", "MD024", "MD033", "MD036"]
+
+  - repo: https://github.com/koalaman/shellcheck-precommit
+    rev: v0.10.0
+    hooks:
+      - id: shellcheck
+        args: ["-e", "SC1071,SC1072,SC1073,SC1090,SC1091,SC2015,SC2148,SC2154"]
+
+  - repo: https://github.com/iamthefij/docker-pre-commit
+    rev: v3.0.1
+    hooks:
+      - id: docker-compose-check
