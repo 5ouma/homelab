@@ -41,7 +41,7 @@ services:
 
   redis:
     container_name: immich_redis
-    image: redis:7.2.4@sha256:d6ecc832969a4827645a083da38345327b3447772fe907e7d4311c79b4e3a06e
+    image: redis:7.2.4-alpine@sha256:7635b0bfdd7dd8552b4b31d6541fef07b734614045b45a52fd5cc27c9dada9e2
     restart: always
 
   database:
