@@ -22,7 +22,7 @@ repos:
         args: [--whitespaces-count, "2"]
 
   - repo: https://github.com/crate-ci/typos
-    rev: v1.20.4
+    rev: v1.20.8
     hooks:
       - id: typos
 
