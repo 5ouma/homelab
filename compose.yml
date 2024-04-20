@@ -3,7 +3,7 @@ name: immich
 services:
   immich-server:
     container_name: immich_server
-    image: ghcr.io/immich-app/immich-server:v1.101.0@sha256:c1dbaec9766ba7a380833af2717c911a1490849e93060575414fb7f67378a03a
+    image: ghcr.io/immich-app/immich-server:v1.102.0@sha256:2a7e4a7632460c8ffbe91d971a34279032fc45cb6eb309d54428ac802518326c
     command: ["start.sh", "immich"]
     env_file: [".env"]
     volumes:
@@ -19,7 +19,7 @@ services:
 
   immich-microservices:
     container_name: immich_microservices
-    image: ghcr.io/immich-app/immich-server:v1.101.0@sha256:c1dbaec9766ba7a380833af2717c911a1490849e93060575414fb7f67378a03a
+    image: ghcr.io/immich-app/immich-server:v1.102.0@sha256:2a7e4a7632460c8ffbe91d971a34279032fc45cb6eb309d54428ac802518326c
     command: ["start.sh", "microservices"]
     env_file: [".env"]
     volumes:
