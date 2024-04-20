@@ -1,11 +1,12 @@
 {
   "image": {
-    "thumbnailSize": 1080,
     "thumbnailFormat": "webp",
-    "previewSize": 2160,
+    "thumbnailSize": 1080,
     "previewFormat": "jpeg",
+    "previewSize": 2160,
     "quality": 100,
-    "colorspace": "p3"
+    "colorspace": "p3",
+    "extractEmbedded": true
   },
   "job": {
     "thumbnailGeneration": { "concurrency": 5 },
