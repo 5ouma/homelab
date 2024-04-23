@@ -48,9 +48,10 @@ services:
     container_name: immich_postgres
     image: tensorchord/pgvecto-rs:pg16-v0.2.1@sha256:ff2288833f32aa863ba46f4c6f5b5c143f526a2d27f4cca913c232f917a66602
     environment:
+      POSTGRES_HOST: ${DB_HOSTNAME}
+      POSTGRES_DB: ${DB_DATABASE_NAME}
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_DATABASE_NAME}
     volumes:
       - pgdata:/var/lib/postgresql/data
     restart: always
@@ -58,12 +59,14 @@ services:
   backup:
     container_name: immich_db_dumper
     image: prodrigestivill/postgres-backup-local:16@sha256:c577b0d62673d4dce0471c75d21e3e08e4e9789903f5a3fd6613c410442e9670
+    user: postgres:postgres
     env_file: [".env"]
     environment:
-      POSTGRES_HOST: database
-      POSTGRES_CLUSTER: "TRUE"
+      POSTGRES_HOST: ${DB_HOSTNAME}
+      POSTGRES_DB: ${DB_DATABASE_NAME}
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_CLUSTER: "TRUE"
       SCHEDULE: "@daily"
       POSTGRES_EXTRA_OPTS: "--clean --if-exists"
       BACKUP_DIR: /db_dumps
