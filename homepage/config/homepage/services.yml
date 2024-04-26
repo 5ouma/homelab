@@ -1,0 +1,59 @@
+- Tailscale:
+    - Souma's MacBook Pro:
+        icon: tailscale
+        href: https://login.tailscale.com
+        widget:
+          type: tailscale
+          deviceid: "{{HOMEPAGE_VAR_TS_DEVICE_ID_SOUMAS_MACBOOK_PRO}}"
+          key: "{{HOMEPAGE_VAR_TS_ACCESS_TOKEN}}"
+    - Immich:
+        icon: tailscale
+        href: https://login.tailscale.com
+        widget:
+          type: tailscale
+          deviceid: "{{HOMEPAGE_VAR_TS_DEVICE_ID_IMMICH}}"
+          key: "{{HOMEPAGE_VAR_TS_ACCESS_TOKEN}}"
+
+- Media:
+    - Immich:
+        icon: immich
+        href: "{{HOMEPAGE_VAR_IMMICH_HOST}}"
+        description: Self-hosted photo and video management solution
+        ping: "{{HOMEPAGE_VAR_IMMICH_HOST}}"
+        container: immich
+        widget:
+          type: immich
+          url: "{{HOMEPAGE_VAR_IMMICH_HOST}}"
+          key: "{{HOMEPAGE_VAR_IMMICH_API_KEY}}"
+
+- Souma's MacBook Pro:
+    - System Info:
+        widget:
+          type: glances
+          url: http://glances:61208
+          metric: info
+    - Processes:
+        widget:
+          type: glances
+          url: http://glances:61208
+          metric: process
+    - CPU Usage:
+        widget:
+          type: glances
+          url: http://glances:61208
+          metric: cpu
+    - Memory Usage:
+        widget:
+          type: glances
+          url: http://glances:61208
+          metric: memory
+    - Network:
+        widget:
+          type: glances
+          url: http://glances:61208
+          metric: network:eth0
+    - Disk I/O:
+        widget:
+          type: glances
+          url: http://glances:61208
+          metric: disk:vdb1

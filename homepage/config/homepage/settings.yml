@@ -1,0 +1,20 @@
+headerStyle: boxedWidgets
+iconStyle: theme
+
+layout:
+  Tailscale:
+    tab: Dashboard
+    icon: mdi-transit-connection-variant
+    style: row
+    columns: 4
+  Media:
+    tab: Dashboard
+    icon: mdi-multimedia
+    style: row
+    columns: 2
+
+  Souma's MacBook Pro:
+    tab: Glances
+    icon: si-macos
+    style: row
+    columns: 2
