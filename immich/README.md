@@ -10,7 +10,7 @@
 
 ## 🔧 Setup
 
-1. ### 🏔️ Set the Environment Variables in [`.env`](./.env)
+1. ### 🏔️ Copy the [`.env.tmpl`](./.env.tmpl) file to `.env` and Edit it
 
    | Variable Name |          Value           |
    | :-----------: | :----------------------: |
