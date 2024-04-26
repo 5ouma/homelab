@@ -20,7 +20,7 @@ services:
 
   glances:
     container_name: homepage_glances
-    image: nicolargo/glances:3.4.0.5@sha256:b6908ea9d3dcb99d82114bc5fb6fc3b4ae515025427f96cc9125609c11f46651
+    image: nicolargo/glances:3.6.1.2@sha256:b7926de0579717d388cae9fb9b8cfb9604026fbb5c80cae907248bed0dca7754
     environment:
       - "GLANCES_OPT=-w"
     pid: host
