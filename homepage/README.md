@@ -10,9 +10,9 @@
 
 ## 🔧 Setup
 
-1. ### 🏔️ Copy the [`.env.tmpl`](./.env.tmpl) file to `.env` and Edit it
+1. 🏔️ Copy the [`.env.tmpl`](./.env.tmpl) file to `.env` and Edit it
 
-   |         Variable Name          |            Value             |
+   |              Name              |            Value             |
    | :----------------------------: | :--------------------------: |
    | `HOMEPAGE_VAR_TS_DEVICE_ID_*`  |    [Tailscale Machine ID]    |
    | `HOMEPAGE_VAR_TS_ACCESS_TOKEN` | [Tailscale API Access Token] |
@@ -25,9 +25,7 @@
    [Immich API Key]: https://immich.app/docs/features/command-line-interface#obtain-the-api-key
    [Tailscale Auth Key]: https://login.tailscale.com/admin/settings/keys
 
-   <br />
-
-2. ### 🚀 Start the Docker Compose
+2. 🚀 Start the Docker Compose
 
    ```shell
    docker compose up -d

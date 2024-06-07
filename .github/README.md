@@ -15,7 +15,7 @@
 
 ## 🔐 Requirements
 
-- ### 🐳 Docker Compose
+- 🐳 Docker Compose
 
   > I use [🔮 OrbStack](https://orbstack.dev).
 
@@ -23,15 +23,13 @@
 
 ## 🔧 Setup
 
-1. ### 📋 Clone this Repository
+1. 📋 Clone this Repository
 
    ```shell
    git clone https://github.com/5ouma/homelab.git
    ```
 
-   <br />
-
-2. ### 📝 Follow the instructions below
+2. 📝 Follow the instructions below
 
    - [🏠 **Homepage**](../homepage)
    - [🌸 **Immich**](../immich)
