@@ -3,7 +3,7 @@ name: immich
 services:
   immich-server:
     container_name: immich_server
-    image: ghcr.io/immich-app/immich-server:v1.106.2@sha256:f9ca2aa5673f55d19471df207863fa7edd76a3e8add7ae804e407ab4a30df8cc
+    image: ghcr.io/immich-app/immich-server:v1.106.3@sha256:022c84119ef540fe944275b3e5851a2ab195dca2e8bb077ee559070bb4becb52
     env_file: [".env"]
     volumes:
       - ${UPLOAD_LOCATION}:/usr/src/app/upload
