@@ -18,7 +18,8 @@
     "faceDetection": { "concurrency": 2 },
     "videoConversion": { "concurrency": 1 },
     "migration": { "concurrency": 5 },
-    "backgroundTask": { "concurrency": 5 }
+    "backgroundTask": { "concurrency": 5 },
+    "notifications": { "concurrency": 5 }
   },
   "library": {
     "watch": { "enabled": false },
@@ -29,6 +30,7 @@
     "enabled": true,
     "url": "http://immich-machine-learning:3003",
     "clip": { "enabled": true, "modelName": "ViT-B-32__openai" },
+    "duplicateDetection": { "enabled": true, "maxDistance": 0.0155 },
     "facialRecognition": {
       "enabled": true,
       "modelName": "buffalo_l",
@@ -41,6 +43,20 @@
     "enabled": true,
     "lightStyle": "",
     "darkStyle": ""
+  },
+  "notifications": {
+    "smtp": {
+      "enabled": false,
+      "transport": {
+        "host": "",
+        "port": 587,
+        "username": "",
+        "password": "",
+        "ignoreCert": false
+      },
+      "from": "",
+      "replyTo": ""
+    }
   },
   "reverseGeocoding": { "enabled": true },
   "oauth": {
@@ -90,6 +106,7 @@
     "npl": 0,
     "bframes": -1,
     "refs": 0,
-    "gopSize": 0
+    "gopSize": 0,
+    "accelDecode": false
   }
 }
