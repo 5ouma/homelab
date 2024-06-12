@@ -4,7 +4,6 @@ services:
   immich-server:
     container_name: immich_server
     image: ghcr.io/immich-app/immich-server:v1.106.2@sha256:f9ca2aa5673f55d19471df207863fa7edd76a3e8add7ae804e407ab4a30df8cc
-    command: ["start.sh", "immich"]
     env_file: [".env"]
     volumes:
       - ${UPLOAD_LOCATION}:/usr/src/app/upload
@@ -15,20 +14,6 @@ services:
       - database
       - tailscale
     network_mode: service:tailscale
-    restart: always
-
-  immich-microservices:
-    container_name: immich_microservices
-    image: ghcr.io/immich-app/immich-server:v1.106.2@sha256:f9ca2aa5673f55d19471df207863fa7edd76a3e8add7ae804e407ab4a30df8cc
-    command: ["start.sh", "microservices"]
-    env_file: [".env"]
-    volumes:
-      - ${UPLOAD_LOCATION}:/usr/src/app/upload
-      - /etc/localtime:/etc/localtime:ro
-      - ./config/immich.json:${IMMICH_CONFIG_FILE}:ro
-    depends_on:
-      - redis
-      - database
     restart: always
 
   immich-machine-learning:
