@@ -12,10 +12,10 @@
 
 1. 🏔️ Copy the [`.env.tmpl`](./.env.tmpl) file to `.env` and Edit it
 
-   |    Name     |          Value           |
-   | :---------: | :----------------------: |
-   | DB_PASSWORD | Random Database Password |
-   | TS_AUTHKEY  |   [Tailscale Auth Key]   |
+   |     Name      |          Value           |
+   | :-----------: | :----------------------: |
+   | `DB_PASSWORD` | Random Database Password |
+   | `TS_AUTHKEY`  |   [Tailscale Auth Key]   |
 
    [Tailscale Auth Key]: https://login.tailscale.com/admin/settings/keys
 
