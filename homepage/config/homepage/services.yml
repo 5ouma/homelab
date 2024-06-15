@@ -1,3 +1,14 @@
+- Speedtest:
+    - Speedtest Tracker:
+        icon: speedtest-tracker
+        href: "{{HOMEPAGE_VAR_SPEEDTEST_TRACKER_HOST}}"
+        description: Self-hosted internet performance tracking application
+        ping: "{{HOMEPAGE_VAR_SPEEDTEST_TRACKER_HOST}}"
+        container: speedtest-tracker
+        widget:
+          type: speedtest
+          url: "{{HOMEPAGE_VAR_SPEEDTEST_TRACKER_HOST}}"
+
 - Media:
     - Immich:
         icon: immich

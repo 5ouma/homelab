@@ -33,3 +33,4 @@
 
    - [🏠 **Homepage**](../homepage)
    - [🌸 **Immich**](../immich)
+   - [🐇 **Speedtest Tracker**](../speedtest-tracker)
