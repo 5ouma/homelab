@@ -2,11 +2,6 @@ headerStyle: boxedWidgets
 iconStyle: theme
 
 layout:
-  Tailscale:
-    tab: Dashboard
-    icon: mdi-transit-connection-variant
-    style: row
-    columns: 4
   Media:
     tab: Dashboard
     icon: mdi-multimedia

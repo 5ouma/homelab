@@ -12,16 +12,12 @@
 
 1. 🏔️ Copy the [`.env.tmpl`](./.env.tmpl) file to `.env` and Edit it
 
-   |              Name              |            Value             |
-   | :----------------------------: | :--------------------------: |
-   | `HOMEPAGE_VAR_TS_DEVICE_ID_*`  |    [Tailscale Machine ID]    |
-   | `HOMEPAGE_VAR_TS_ACCESS_TOKEN` | [Tailscale API Access Token] |
-   |   `HOMEPAGE_VAR_IMMICH_HOST`   |     Host Name for Immich     |
-   | `HOMEPAGE_VAR_IMMICH_API_KEY`  |       [Immich API Key]       |
-   |          `TS_AUTHKEY`          |     [Tailscale Auth Key]     |
+   |             Name              |        Value         |
+   | :---------------------------: | :------------------: |
+   |  `HOMEPAGE_VAR_IMMICH_HOST`   | Host Name for Immich |
+   | `HOMEPAGE_VAR_IMMICH_API_KEY` |   [Immich API Key]   |
+   |         `TS_AUTHKEY`          | [Tailscale Auth Key] |
 
-   [Tailscale Machine ID]: https://login.tailscale.com/admin/machines
-   [Tailscale API Access Token]: https://login.tailscale.com/admin/settings/keys
    [Immich API Key]: https://immich.app/docs/features/command-line-interface#obtain-the-api-key
    [Tailscale Auth Key]: https://login.tailscale.com/admin/settings/keys
 
