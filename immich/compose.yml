@@ -4,7 +4,13 @@ services:
   immich-server:
     container_name: immich_server
     image: ghcr.io/immich-app/immich-server:v1.106.4@sha256:ad971367766f6b5386fbb80637073aa558eb1cd0a4a3e412c5d5c6457e0df0d5
-    env_file: [".env"]
+    environment:
+      UPLOAD_LOCATION: ${UPLOAD_LOCATION}
+      IMMICH_CONFIG_FILE: ${IMMICH_CONFIG_FILE}
+      DB_HOSTNAME: ${DB_HOSTNAME}
+      DB_DATABASE_NAME: ${DB_DATABASE_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
     volumes:
       - ${UPLOAD_LOCATION}:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
@@ -19,7 +25,6 @@ services:
   immich-machine-learning:
     container_name: immich_machine_learning
     image: ghcr.io/immich-app/immich-machine-learning:v1.106.4@sha256:1dcebde9a0c02c7f90ea93f64f883423f8067eef297ff2330d65001e32ce12fd
-    env_file: [".env"]
     volumes:
       - model-cache:/cache
     restart: always
@@ -34,9 +39,6 @@ services:
     image: tensorchord/pgvecto-rs:pg16-v0.2.1@sha256:ff2288833f32aa863ba46f4c6f5b5c143f526a2d27f4cca913c232f917a66602
     environment:
       POSTGRES_HOST: ${DB_HOSTNAME}
-      POSTGRES_DB: ${DB_DATABASE_NAME}
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - pgdata:/var/lib/postgresql/data
     restart: always
@@ -45,7 +47,6 @@ services:
     container_name: immich_db_dumper
     image: prodrigestivill/postgres-backup-local:16@sha256:295861660cc409c391f9855ff798abdd2989b1be1c995f22ea793f1351da32aa
     user: postgres:postgres
-    env_file: [".env"]
     environment:
       POSTGRES_HOST: ${DB_HOSTNAME}
       POSTGRES_DB: ${DB_DATABASE_NAME}
@@ -65,8 +66,9 @@ services:
     container_name: immich_tailscale
     hostname: immich
     image: tailscale/tailscale:v1.66.4@sha256:8c80cf92bfbc6938d05826b1aee899e629b231cecf7921bd1d72a4150e71e3f3
-    env_file: [".env"]
     environment:
+      TS_ACCEPT_DNS: 1
+      TS_AUTHKEY: ${TS_AUTHKEY}
       TS_STATE_DIR: /var/lib/tailscale
       TS_SERVE_CONFIG: /config/tailscale.json
     volumes:
