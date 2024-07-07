@@ -21,7 +21,7 @@ services:
     restart: always
 
   database:
-    container_name: speedtest_tracker_postgres
+    container_name: speedtest_tracker_database
     image: postgres:16.3@sha256:0aafd2ae7e6c391f39fb6b7621632d79f54068faebc726caf469e87bd1d301c0
     environment:
       POSTGRES_HOST: ${DB_HOSTNAME}
@@ -29,13 +29,12 @@ services:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - database:/var/lib/postgresql/data
     restart: always
 
   backup:
-    container_name: speedtest_tracker_db_dumper
+    container_name: speedtest_tracker_backup
     image: prodrigestivill/postgres-backup-local:16@sha256:f873bbfb406db633ab879628b11ef8092279639c467a2ea5f5bfa08b776252fb
-    user: postgres:postgres
     environment:
       POSTGRES_HOST: ${DB_HOSTNAME}
       POSTGRES_DB: ${DB_DATABASE_NAME}
@@ -44,9 +43,9 @@ services:
       POSTGRES_CLUSTER: "TRUE"
       SCHEDULE: "@daily"
       POSTGRES_EXTRA_OPTS: "--clean --if-exists"
-      BACKUP_DIR: /db_dumps
+      BACKUP_DIR: /backup
     volumes:
-      - ./db_dumps:/db_dumps
+      - ./backup:/backup
     depends_on:
       - database
     restart: always
@@ -61,7 +60,7 @@ services:
       TS_STATE_DIR: /var/lib/tailscale
       TS_SERVE_CONFIG: /config/tailscale.json
     volumes:
-      - tailscale-state:/var/lib/tailscale
+      - tailscale:/var/lib/tailscale
       - /dev/net/tun:/dev/net/tun
       - ./config/tailscale.json:/config/tailscale.json:ro
     cap_add:
@@ -70,5 +69,5 @@ services:
     restart: always
 
 volumes:
-  pgdata:
-  tailscale-state:
+  database:
+  tailscale:

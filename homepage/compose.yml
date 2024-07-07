@@ -38,7 +38,7 @@ services:
       TS_STATE_DIR: /var/lib/tailscale
       TS_SERVE_CONFIG: /config/tailscale.json
     volumes:
-      - tailscale-state:/var/lib/tailscale
+      - tailscale:/var/lib/tailscale
       - /dev/net/tun:/dev/net/tun
       - ./config/tailscale.json:/config/tailscale.json:ro
     cap_add:
@@ -47,4 +47,4 @@ services:
     restart: always
 
 volumes:
-  tailscale-state:
+  tailscale:

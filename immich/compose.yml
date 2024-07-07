@@ -1,7 +1,7 @@
 name: immich
 
 services:
-  immich-server:
+  server:
     container_name: immich_server
     image: ghcr.io/immich-app/immich-server:v1.107.2@sha256:66050b1aaa86366bef629a31dff95c1303ef5c9b7783863a48456704a56d5640
     environment:
@@ -22,7 +22,7 @@ services:
     network_mode: service:tailscale
     restart: always
 
-  immich-machine-learning:
+  machine-learning:
     container_name: immich_machine_learning
     image: ghcr.io/immich-app/immich-machine-learning:v1.107.2@sha256:0258120fb043754327190cb50c8d7d6f3160579009a9386509689532470be252
     volumes:
@@ -40,11 +40,11 @@ services:
     environment:
       POSTGRES_HOST: ${DB_HOSTNAME}
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - database:/var/lib/postgresql/data
     restart: always
 
   backup:
-    container_name: immich_db_dumper
+    container_name: immich_backup
     image: prodrigestivill/postgres-backup-local:16@sha256:f873bbfb406db633ab879628b11ef8092279639c467a2ea5f5bfa08b776252fb
     user: postgres:postgres
     environment:
@@ -55,9 +55,9 @@ services:
       POSTGRES_CLUSTER: "TRUE"
       SCHEDULE: "@daily"
       POSTGRES_EXTRA_OPTS: "--clean --if-exists"
-      BACKUP_DIR: /db_dumps
+      BACKUP_DIR: /backup
     volumes:
-      - ./db_dumps:/db_dumps
+      - ./backup:/backup
     depends_on:
       - database
     restart: always
@@ -72,7 +72,7 @@ services:
       TS_STATE_DIR: /var/lib/tailscale
       TS_SERVE_CONFIG: /config/tailscale.json
     volumes:
-      - tailscale-state:/var/lib/tailscale
+      - tailscale:/var/lib/tailscale
       - /dev/net/tun:/dev/net/tun
       - ./config/tailscale.json:/config/tailscale.json:ro
     cap_add:
@@ -81,6 +81,6 @@ services:
     restart: always
 
 volumes:
-  pgdata:
   model-cache:
-  tailscale-state:
+  database:
+  tailscale:
