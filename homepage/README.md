@@ -17,10 +17,10 @@
    | `HOMEPAGE_VAR_SPEEDTEST_TRACKER_HOST` | Host Name for Speedtest Tracker |
    |      `HOMEPAGE_VAR_IMMICH_HOST`       |      Host Name for Immich       |
    |     `HOMEPAGE_VAR_IMMICH_API_KEY`     |        [Immich API Key]         |
-   |             `TS_AUTHKEY`              |      [Tailscale Auth Key]       |
+   |            `TUNNEL_TOKEN`             |    [Cloudflare Tunnel Token]    |
 
    [Immich API Key]: https://immich.app/docs/features/command-line-interface#obtain-the-api-key
-   [Tailscale Auth Key]: https://login.tailscale.com/admin/settings/keys
+   [Cloudflare Tunnel Token]: https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/
 
 2. 🚀 Start the Docker Compose
 

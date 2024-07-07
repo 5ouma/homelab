@@ -20,9 +20,6 @@ services:
         condition: service_healthy
       database:
         condition: service_healthy
-      tailscale:
-        condition: service_started
-    network_mode: service:tailscale
     restart: always
 
   machine-learning:
@@ -75,25 +72,14 @@ services:
       test: curl -f http://backup | jq -r .Last.Exit_status || exit 1
     restart: always
 
-  tailscale:
-    container_name: immich_tailscale
-    hostname: immich
-    image: tailscale/tailscale:v1.68.1@sha256:a0d1a9ed2abfacf905c0e3423aea00181064162e548f875f422a03924b9cc5c4
+  cloudflare-tunnel:
+    container_name: immich_cloudflare_tunnel
+    image: cloudflare/cloudflared:2024.6.1@sha256:b809ea110a98112b0ed98b7d976e373c70321541f1a8f592e7932dd63cbf6c5a
+    command: tunnel --no-autoupdate run
     environment:
-      TS_ACCEPT_DNS: 1
-      TS_AUTHKEY: ${TS_AUTHKEY}
-      TS_STATE_DIR: /var/lib/tailscale
-      TS_SERVE_CONFIG: /config/tailscale.json
-    volumes:
-      - tailscale:/var/lib/tailscale
-      - /dev/net/tun:/dev/net/tun
-      - ./config/tailscale.json:/config/tailscale.json:ro
-    cap_add:
-      - net_admin
-      - sys_module
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN}
     restart: always
 
 volumes:
   model-cache:
   database:
-  tailscale:

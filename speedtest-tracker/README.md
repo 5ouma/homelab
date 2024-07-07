@@ -12,14 +12,14 @@
 
 1. 🏔️ Copy the [`.env.tmpl`](./.env.tmpl) file to `.env` and Edit it
 
-   |     Name      |          Value           |
-   | :-----------: | :----------------------: |
-   |   `APP_KEY`   |     [Encryption key]     |
-   | `DB_PASSWORD` | Random Database Password |
-   | `TS_AUTHKEY`  |   [Tailscale Auth Key]   |
+   |      Name      |           Value           |
+   | :------------: | :-----------------------: |
+   |   `APP_KEY`    |     [Encryption key]      |
+   | `DB_PASSWORD`  | Random Database Password  |
+   | `TUNNEL_TOKEN` | [Cloudflare Tunnel Token] |
 
    [Encryption key]: https://speedtest-tracker.dev
-   [Tailscale Auth Key]: https://login.tailscale.com/admin/settings/keys
+   [Cloudflare Tunnel Token]: https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/
 
 2. 🚀 Start the Docker Compose
 
