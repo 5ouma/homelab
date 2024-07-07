@@ -2,19 +2,7 @@ headerStyle: boxedWidgets
 iconStyle: theme
 
 layout:
-  Speedtest Tracker:
-    tab: Dashboard
-    icon: mdi-speedometer
-    style: row
-    columns: 2
-  Media:
-    tab: Dashboard
-    icon: mdi-multimedia
-    style: row
-    columns: 2
-
-  Souma's MacBook Pro:
-    tab: Glances
+  Machine:
     icon: si-macos
     style: row
     columns: 2
