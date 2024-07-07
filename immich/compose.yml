@@ -16,9 +16,12 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - ./config/immich.json:${IMMICH_CONFIG_FILE}:ro
     depends_on:
-      - redis
-      - database
-      - tailscale
+      redis:
+        condition: service_healthy
+      database:
+        condition: service_healthy
+      tailscale:
+        condition: service_started
     network_mode: service:tailscale
     restart: always
 
@@ -32,6 +35,8 @@ services:
   redis:
     container_name: immich_redis
     image: redis:7.2.5-alpine3.19@sha256:8f157725f8eee31e65a8d4765f1f986d76aedc1a0503345dfb63a2b1b5a441ee
+    healthcheck:
+      test: redis-cli ping || exit 1
     restart: always
 
   database:
@@ -39,8 +44,13 @@ services:
     image: tensorchord/pgvecto-rs:pg16-v0.2.1@sha256:ff2288833f32aa863ba46f4c6f5b5c143f526a2d27f4cca913c232f917a66602
     environment:
       POSTGRES_HOST: ${DB_HOSTNAME}
+      POSTGRES_DB: ${DB_DATABASE_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - database:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready --dbname='${DB_DATABASE_NAME}' --username='${DB_USERNAME}' || exit 1
     restart: always
 
   backup:
@@ -59,7 +69,10 @@ services:
     volumes:
       - ./backup:/backup
     depends_on:
-      - database
+      database:
+        condition: service_healthy
+    healthcheck:
+      test: curl -f http://backup | jq -r .Last.Exit_status || exit 1
     restart: always
 
   tailscale:

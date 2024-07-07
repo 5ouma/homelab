@@ -15,9 +15,13 @@ services:
       SPEEDTEST_SERVERS: ${SPEEDTEST_SERVERS}
       DISPLAY_TIMEZONE: "JST"
     depends_on:
-      - database
-      - tailscale
+      database:
+        condition: service_healthy
+      tailscale:
+        condition: service_started
     network_mode: service:tailscale
+    healthcheck:
+      test: curl -f http://speedtest-tracker/api/healthcheck | jq -r .message || exit 1
     restart: always
 
   database:
@@ -30,6 +34,8 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - database:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready --dbname='${DB_DATABASE_NAME}' --username='${DB_USERNAME}' || exit 1
     restart: always
 
   backup:
@@ -47,7 +53,10 @@ services:
     volumes:
       - ./backup:/backup
     depends_on:
-      - database
+      database:
+        condition: service_healthy
+    healthcheck:
+      test: curl -f http://backup | jq -r .Last.Exit_status || exit 1
     restart: always
 
   tailscale:
