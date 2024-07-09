@@ -5,16 +5,16 @@ services:
     container_name: immich_server
     image: ghcr.io/immich-app/immich-server:v1.107.2@sha256:66050b1aaa86366bef629a31dff95c1303ef5c9b7783863a48456704a56d5640
     environment:
-      UPLOAD_LOCATION: ${UPLOAD_LOCATION}
-      IMMICH_CONFIG_FILE: ${IMMICH_CONFIG_FILE}
+      UPLOAD_LOCATION: ./library
+      IMMICH_CONFIG_FILE: /config/immich.json
       DB_HOSTNAME: ${DB_HOSTNAME}
       DB_DATABASE_NAME: ${DB_DATABASE_NAME}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - ${UPLOAD_LOCATION}:/usr/src/app/upload
+      - ./library:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
-      - ./config/immich.json:${IMMICH_CONFIG_FILE}:ro
+      - ./config/immich.json:/config/immich.json:ro
     depends_on:
       redis:
         condition: service_healthy
