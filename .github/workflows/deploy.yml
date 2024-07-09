@@ -1,0 +1,33 @@
+name: 🚀 Deploy
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "**/compose.yml"
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🛣️ Setup Tailscale
+        uses: tailscale/github-action@4e4c49acaa9818630ce0bd7a564372c17e33fb4d # v2
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_CLIENT_SECRET }}
+          tags: "tag:actions"
+
+      - name: 🔐 SSH to Deploy
+        uses: appleboy/ssh-action@029f5b4aeeeb58fdfe1410a5d17f967dacf36262 # v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script_stop: true
+          script: |
+            source "$HOME/.orbstack/shell/init.zsh" &>/dev/null
+            git -C "$HOME/homelab" pull
+            while read -r compose; do
+              docker compose -f "$compose" up -d
+            done < <(find "$HOME/homelab" -type f -name 'compose.yml')
