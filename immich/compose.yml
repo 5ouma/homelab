@@ -69,7 +69,7 @@ services:
       database:
         condition: service_healthy
     healthcheck:
-      test: curl -f http://backup | jq -r .Last.Exit_status || exit 1
+      test: curl -f http://backup || exit 1
     restart: always
 
   cloudflare-tunnel:
