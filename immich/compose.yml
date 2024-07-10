@@ -3,7 +3,7 @@ name: immich
 services:
   server:
     container_name: immich_server
-    image: ghcr.io/immich-app/immich-server:v1.107.2@sha256:66050b1aaa86366bef629a31dff95c1303ef5c9b7783863a48456704a56d5640
+    image: ghcr.io/immich-app/immich-server:v1.108.0@sha256:9ef9d53759126ec884689d4f554096dd5f6f6e0189fda3d43a264f8a40996987
     environment:
       UPLOAD_LOCATION: ./library
       IMMICH_CONFIG_FILE: /config/immich.json
