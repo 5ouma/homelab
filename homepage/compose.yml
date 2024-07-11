@@ -4,7 +4,7 @@ services:
   homepage:
     container_name: homepage
     image: ghcr.io/gethomepage/homepage:v0.9.3@sha256:cbc5b49533f9afd0be57f6d5168eef48be2d713709259d6697f0d33b4ecb2f28
-    env_file: [".env"]
+    env_file: [.env]
     volumes:
       - ./config/homepage/settings.yml:/app/config/settings.yaml:ro
       - ./config/homepage/bookmarks.yml:/app/config/bookmarks.yaml:ro
@@ -20,7 +20,7 @@ services:
     container_name: homepage_glances
     image: nicolargo/glances:4.1.1@sha256:1974cfb85c5c434dce5e251d2c47d1bd7768e49764a89561d53a2157fb3f57d5
     environment:
-      - "GLANCES_OPT=-w"
+      - GLANCES_OPT=-w
     pid: host
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -32,5 +32,5 @@ services:
     image: cloudflare/cloudflared:2024.6.1@sha256:b809ea110a98112b0ed98b7d976e373c70321541f1a8f592e7932dd63cbf6c5a
     command: tunnel --no-autoupdate run
     environment:
-      TUNNEL_TOKEN: ${TUNNEL_TOKEN}
+      TUNNEL_TOKEN: $TUNNEL_TOKEN
     restart: always

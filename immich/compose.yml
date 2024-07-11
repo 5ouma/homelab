@@ -7,10 +7,10 @@ services:
     environment:
       UPLOAD_LOCATION: ./library
       IMMICH_CONFIG_FILE: /config/immich.json
-      DB_HOSTNAME: ${DB_HOSTNAME}
-      DB_DATABASE_NAME: ${DB_DATABASE_NAME}
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOSTNAME: $DB_HOSTNAME
+      DB_DATABASE_NAME: $DB_DATABASE_NAME
+      DB_USERNAME: $DB_USERNAME
+      DB_PASSWORD: $DB_PASSWORD
     volumes:
       - ./library:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
@@ -33,14 +33,14 @@ services:
     container_name: immich_postgres
     image: tensorchord/pgvecto-rs:pg16-v0.2.1@sha256:ff2288833f32aa863ba46f4c6f5b5c143f526a2d27f4cca913c232f917a66602
     environment:
-      POSTGRES_HOST: ${DB_HOSTNAME}
-      POSTGRES_DB: ${DB_DATABASE_NAME}
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_HOST: $DB_HOSTNAME
+      POSTGRES_DB: $DB_DATABASE_NAME
+      POSTGRES_USER: $DB_USERNAME
+      POSTGRES_PASSWORD: $DB_PASSWORD
     volumes:
       - database:/var/lib/postgresql/data
     healthcheck:
-      test: pg_isready --dbname='${DB_DATABASE_NAME}' --username='${DB_USERNAME}' || exit 1
+      test: pg_isready --dbname='$DB_DATABASE_NAME' --username='$DB_USERNAME' || exit 1
     restart: always
 
   redis:
@@ -55,13 +55,13 @@ services:
     image: prodrigestivill/postgres-backup-local:16@sha256:f873bbfb406db633ab879628b11ef8092279639c467a2ea5f5bfa08b776252fb
     user: postgres:postgres
     environment:
-      POSTGRES_HOST: ${DB_HOSTNAME}
-      POSTGRES_DB: ${DB_DATABASE_NAME}
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_CLUSTER: "TRUE"
+      POSTGRES_HOST: $DB_HOSTNAME
+      POSTGRES_DB: $DB_DATABASE_NAME
+      POSTGRES_USER: $DB_USERNAME
+      POSTGRES_PASSWORD: $DB_PASSWORD
+      POSTGRES_CLUSTER: TRUE
       SCHEDULE: "@daily"
-      POSTGRES_EXTRA_OPTS: "--clean --if-exists"
+      POSTGRES_EXTRA_OPTS: --clean --if-exists
       BACKUP_DIR: /backup
     volumes:
       - ./backup:/backup
@@ -77,7 +77,7 @@ services:
     image: cloudflare/cloudflared:2024.6.1@sha256:b809ea110a98112b0ed98b7d976e373c70321541f1a8f592e7932dd63cbf6c5a
     command: tunnel --no-autoupdate run
     environment:
-      TUNNEL_TOKEN: ${TUNNEL_TOKEN}
+      TUNNEL_TOKEN: $TUNNEL_TOKEN
     restart: always
 
 volumes:
