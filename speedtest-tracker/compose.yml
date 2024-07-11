@@ -44,16 +44,14 @@ services:
       POSTGRES_USER: $DB_USERNAME
       POSTGRES_PASSWORD: $DB_PASSWORD
       POSTGRES_CLUSTER: TRUE
-      SCHEDULE: "@daily"
       POSTGRES_EXTRA_OPTS: --clean --if-exists
-      BACKUP_DIR: /backup
+      TZ: JST
+      SCHEDULE: 0 5 * * *
     volumes:
-      - ./backup:/backup
+      - ./backups:/backups
     depends_on:
       database:
         condition: service_healthy
-    healthcheck:
-      test: curl -f http://backup || exit 1
     restart: always
 
   cloudflare-tunnel:
