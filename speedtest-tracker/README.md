@@ -1,4 +1,4 @@
-<h1 align="center"><a href="https://speedtest-tracker.dev/">Speedtest Tracker</a></h1>
+<h1 align="center"><a href="https://speedtest-tracker.dev">Speedtest Tracker</a></h1>
 
 <div align="center">
 
@@ -14,11 +14,11 @@
 
    |      Name      |           Value           |
    | :------------: | :-----------------------: |
-   |   `APP_KEY`    |     [Encryption key]      |
+   |   `APP_KEY`    |     [Encryption Key]      |
    | `DB_PASSWORD`  | Random Database Password  |
    | `TUNNEL_TOKEN` | [Cloudflare Tunnel Token] |
 
-   [Encryption key]: https://speedtest-tracker.dev
+   [Encryption Key]: https://speedtest-tracker.dev
    [Cloudflare Tunnel Token]: https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/
 
 2. 🚀 Start the Docker Compose
