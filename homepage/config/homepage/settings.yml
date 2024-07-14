@@ -1,8 +1,0 @@
-headerStyle: boxedWidgets
-iconStyle: theme
-
-layout:
-  Machine:
-    icon: si-macos
-    style: row
-    columns: 2

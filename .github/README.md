@@ -31,6 +31,5 @@
 
 2. 📝 Follow the instructions below
 
-   - [🏠 **Homepage**](../homepage)
    - [🌸 **Immich**](../immich)
    - [🐇 **Speedtest Tracker**](../speedtest-tracker)
