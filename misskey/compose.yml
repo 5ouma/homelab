@@ -1,0 +1,70 @@
+name: misskey
+
+services:
+  web:
+    container_name: misskey_web
+    image: misskey/misskey:develop@sha256:f195c26a4832754318dd18ab6382ad7ab3a5e8c2242b260636ba68e482cd8972
+    environment:
+      MISSKEY_URL: $MISSKEY_URL
+      DATABASE_DB: $DB_DATABASE_NAME
+      DATABASE_USER: $DB_USERNAME
+      DATABASE_PASSWORD: $DB_PASSWORD
+    volumes:
+      - ./config/misskey.yml:/misskey/.config/default.yml:ro
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: always
+
+  database:
+    container_name: misskey_database
+    image: postgres:16.3@sha256:0aafd2ae7e6c391f39fb6b7621632d79f54068faebc726caf469e87bd1d301c0
+    environment:
+      POSTGRES_HOST: $DB_HOSTNAME
+      POSTGRES_DB: $DB_DATABASE_NAME
+      POSTGRES_USER: $DB_USERNAME
+      POSTGRES_PASSWORD: $DB_PASSWORD
+    volumes:
+      - database:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready --dbname='$DB_DATABASE_NAME' --username='$DB_USERNAME'
+    restart: always
+
+  redis:
+    container_name: misskey_redis
+    image: redis:7.2.5-alpine3.19@sha256:8f157725f8eee31e65a8d4765f1f986d76aedc1a0503345dfb63a2b1b5a441ee
+    healthcheck:
+      test: redis-cli ping
+    restart: always
+
+  backup:
+    container_name: misskey_backup
+    image: prodrigestivill/postgres-backup-local:16@sha256:f873bbfb406db633ab879628b11ef8092279639c467a2ea5f5bfa08b776252fb
+    environment:
+      POSTGRES_HOST: $DB_HOSTNAME
+      POSTGRES_DB: $DB_DATABASE_NAME
+      POSTGRES_USER: $DB_USERNAME
+      POSTGRES_PASSWORD: $DB_PASSWORD
+      POSTGRES_CLUSTER: TRUE
+      POSTGRES_EXTRA_OPTS: --clean --if-exists
+      TZ: JST
+      SCHEDULE: 0 5 * * *
+    volumes:
+      - ./backups:/backups
+    depends_on:
+      database:
+        condition: service_healthy
+    restart: always
+
+  cloudflare-tunnel:
+    container_name: misskey_cloudflare_tunnel
+    image: cloudflare/cloudflared:2024.6.1@sha256:b809ea110a98112b0ed98b7d976e373c70321541f1a8f592e7932dd63cbf6c5a
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: $TUNNEL_TOKEN
+    restart: always
+
+volumes:
+  database:

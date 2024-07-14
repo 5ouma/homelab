@@ -31,5 +31,6 @@
 
 2. 📝 Follow the instructions below
 
+   - [🌐 **Misskey**](../misskey)
    - [🌸 **Immich**](../immich)
    - [🐇 **Speedtest Tracker**](../speedtest-tracker)
