@@ -29,5 +29,5 @@ jobs:
             source "$HOME/.orbstack/shell/init.zsh" &>/dev/null
             git -C "$HOME/homelab" pull
             while read -r compose; do
-              docker compose -f "$compose" up -d
+              docker compose -f "$compose" up -d --quiet-pull
             done < <(find "$HOME/homelab" -type f -name 'compose.yml')
