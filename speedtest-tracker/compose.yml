@@ -3,7 +3,7 @@ name: speedtest-tracker
 services:
   speedtest-tracker:
     container_name: speedtest_tracker
-    image: linuxserver/speedtest-tracker:0.20.8@sha256:df6dffab83be2ff32b4afa8963e5732663db585158758db58392a6f15c228234
+    image: linuxserver/speedtest-tracker:0.20.9@sha256:95919033c7e5e6a7339eeca18912d1c7b1e6724c5ae2e852ad0abd03e23fab34
     environment:
       APP_KEY: $APP_KEY
       DB_CONNECTION: pgsql
