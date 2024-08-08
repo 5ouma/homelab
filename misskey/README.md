@@ -2,7 +2,7 @@
 
 <div align="center">
 
-**🌐 Interplanetary micro-blogging platform**
+**🪐 Interplanetary micro-blogging platform**
 
 </div>
 
