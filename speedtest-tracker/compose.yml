@@ -2,7 +2,7 @@ name: speedtest-tracker
 
 services:
   speedtest-tracker:
-    container_name: speedtest_tracker
+    container_name: speedtest-tracker
     image: linuxserver/speedtest-tracker:0.20.9@sha256:95919033c7e5e6a7339eeca18912d1c7b1e6724c5ae2e852ad0abd03e23fab34
     environment:
       APP_KEY: $APP_KEY
@@ -22,7 +22,7 @@ services:
     restart: always
 
   database:
-    container_name: speedtest_tracker_database
+    container_name: speedtest-tracker_database
     image: postgres:16.3@sha256:d0f363f8366fbc3f52d172c6e76bc27151c3d643b870e1062b4e8bfe65baf609
     environment:
       POSTGRES_HOST: $DB_HOSTNAME
@@ -36,7 +36,7 @@ services:
     restart: always
 
   backup:
-    container_name: speedtest_tracker_backup
+    container_name: speedtest-tracker_backup
     image: prodrigestivill/postgres-backup-local:16@sha256:f873bbfb406db633ab879628b11ef8092279639c467a2ea5f5bfa08b776252fb
     environment:
       POSTGRES_HOST: $DB_HOSTNAME
@@ -55,7 +55,7 @@ services:
     restart: always
 
   cloudflare-tunnel:
-    container_name: speedtest_tracker_cloudflare_tunnel
+    container_name: speedtest-tracker_cloudflare_tunnel
     image: cloudflare/cloudflared:2024.8.2@sha256:004f4b7b60bab652d478148c138843c24eae1feee4c58fddd435b9b79c953957
     command: tunnel --no-autoupdate run
     environment:
