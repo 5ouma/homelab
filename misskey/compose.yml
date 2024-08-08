@@ -30,14 +30,14 @@ services:
     volumes:
       - database:/var/lib/postgresql/data
     healthcheck:
-      test: pg_isready --dbname='$DB_DATABASE_NAME' --username='$DB_USERNAME'
+      test: pg_isready -d '$DB_DATABASE_NAME' -U '$DB_USERNAME' || exit 1
     restart: always
 
   redis:
     container_name: misskey_redis
     image: redis:7.2.5-alpine3.19@sha256:8f157725f8eee31e65a8d4765f1f986d76aedc1a0503345dfb63a2b1b5a441ee
     healthcheck:
-      test: redis-cli ping
+      test: redis-cli ping || exit 1
     restart: always
 
   backup:
