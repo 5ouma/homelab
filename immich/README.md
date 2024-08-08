@@ -12,10 +12,12 @@
 
 1. 🏔️ Copy the [`.env.tmpl`](./.env.tmpl) file to `.env` and Edit it
 
-   |      Name      |           Value           |
-   | :------------: | :-----------------------: |
-   | `DB_PASSWORD`  | Random Database Password  |
-   | `TUNNEL_TOKEN` | [Cloudflare Tunnel Token] |
+   |       Name       |           Value           |
+   | :--------------: | :-----------------------: |
+   |  `DB_PASSWORD`   | Random Database Password  |
+   | `R2_BUCKET_NAME` | Cloudflare R2 Bucket Name |
+   |   `BACKUP_DIR`   |  Local Backup Directory   |
+   |  `TUNNEL_TOKEN`  | [Cloudflare Tunnel Token] |
 
    [Cloudflare Tunnel Token]: https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/
 
