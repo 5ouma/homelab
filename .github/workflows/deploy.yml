@@ -27,7 +27,8 @@ jobs:
           script_stop: true
           script: |
             source "$HOME/.orbstack/shell/init.zsh" &>/dev/null
-            git -C "$HOME/homelab" pull
+            git -C "$HOME/homelab" fetch
+            git -C "$HOME/homelab" reset --hard
             while read -r compose; do
               docker compose -f "$compose" up -d --quiet-pull
             done < <(find "$HOME/homelab" -type f -name 'compose.yml')
