@@ -42,7 +42,7 @@ services:
     container_name: speedtest-tracker_backup
     image: offen/docker-volume-backup:v2.40.0@sha256:f9cf83d63a1a9129b7c421090b584f11732fc201283f415552b14113f2cbf674
     environment:
-      BACKUP_CRON_EXPRESSION: "0 5 * * *"
+      BACKUP_CRON_EXPRESSION: 0 5 * * *
       BACKUP_FILENAME: speedtest-tracker_database_%Y%m%d.{{ .Extension }}
       BACKUP_SKIP_BACKENDS_FROM_PRUNE: s3
       AWS_S3_BUCKET_NAME: $R2_BUCKET_NAME
@@ -52,10 +52,11 @@ services:
       - path: ../.env
         required: true
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
       - backup:/backup:ro
       - $BACKUP_DIR/database:/archive
     configs:
+      - source: docker-socket
+        target: /var/run/docker.sock
       - source: timezone
         target: /etc/localtime
     depends_on:
@@ -64,7 +65,7 @@ services:
     restart: always
 
   cloudflare-tunnel:
-    container_name: speedtest-tracker_cloudflare_tunnel
+    container_name: speedtest-tracker_cloudflare-tunnel
     image: cloudflare/cloudflared:2024.8.2@sha256:004f4b7b60bab652d478148c138843c24eae1feee4c58fddd435b9b79c953957
     command: tunnel --no-autoupdate run
     environment:
@@ -76,5 +77,7 @@ volumes:
   backup:
 
 configs:
+  docker-socket:
+    file: /var/run/docker.sock
   timezone:
     file: /etc/localtime
