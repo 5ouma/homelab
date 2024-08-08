@@ -14,7 +14,9 @@ services:
     volumes:
       - ./library:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
-      - ./config/immich.json:/config/immich.json:ro
+    configs:
+      - source: immich_config
+        target: /config/immich.json
     depends_on:
       database:
         condition: service_healthy
@@ -80,3 +82,6 @@ services:
 volumes:
   model-cache:
   database:
+configs:
+  immich_config:
+    file: ./config/immich.json

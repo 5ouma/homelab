@@ -9,8 +9,9 @@ services:
       DATABASE_DB: $DB_DATABASE_NAME
       DATABASE_USER: $DB_USERNAME
       DATABASE_PASSWORD: $DB_PASSWORD
-    volumes:
-      - ./config/misskey.yml:/misskey/.config/default.yml:ro
+    configs:
+      - source: misskey_config
+        target: /misskey/.config/default.yml
     depends_on:
       database:
         condition: service_healthy
@@ -68,3 +69,7 @@ services:
 
 volumes:
   database:
+
+configs:
+  misskey_config:
+    file: ./config/misskey.yml
