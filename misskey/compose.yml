@@ -45,7 +45,7 @@ services:
 
   backup:
     container_name: misskey_backup
-    image: offen/docker-volume-backup:v2.40.0@sha256:f9cf83d63a1a9129b7c421090b584f11732fc201283f415552b14113f2cbf674
+    image: offen/docker-volume-backup:v2.41.0@sha256:b24c48ddd0edcab3637d95d43d42fcdd56d71ccfa868d20bd71febe3b64d18d4
     environment:
       BACKUP_CRON_EXPRESSION: 0 5 * * *
       BACKUP_FILENAME: misskey_database_%Y%m%d.{{ .Extension }}
