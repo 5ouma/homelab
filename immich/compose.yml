@@ -13,8 +13,9 @@ services:
       DB_PASSWORD: $DB_PASSWORD
     volumes:
       - ./library:/usr/src/app/upload
-      - /etc/localtime:/etc/localtime:ro
     configs:
+      - source: timezone
+        target: /etc/localtime
       - source: immich_config
         target: /config/immich.json
     depends_on:
@@ -90,7 +91,7 @@ services:
       BACKUP_FILENAME: immich_library_%Y%m%d.{{ .Extension }}
       BACKUP_SOURCES: /library
       BACKUP_ARCHIVE: /archive/library
-      BACKUP_RETENTION_DAYS: 7
+      BACKUP_RETENTION_DAYS: 5
     volumes:
       - ./library:/library:ro
       - $BACKUP_DIR/library:/archive/library
