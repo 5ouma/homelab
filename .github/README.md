@@ -25,7 +25,7 @@
 
 1. 📋 Clone this Repository
 
-   ```shell
+   ```sh
    git clone https://github.com/5ouma/homelab.git
    ```
 

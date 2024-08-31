@@ -24,6 +24,6 @@
 
 1. 🚀 Start the Docker Compose
 
-   ```shell
+   ```sh
    docker compose up -d
    ```
