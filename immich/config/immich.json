@@ -39,6 +39,7 @@
     "backgroundTask": { "concurrency": 5 },
     "notifications": { "concurrency": 5 }
   },
+  "metadata": { "faces": { "import": true } },
   "library": {
     "watch": { "enabled": false },
     "scan": { "enabled": true, "cronExpression": "0 0 * * *" }
@@ -48,7 +49,7 @@
     "enabled": true,
     "url": "http://immich-machine-learning:3003",
     "clip": { "enabled": true, "modelName": "ViT-B-32__openai" },
-    "duplicateDetection": { "enabled": true, "maxDistance": 0.0155 },
+    "duplicateDetection": { "enabled": true, "maxDistance": 0.01 },
     "facialRecognition": {
       "enabled": true,
       "modelName": "buffalo_l",
@@ -59,8 +60,8 @@
   },
   "map": {
     "enabled": true,
-    "lightStyle": "",
-    "darkStyle": ""
+    "lightStyle": "https://tiles.immich.cloud/v1/style/light.json",
+    "darkStyle": "https://tiles.immich.cloud/v1/style/dark.json"
   },
   "reverseGeocoding": { "enabled": true },
   "notifications": {
