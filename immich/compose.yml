@@ -34,7 +34,7 @@ services:
 
   database:
     container_name: immich_database
-    image: tensorchord/pgvecto-rs:pg16-v0.2.1@sha256:ff2288833f32aa863ba46f4c6f5b5c143f526a2d27f4cca913c232f917a66602
+    image: tensorchord/pgvecto-rs:pg16-v0.3.0@sha256:9722631d44e76d46a8301859c46294f2c2c6a2f95e8706b55b4d654d6eaeafba
     environment:
       POSTGRES_HOST: $DB_HOSTNAME
       POSTGRES_DB: $DB_DATABASE_NAME
