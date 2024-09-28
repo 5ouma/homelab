@@ -21,7 +21,7 @@ services:
 
   database:
     container_name: misskey_database
-    image: postgres:16.4@sha256:9a2f3b8137068178039fcf7769a760b700a4c09460c502bcd18cae8a7484af65
+    image: postgres:16.4@sha256:7d0459814530c51bd14f7593c9f6135198cfc0c8caba9b0898e9a5c5bc27dd34
     environment:
       POSTGRES_HOST: $DB_HOSTNAME
       POSTGRES_DB: $DB_DATABASE_NAME
