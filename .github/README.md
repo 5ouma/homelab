@@ -8,6 +8,9 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/5ouma/homelab?style=flat-square)
 [![GitHub last commit](https://img.shields.io/github/last-commit/5ouma/homelab?style=flat-square)](https://github.com/5ouma/homelab/commit/HEAD)
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/m/5ouma/homelab?style=flat-square)](https://github.com/5ouma/homelab/commits/main)
+<br />
+[![Test](https://img.shields.io/github/actions/workflow/status/5ouma/homelab/test.yml?label=test&style=flat-square)](https://github.com/5ouma/homelab/actions/workflows/test.yml)
+[![Deploy](https://img.shields.io/github/actions/workflow/status/5ouma/homelab/deploy.yml?label=deploy&style=flat-square)](https://github.com/5ouma/homelab/actions/workflows/deploy.yml)
 
 </div>
 
