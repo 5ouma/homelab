@@ -7,6 +7,10 @@ on:
     paths:
       - "**/compose.yml"
       - .github/workflows/test.yml
+  pull_request:
+    paths:
+      - "**/compose.yml"
+      - .github/workflows/test.yml
 
 jobs:
   Test:
