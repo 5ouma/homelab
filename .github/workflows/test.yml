@@ -1,0 +1,28 @@
+name: 🧪 Test
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "**/compose.yml"
+      - .github/workflows/test.yml
+
+jobs:
+  Test:
+    runs-on: Ubuntu-Latest
+    steps:
+      - name: 🚚 Checkout Repository
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+
+      - name: ♻️ Copy the .env
+        run: |
+          while read -r tmpl; do
+            sed -e 's/=$/=./g' "$tmpl" >"$(dirname "$tmpl")/.env"
+          done < <(find . -name '.env.tmpl')
+
+      - name: 🐳 Start the Containers
+        run: |
+          while read -r compose; do
+            docker compose -f "$compose" up -d --quiet-pull
+          done < <(find . -name 'compose.yml')
