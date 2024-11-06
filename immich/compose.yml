@@ -98,7 +98,7 @@ services:
 
   cloudflare-tunnel:
     container_name: immich_cloudflare-tunnel
-    image: cloudflare/cloudflared:2024.10.1@sha256:52b9529db08f7ef827a2bce04b91945b475c651e46f583c30b70dd6773262ae3
+    image: cloudflare/cloudflared:2024.11.0@sha256:2c78df02e1f23ab19d4c636921f05b9ebec163b887e946f98e22e56254a5540f
     command: tunnel --no-autoupdate run
     environment:
       TUNNEL_TOKEN: $TUNNEL_TOKEN
