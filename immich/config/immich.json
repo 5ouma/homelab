@@ -16,6 +16,13 @@
     "mobileOverrideEnabled": false,
     "mobileRedirectUri": ""
   },
+  "backup": {
+    "database": {
+      "enabled": false,
+      "cronExpression": "0 02 * * *",
+      "keepLastAmount": 14
+    }
+  },
   "passwordLogin": { "enabled": true },
   "image": {
     "thumbnail": { "format": "webp", "size": 1080, "quality": 80 },
@@ -90,8 +97,8 @@
     "preset": "ultrafast",
     "targetVideoCodec": "h264",
     "targetAudioCodec": "aac",
-    "acceptedVideoCodecs": ["h264", "hevc", "vp9"],
-    "acceptedAudioCodecs": ["aac", "mp3", "libopus"],
+    "acceptedVideoCodecs": ["h264", "hevc", "vp9", "av1"],
+    "acceptedAudioCodecs": ["aac", "mp3", "libopus", "pcm_s16le"],
     "acceptedContainers": ["mov", "ogg", "webm"],
     "targetResolution": "original",
     "maxBitrate": "0",
