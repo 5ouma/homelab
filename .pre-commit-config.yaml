@@ -21,7 +21,7 @@ repos:
         args: [--whitespaces-count, "2"]
 
   - repo: https://github.com/crate-ci/typos
-    rev: v1.28.1
+    rev: typos-dict-v0.11.37
     hooks:
       - id: typos
 
@@ -36,7 +36,7 @@ repos:
       - id: actionlint
 
   - repo: https://github.com/renovatebot/pre-commit-hooks
-    rev: 39.33.0
+    rev: 39.45.0
     hooks:
       - id: renovate-config-validator
         args: ["--strict"]
