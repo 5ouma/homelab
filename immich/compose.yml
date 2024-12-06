@@ -3,7 +3,7 @@ name: immich
 services:
   server:
     container_name: immich_server
-    image: ghcr.io/immich-app/immich-server:v1.122.0@sha256:74e0b985cc7edce95fda0347af47b12b657a320cba48534bfdc50f460d8fd27c
+    image: ghcr.io/immich-app/immich-server:v1.122.1@sha256:f5d03e65425edff6c959e5151589c45fe4a250754d592ede175aab6a66806980
     environment:
       UPLOAD_LOCATION: ./library
       IMMICH_CONFIG_FILE: /config/immich.json
@@ -27,7 +27,7 @@ services:
 
   machine-learning:
     container_name: immich_machine-learning
-    image: ghcr.io/immich-app/immich-machine-learning:v1.122.0@sha256:ef98b262f393a868d68a97273f02f63f801eb8e5f9247c088148057ba6efa9d5
+    image: ghcr.io/immich-app/immich-machine-learning:v1.122.1@sha256:c64a13c4c020315c12088fbdbb7e12fe069b944a63de4c4ee352d1796e97a789
     volumes:
       - model-cache:/cache
     restart: always
