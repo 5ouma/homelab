@@ -51,7 +51,7 @@
   "logging": { "enabled": true, "level": "log" },
   "machineLearning": {
     "enabled": true,
-    "url": "http://immich-machine-learning:3003",
+    "urls": ["http://immich-machine-learning:3003"],
     "clip": { "enabled": true, "modelName": "ViT-B-32__openai" },
     "duplicateDetection": { "enabled": true, "maxDistance": 0.01 },
     "facialRecognition": {
@@ -82,7 +82,18 @@
       "replyTo": ""
     }
   },
-  "server": { "externalDomain": "", "loginPageMessage": "" },
+  "templates": {
+    "email": {
+      "welcomeTemplate": "",
+      "albumInviteTemplate": "",
+      "albumUpdateTemplate": ""
+    }
+  },
+  "server": {
+    "externalDomain": "",
+    "loginPageMessage": "",
+    "publicUsers": true
+  },
   "storageTemplate": {
     "enabled": true,
     "hashVerificationEnabled": true,
@@ -111,7 +122,6 @@
     "cqMode": "auto",
     "temporalAQ": false,
     "preferredHwDevice": "auto",
-    "npl": 0,
     "bframes": -1,
     "refs": 0,
     "gopSize": 0
