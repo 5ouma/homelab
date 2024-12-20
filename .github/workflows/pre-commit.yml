@@ -11,4 +11,4 @@ jobs:
 
     steps:
       - name: 🚸 Run pre-commit
-        uses: 5ouma/utils/pre-commit@0030a8a60554d9773fcffffa477a6b86876efdcf # main
+        uses: 5ouma/utils/pre-commit@bead216f0d05b478f62c81db49f1ef6fc34e4766 # main
