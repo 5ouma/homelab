@@ -45,3 +45,14 @@
    - [🪐 **Misskey**](../misskey)
    - [🌸 **Immich**](../immich)
    - [🐇 **Speedtest Tracker**](../speedtest-tracker)
+
+<br />
+
+## 💾 Restoring Data
+
+```sh
+docker compose create
+docker compose start database
+docker compose cp /path/to/backup.sql database:/tmp/backup.sql
+docker compose exec database 'psql -d "$POSTGRES_DB" -U "$POSTGRES_USER" -f /tmp/backup.sql'
+```

@@ -46,7 +46,7 @@ services:
     healthcheck:
       test: pg_isready -d '$DB_DATABASE_NAME' -U '$DB_USERNAME' || exit 1
     labels:
-      docker-volume-backup.archive-pre: pg_dumpall -l '$DB_DATABASE_NAME' -U '$DB_USERNAME' -f /tmp/backup/immich.sql -c --if-exists --inserts
+      docker-volume-backup.archive-pre: pg_dump -d '$DB_DATABASE_NAME' -U '$DB_USERNAME' -f /tmp/backup/immich.sql
     restart: always
 
   redis:
