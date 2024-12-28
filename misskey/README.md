@@ -20,9 +20,9 @@
    |   `BACKUP_DIR`   |  Local Backup Directory   |
    |  `TUNNEL_TOKEN`  | [Cloudflare Tunnel Token] |
 
-[Cloudflare Tunnel Token]: https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/
+   [Cloudflare Tunnel Token]: https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/
 
-1. 🚀 Start the Docker Compose
+2. 🚀 Start the Docker Compose
 
    ```sh
    docker compose up -d
