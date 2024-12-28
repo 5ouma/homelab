@@ -47,6 +47,7 @@ services:
       AWS_S3_BUCKET_NAME: $R2_BUCKET_NAME
       AWS_S3_PATH: $R2_PATH
       BACKUP_RETENTION_DAYS: 7
+      GPG_PASSPHRASE: $DB_PASSWORD
     env_file:
       - path: ../.env
         required: true

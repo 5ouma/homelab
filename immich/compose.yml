@@ -67,6 +67,7 @@ services:
       AWS_S3_PATH: $R2_PATH
       BACKUP_ARCHIVE: /archive/database
       BACKUP_RETENTION_DAYS: 7
+      GPG_PASSPHRASE: $DB_PASSWORD
     env_file:
       - path: ../.env
         required: true
