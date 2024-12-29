@@ -54,7 +54,8 @@
 
    ```sh
    # Your database password
-   gpg -o /path/to/backup.sql -d /path/to/backup.sql.gpg
+   gpg -o ./backup.tar.gz -d /path/to/backup.tar.gz.gpg
+   tar -xzf ./backup.tar.gz
    ```
 
 2. 🐘 Copy the Database
@@ -62,6 +63,6 @@
    ```sh
    docker compose create
    docker compose start database
-   docker compose cp /path/to/backup.sql database:/tmp/backup.sql
-   docker compose exec database 'psql -d "$POSTGRES_DB" -U "$POSTGRES_USER" -f /tmp/backup.sql'
+   docker compose cp ./backup/service.sql database:/tmp/backup.sql
+   docker compose exec database bash -c 'psql -d "$POSTGRES_DB" -U "$POSTGRES_USER" -f /tmp/backup.sql'
    ```
