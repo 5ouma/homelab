@@ -42,9 +42,10 @@
 
 3. 📝 Follow the instructions below
 
-   - [🪐 **Misskey**](../misskey)
    - [🌸 **Immich**](../immich)
+   - [🪐 **Misskey**](../misskey)
    - [🐇 **Speedtest Tracker**](../speedtest-tracker)
+   - [⏱️ **Time Machine**](../timemachine)
 
 <br />
 
