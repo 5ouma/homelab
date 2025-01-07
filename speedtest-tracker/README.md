@@ -1,3 +1,4 @@
+<!-- name: 🐇 Speedtest Tracker -->
 <h1 align="center"><a href="https://speedtest-tracker.dev">Speedtest Tracker</a></h1>
 
 <div align="center">
@@ -28,5 +29,3 @@
    ```sh
    docker compose up -d
    ```
-
-<!-- name: 🐇 Speedtest Tracker -->

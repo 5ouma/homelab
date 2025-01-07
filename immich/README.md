@@ -1,3 +1,4 @@
+<!-- name: 🌸 Immich -->
 <h1 align="center"><a href="https://immich.app">Immich</a></h1>
 
 <div align="center">
@@ -26,5 +27,3 @@
    ```sh
    docker compose up -d
    ```
-
-<!-- name: 🌸 Immich -->

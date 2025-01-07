@@ -1,3 +1,4 @@
+<!-- name: 🪐 Misskey -->
 <h1 align="center"><a href="https://misskey-hub.net">Misskey</a></h1>
 
 <div align="center">
@@ -27,5 +28,3 @@
    ```sh
    docker compose up -d
    ```
-
-<!-- name: 🪐 Misskey -->

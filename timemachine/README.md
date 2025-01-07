@@ -1,3 +1,4 @@
+<!-- name: ⏱️ Time Machine -->
 <h1 align="center">
 <a href="https://github.com/mbentley/docker-timemachine">Time Machine</a>
 </h1>
@@ -29,5 +30,3 @@
    ```sh
    docker compose up -d
    ```
-
-<!-- name: ⏱️ Time Machine -->
