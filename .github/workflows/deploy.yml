@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - "**/compose.yml"
+      - .github/workflows/deploy.yml
 
 jobs:
   Deploy:
