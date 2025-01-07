@@ -13,20 +13,46 @@ on:
       - .github/workflows/test.yml
 
 jobs:
-  Test:
+  detect:
+    name: 📡 Detect All Composes
     runs-on: Ubuntu-Latest
+    outputs:
+      composes: ${{ steps.detect.outputs.composes }}
+    steps:
+      - name: 🚚 Checkout Repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: 📡 Detect All Composes
+        id: detect
+        run: |
+          pattern='(?<=<!-- name: ).+(?= -->)'
+          while read -r compose; do
+            dir="$(dirname "$compose")"
+            name="$(grep -Po "$pattern" "$dir/README.md")"
+            echo "$name,$dir" | jq -Rc 'split(",") | { name: .[0], dir: .[1] }'
+          done < <(find . -name 'compose.yml') | jq -sc |
+            echo "composes=$(cat)" >>"$GITHUB_OUTPUT"
+
+  test:
+    name: ${{ matrix.compose.name }}
+    needs: detect
+    runs-on: Ubuntu-Latest
+    defaults:
+      run:
+        working-directory: ${{ matrix.compose.dir }}
+    strategy:
+      matrix:
+        compose: ${{ fromJson(needs.detect.outputs.composes) }}
+
     steps:
       - name: 🚚 Checkout Repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: ♻️ Copy the .env
         run: |
-          while read -r tmpl; do
-            sed -e 's/=$/=./g' "$tmpl" >"$(dirname "$tmpl")/.env"
-          done < <(find . -name '.env.tmpl')
+          for dir in .. .; do
+            sed -e 's/=$/=./g' "$dir/.env.tmpl" >"$dir/.env"
+          done
 
       - name: 🐳 Start the Containers
-        run: |
-          while read -r compose; do
-            docker compose -f "$compose" up -d --quiet-pull
-          done < <(find . -name 'compose.yml')
+        run: docker compose up -d --quiet-pull

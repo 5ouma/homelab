@@ -28,3 +28,5 @@
    ```sh
    docker compose up -d
    ```
+
+<!-- name: 🐇 Speedtest Tracker -->
