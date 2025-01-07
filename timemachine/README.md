@@ -20,6 +20,7 @@
    |     `TM_PASSWORD`      |           Password for the User           |
    |    `TM_SHARE_NAME`     |            Shared Volume Name             |
    | `TM_VOLUME_SIZE_LIMIT` | Maximum Size of the Backup ([Samba Docs]) |
+   |      `BACKUP_DIR`      |          Local Backup Directory           |
 
    [Samba Docs]: https://www.samba.org/samba/docs/current/man-html/vfs_fruit.8
 
