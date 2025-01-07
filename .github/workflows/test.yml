@@ -50,7 +50,7 @@ jobs:
 
       - name: ♻️ Copy the .env
         run: |
-          for dir in .. .; do
+          for dir in "$PWD" "$GITHUB_WORKSPACE"; do
             sed -e 's/=$/=./g' "$dir/.env.tmpl" >"$dir/.env"
           done
 
