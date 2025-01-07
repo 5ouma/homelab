@@ -26,9 +26,9 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script_stop: true
           script: |
-            source "$HOME/.orbstack/shell/init.zsh" &>/dev/null
-            git -C "$HOME/homelab" fetch
-            git -C "$HOME/homelab" reset --hard origin/main
+            ${{ secrets.PRE_COMMAND }}
+            git -C ${{ secrets.GIT_PATH }} fetch
+            git -C ${{ secrets.GIT_PATH }} reset --hard origin/main
             while read -r compose; do
               docker compose -f "$compose" up -d --quiet-pull
             done < <(find "$HOME/homelab" -name 'compose.yml')
