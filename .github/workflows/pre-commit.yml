@@ -2,7 +2,8 @@ name: 🚸 pre-commit
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
 
 jobs:
@@ -11,4 +12,4 @@ jobs:
 
     steps:
       - name: 🚸 Run pre-commit
-        uses: 5ouma/utils/pre-commit@973639b350016dec6fe7f665f4650d22ea1935d5 # main
+        uses: 5ouma/utils/pre-commit@main
