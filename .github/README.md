@@ -4,13 +4,12 @@
 
 **🥼 Self-hosted personal laboratory**
 
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/5ouma/homelab?style=flat-square)
-![GitHub repo size](https://img.shields.io/github/repo-size/5ouma/homelab?style=flat-square)
-[![GitHub last commit](https://img.shields.io/github/last-commit/5ouma/homelab?style=flat-square)](https://github.com/5ouma/homelab/commit/HEAD)
-[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/5ouma/homelab?style=flat-square)](https://github.com/5ouma/homelab/commits/main)
 <br />
-[![Test](https://img.shields.io/github/actions/workflow/status/5ouma/homelab/test.yml?label=test&style=flat-square)](https://github.com/5ouma/homelab/actions/workflows/test.yml)
-[![Deploy](https://img.shields.io/github/actions/workflow/status/5ouma/homelab/deploy.yml?label=deploy&style=flat-square)](https://github.com/5ouma/homelab/actions/workflows/deploy.yml)
+
+[![Test](https://img.shields.io/github/actions/workflow/status/5ouma/homelab/test.yml?label=Test&style=flat-square)](https://github.com/5ouma/homelab/actions/workflows/test.yml)
+[![Deploy](https://img.shields.io/github/actions/workflow/status/5ouma/homelab/deploy.yml?label=Deploy&style=flat-square)](https://github.com/5ouma/homelab/actions/workflows/deploy.yml)
+
+![Repobeats Analytics Image](https://repobeats.axiom.co/api/embed/5c340ba9ec6944ad822c2f157e0f2ae96a8d16fc.svg)
 
 </div>
 
