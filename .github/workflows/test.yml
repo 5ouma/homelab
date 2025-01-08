@@ -14,24 +14,33 @@ on:
 
 jobs:
   detect:
-    name: 📡 Detect All Composes
+    name: 📡 Detect Changed Compose Files
     runs-on: Ubuntu-Latest
     outputs:
       composes: ${{ steps.detect.outputs.composes }}
     steps:
       - name: 🚚 Checkout Repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 2
 
-      - name: 📡 Detect All Composes
+      - name: 🔄 Check if the Workflow has Changed
+        id: test-workflow
+        uses: marceloprado/has-changed-path@df1b7a3161b8fb9fd8c90403c66a9e66dfde50cb # v1.0.1
+        with:
+          paths: .github/workflows/test.yml
+
+      - name: 📡 Detect Changed Compose Files
         id: detect
         run: |
           pattern='(?<=<!-- name: ).+(?= -->)'
           while read -r compose; do
+            ! ${{ steps.test-workflow.outputs.changed }} && [[ -z "$(git diff --name-status HEAD^ HEAD "$compose")" ]] && continue
             dir="$(dirname "$compose")"
             name="$(grep -Po "$pattern" "$dir/README.md")"
             echo "$name,$dir" | jq -Rc 'split(",") | { name: .[0], dir: .[1] }'
           done < <(find . -name 'compose.yml') | jq -sc |
-            echo "composes=$(cat)" >>"$GITHUB_OUTPUT"
+            echo "composes=$(cat)" | tee -a "$GITHUB_OUTPUT"
 
   test:
     name: ${{ matrix.compose.name }}
