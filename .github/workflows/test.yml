@@ -33,14 +33,12 @@ jobs:
       - name: 📡 Detect Changed Compose Files
         id: detect
         run: |
-          pattern='(?<=<!-- name: ).+(?= -->)'
           while read -r compose; do
             ! ${{ steps.test-workflow.outputs.changed }} && [[ -z "$(git diff --name-status HEAD^ HEAD "$compose")" ]] && continue
             dir="$(dirname "$compose")"
-            name="$(grep -Po "$pattern" "$dir/README.md")"
+            name="$(grep -Po '(?<=<!-- name: ).+(?= -->)' "$dir/README.md")"
             echo "$name,$dir" | jq -Rc 'split(",") | { name: .[0], dir: .[1] }'
-          done < <(find . -name 'compose.yml') | jq -sc |
-            echo "composes=$(cat)" | tee -a "$GITHUB_OUTPUT"
+          done < <(find . -name 'compose.yml') | jq -sc | echo "composes=$(cat)" | tee -a "$GITHUB_OUTPUT"
 
   test:
     name: ${{ matrix.compose.name }}
