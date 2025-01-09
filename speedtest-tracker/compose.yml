@@ -39,7 +39,7 @@ services:
 
   backup:
     container_name: speedtest-tracker_backup
-    image: offen/docker-volume-backup:v2.43.0@sha256:596f3eb4d8dff797f0655d3f99486ffdee39f8e38ecce1c615005dbff07ba1c2
+    image: offen/docker-volume-backup:v2.43.1@sha256:113d0aace06c83519a304e9b9c13fc65ebe2e52f5b027897886c8c0566a23d72
     environment:
       BACKUP_CRON_EXPRESSION: 0 5 * * *
       BACKUP_FILENAME: speedtest-tracker_%Y%m%d.{{ .Extension }}
