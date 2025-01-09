@@ -11,6 +11,7 @@ on:
 jobs:
   Deploy:
     runs-on: Ubuntu-Latest
+
     steps:
       - name: 🛣️ Setup Tailscale
         uses: tailscale/github-action@8688eb839e58e6b25c1ae96cd99d1c173299b842 # v3
