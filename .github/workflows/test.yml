@@ -14,31 +14,37 @@ on:
 
 jobs:
   detect:
-    name: 📡 Detect Changed Compose Files
+    name: 🔍 Detect Compose Files
     runs-on: Ubuntu-Latest
     outputs:
       composes: ${{ steps.detect.outputs.composes }}
     steps:
       - name: 🚚 Checkout Repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with:
-          fetch-depth: 2
 
-      - name: 🔄 Check if the Workflow has Changed
-        id: test-workflow
-        uses: marceloprado/has-changed-path@df1b7a3161b8fb9fd8c90403c66a9e66dfde50cb # v1.0.1
+      - name: 🔄 Check the Changed Files
+        id: changed
+        uses: tj-actions/changed-files@d6e91a2266cdb9d62096cebf1e8546899c6aa18f # v45.0.6
         with:
-          paths: .github/workflows/test.yml
+          files_yaml: |
+            test:
+              - .github/workflows/test.yml
+            compose:
+              - "**/compose.yml"
 
-      - name: 📡 Detect Changed Compose Files
+      - name: 📡 Collect the Compose Information
         id: detect
         run: |
-          while read -r compose; do
-            ! ${{ steps.test-workflow.outputs.changed }} && [[ -z "$(git diff --name-status HEAD^ HEAD "$compose")" ]] && continue
+          if ${{ steps.changed.outputs.test_any_changed }}; then
+            composes="$(find "$GITHUB_WORKSPACE" -name 'compose.yml')"
+          else
+            composes='${{ steps.changed.outputs.compose_all_changed_files }}'
+          fi
+          for compose in $composes; do
             dir="$(dirname "$compose")"
             name="$(grep -Po '(?<=<!-- name: ).+(?= -->)' "$dir/README.md")"
             echo "$name,$dir" | jq -Rc 'split(",") | { name: .[0], dir: .[1] }'
-          done < <(find . -name 'compose.yml') | jq -sc | echo "composes=$(cat)" | tee -a "$GITHUB_OUTPUT"
+          done | echo "composes=$(jq -sc)" | tee -a "$GITHUB_OUTPUT"
 
   test:
     name: ${{ matrix.compose.name }}
