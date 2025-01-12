@@ -41,10 +41,11 @@
 
 3. 📝 Follow the instructions below
 
-   - [🌸 **Immich**](../immich)
-   - [🪐 **Misskey**](../misskey)
-   - [🐇 **Speedtest Tracker**](../speedtest-tracker)
-   - [⏱️ **Time Machine**](../timemachine)
+   - [🌸 Immich](../immich)
+   - [🪐 Misskey](../misskey)
+   - [🍦 Soft Serve](../soft-serve)
+   - [🐇 Speedtest Tracker](../speedtest-tracker)
+   - [⏱️ Time Machine](../timemachine)
 
 <br />
 

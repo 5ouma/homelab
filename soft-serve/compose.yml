@@ -1,0 +1,24 @@
+name: soft-serve
+
+services:
+  soft-serve:
+    container_name: soft-serve
+    image: charmcli/soft-serve:v0.8.2@sha256:1c4482c3838a2c99377be85c5df217a09dcfa775c1a2b35e51e2cc762a574653
+    environment:
+      SOFT_SERVE_INITIAL_ADMIN_KEYS: $SOFT_SERVE_INITIAL_ADMIN_KEYS
+      SOFT_SERVE_NAME: $SOFT_SERVE_NAME
+      SOFT_SERVE_SSH_PUBLIC_URL: ssh://$SOFT_SERVE_DOMAIN
+    volumes:
+      - soft-serve:/soft-serve
+    restart: always
+
+  cloudflare-tunnel:
+    container_name: soft-serve_cloudflare-tunnel
+    image: cloudflare/cloudflared:2025.1.0@sha256:3247f3ef49eda23244b8aa5583f82b7c3880b0d057e1172d0e818f5e678d9f27
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: $TUNNEL_TOKEN
+    restart: always
+
+volumes:
+  soft-serve:
