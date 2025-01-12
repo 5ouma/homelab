@@ -31,7 +31,7 @@
    git clone https://github.com/5ouma/homelab.git
    ```
 
-2. 🏔️ Copy the [`.env.tmpl`](../.env.tmpl) file to `.env` and Edit it
+2. 🏔️ Copy the [`.env.tmpl`](./.env.tmpl) file to `.env` and Edit it
 
    |          Name           |              Value              |
    | :---------------------: | :-----------------------------: |
@@ -41,11 +41,11 @@
 
 3. 📝 Follow the instructions below
 
-   - [🌸 Immich](../immich)
-   - [🪐 Misskey](../misskey)
-   - [🍦 Soft Serve](../soft-serve)
-   - [🐇 Speedtest Tracker](../speedtest-tracker)
-   - [⏱️ Time Machine](../timemachine)
+   - [🌸 Immich](./immich)
+   - [🪐 Misskey](./misskey)
+   - [🍦 Soft Serve](./soft-serve)
+   - [🐇 Speedtest Tracker](./speedtest-tracker)
+   - [⏱️ Time Machine](./timemachine)
 
 <br />
 
