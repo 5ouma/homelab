@@ -33,11 +33,5 @@
 3. 🐙 Import GitHub repositories as mirrors
 
    ```sh
-   domain=''
-   while read -r repo; do
-     name=$(echo "$repo" | cut -d, -f1)
-     url=$(echo "$repo" | cut -d, -f2)
-     description=$(echo "$repo" | cut -d, -f3)
-     ssh -n "$domain" repo import -m "$name" -d "$description" "$url"
-   done < <(gh repo list --source --json 'name,description,url' --jq '.[] | [.name,.url,.description] | @csv')
+   ./github-mirror git.example.com
    ```
