@@ -1,8 +1,8 @@
 name: soft-serve
 
 services:
-  soft-serve:
-    container_name: soft-serve
+  server:
+    container_name: soft-serve_server
     image: charmcli/soft-serve:v0.8.2@sha256:1c4482c3838a2c99377be85c5df217a09dcfa775c1a2b35e51e2cc762a574653
     environment:
       SOFT_SERVE_INITIAL_ADMIN_KEYS: $SOFT_SERVE_INITIAL_ADMIN_KEYS
