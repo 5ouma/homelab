@@ -55,6 +55,7 @@ jobs:
       run:
         working-directory: ${{ matrix.compose.dir }}
     strategy:
+      fail-fast: false
       matrix:
         compose: ${{ fromJson(needs.detect.outputs.composes) }}
 
