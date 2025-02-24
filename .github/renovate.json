@@ -8,6 +8,11 @@
         "ghcr.io/immich-app/immich-server",
         "ghcr.io/immich-app/immich-machine-learning"
       ]
+    },
+    {
+      "matchPackageNames": ["docker.io/linuxserver/speedtest-tracker"],
+      "matchUpdateTypes": ["digest"],
+      "automerge": true
     }
   ]
 }
