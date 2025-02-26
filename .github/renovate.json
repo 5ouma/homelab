@@ -10,7 +10,7 @@
       ]
     },
     {
-      "matchPackageNames": ["docker.io/linuxserver/speedtest-tracker"],
+      "matchPackageNames": ["docker.io/postgres", "docker.io/tensorchord/pgvecto-rs", "docker.io/linuxserver/speedtest-tracker"],
       "matchUpdateTypes": ["digest"],
       "automerge": true
     }
