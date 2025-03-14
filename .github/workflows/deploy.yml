@@ -26,7 +26,6 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script_stop: true
           script: |
             ${{ secrets.PRE_COMMAND }}
             git -C "${{ secrets.GIT_PATH }}" fetch
