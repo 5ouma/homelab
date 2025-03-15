@@ -12,6 +12,8 @@ on:
       - "**/compose.yml"
       - .github/workflows/test.yml
 
+permissions: {}
+
 jobs:
   detect:
     name: 🔍 Detect Compose Files

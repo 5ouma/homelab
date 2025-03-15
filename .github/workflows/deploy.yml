@@ -8,6 +8,8 @@ on:
       - "**/compose.yml"
       - .github/workflows/deploy.yml
 
+permissions: {}
+
 jobs:
   Deploy:
     runs-on: Ubuntu-Latest
