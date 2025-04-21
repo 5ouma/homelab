@@ -18,12 +18,15 @@ jobs:
   detect:
     name: 🔍 Detect Compose Files
     runs-on: Ubuntu-Latest
+    timeout-minutes: 1
     outputs:
       composes: ${{ steps.detect.outputs.composes }}
 
     steps:
       - name: 🚚 Checkout Repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
 
       - name: 🔄 Filter the Changed Files
         id: filter
@@ -55,6 +58,7 @@ jobs:
     defaults:
       run:
         working-directory: ${{ matrix.compose.dir }}
+    timeout-minutes: 3
     strategy:
       fail-fast: false
       matrix:
@@ -63,6 +67,8 @@ jobs:
     steps:
       - name: 🚚 Checkout Repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
 
       - name: ♻️ Copy the .env
         run: |
