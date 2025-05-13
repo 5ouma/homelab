@@ -39,11 +39,14 @@ jobs:
 
       - name: 📡 Collect the Compose Information
         id: detect
+        env:
+          TEST_CHANGED: ${{ steps.filter.outputs.test }}
+          CHANGED_COMPOSE_FILES: ${{ steps.filter.outputs.compose_files }}
         run: |
-          if ${{ steps.filter.outputs.test }}; then
+          if "$TEST_CHANGED"; then
             composes="$(find "$GITHUB_WORKSPACE" -name 'compose.yml')"
           else
-            composes='${{ steps.filter.outputs.compose_files }}'
+            composes="$CHANGED_COMPOSE_FILES"
           fi
           for compose in $composes; do
             dir="$(dirname "$compose")"
