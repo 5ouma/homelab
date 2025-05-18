@@ -30,8 +30,11 @@
    docker compose up -d
    ```
 
-3. 🐙 Import GitHub repositories as mirrors
+3. 🐙 Import GitHub repositories and Gists as mirrors
+
+   > [!NOTE]
+   > You need GitHub CLI and jq installed.
 
    ```sh
-   ./github-mirror git.example.com
+   ./scripts/mirror git.example.com
    ```

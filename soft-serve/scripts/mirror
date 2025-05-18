@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+gh auth status >/dev/null
+type jq >/dev/null
+
+domain="$1"
+ssh -n "$domain" info >/dev/null
+
+(
+  gh repo list --source --json='name,description,url,isPrivate' --jq='.[]'
+  gh api gists --jq='.[] | { name: .id, url: .git_pull_url, description: .description, isPrivate: .public | not }'
+) | while read -r repo; do
+  name="$(jq '.name' <<<"$repo")"
+  url="$(jq '.url' <<<"$repo")"
+  description="$(jq '.description' <<<"$repo")"
+  isPrivate="$(jq '.isPrivate' <<<"$repo")"
+
+  if (ssh -n "$domain" repo branch list "$name" &>/dev/null); then
+    echo "Skipped $name"
+    continue
+  fi
+
+  echo "Importing $name..."
+  if [[ "$description" != '""' ]]; then
+    ssh -fn "$domain" repo import "$name" "$url" -d="$description" -mp="$isPrivate"
+  else
+    ssh -fn "$domain" repo import "$name" "$url" -mp="$isPrivate"
+  fi
+done
