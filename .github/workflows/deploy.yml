@@ -32,7 +32,7 @@ jobs:
           script: |
             ${{ secrets.PRE_COMMAND }}
             git -C "${{ secrets.GIT_PATH }}" fetch
-            git -C "${{ secrets.GIT_PATH }}" reset --hard origin/main
+            git -C "${{ secrets.GIT_PATH }}" reset -q --hard origin/main
             while read -r compose; do
               docker compose -f "$compose" up -d --quiet-pull
             done < <(find "${{ secrets.GIT_PATH }}" -name 'compose.yml')
