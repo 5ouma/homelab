@@ -32,9 +32,17 @@
 
 3. 🐙 Import GitHub repositories and Gists as mirrors
 
-   > [!NOTE]
+   > [!IMPORTANT]
    > You need GitHub CLI and jq installed.
 
    ```sh
    ./scripts/mirror git.example.com
    ```
+
+   > [!NOTE]
+   > Soft Serve's SSH public key must be added to your GitHub account
+   > to pull private repositories.
+   >
+   > ```sh
+   > docker compose exec server bash -c 'cat /soft-serve/ssh/soft_serve_client_ed25519.pub'
+   > ```

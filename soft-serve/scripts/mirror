@@ -17,6 +17,10 @@ ssh -n "$domain" info >/dev/null
   description="$(jq '.description' <<<"$repo")"
   isPrivate="$(jq '.isPrivate' <<<"$repo")"
 
+  if ("$isPrivate"); then
+    url="${url/https:\/\/github.com\//git@github.com:}"
+  fi
+
   if (ssh -n "$domain" repo branch list "$name" &>/dev/null); then
     echo "Skipped $name"
     continue
