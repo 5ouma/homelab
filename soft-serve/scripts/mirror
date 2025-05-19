@@ -15,11 +15,11 @@ ssh -n "$domain" info >/dev/null
   gh api /gists --paginate \
     --jq='.[] | { name: .id, project: .files | keys[0], description: .description, url: .git_pull_url, private: .public | not }'
 ) | while read -r repo; do
-  name="$(jq '.name' <<<"$repo")"
-  project="$(jq '.project' <<<"$repo")"
-  description="$(jq '.description' <<<"$repo")"
-  url="$(jq '.url' <<<"$repo")"
-  private="$(jq '.private' <<<"$repo")"
+  name="$(jq -r '.name' <<<"$repo")"
+  project="$(jq -r '.project' <<<"$repo")"
+  description="$(jq -r '.description // empty' <<<"$repo")"
+  url="$(jq -r '.url' <<<"$repo")"
+  private="$(jq -r '.private' <<<"$repo")"
 
   if (ssh -n "$domain" repo branch list "$name" &>/dev/null); then
     echo "Skipped $project"
@@ -27,5 +27,5 @@ ssh -n "$domain" info >/dev/null
   fi
 
   echo "Importing $project..."
-  ssh -fn "$domain" repo import "$name" "$url" -n="$project" "$([ "$description" != 'null' ] && echo "-d=$description")" -mp="$private"
+  ssh -fn "$domain" repo import "$name" "$url" -n="$project" "${description:+-d=\""$description"\"}" -mp="$private"
 done
