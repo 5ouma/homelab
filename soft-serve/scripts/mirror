@@ -9,27 +9,32 @@ domain="$1"
 ssh -n "$domain" info >/dev/null
 
 (
-  gh repo list --source --json='name,description,url,isPrivate' --jq='.[]'
-  gh api gists --jq='.[] | { name: .id, url: .git_pull_url, description: .description, isPrivate: .public | not }'
+  gh api /user/repos --paginate \
+    --jq='.[] | { name: .full_name, project: .full_name, description: .description, url: .clone_url, privateUrl: .ssh_url, private: .private, fork: .fork }'
+  gh api /gists --paginate \
+    --jq='.[] | { name: .id, project: .files | keys[0], description: .description, url: .git_pull_url, privateUrl: .git_pull_url, private: .public | not, fork: false }'
 ) | while read -r repo; do
   name="$(jq '.name' <<<"$repo")"
-  url="$(jq '.url' <<<"$repo")"
+  project="$(jq '.project' <<<"$repo")"
   description="$(jq '.description' <<<"$repo")"
-  isPrivate="$(jq '.isPrivate' <<<"$repo")"
+  private="$(jq '.private' <<<"$repo")"
+  fork="$(jq '.fork' <<<"$repo")"
 
-  if ("$isPrivate"); then
-    url="${url/https:\/\/github.com\//git@github.com:}"
+  if ("$private"); then
+    url="$(jq '.privateUrl' <<<"$repo")"
+  else
+    url="$(jq '.url' <<<"$repo")"
   fi
 
-  if (ssh -n "$domain" repo branch list "$name" &>/dev/null); then
+  if ("$fork" || ssh -n "$domain" repo branch list "$name" &>/dev/null); then
     echo "Skipped $name"
     continue
   fi
 
   echo "Importing $name..."
-  if [[ "$description" != '""' ]]; then
-    ssh -fn "$domain" repo import "$name" "$url" -d="$description" -mp="$isPrivate"
+  if [[ "$description" == 'null' ]]; then
+    ssh -fn "$domain" repo import "$name" "$url" -n="$project" -mp="$private"
   else
-    ssh -fn "$domain" repo import "$name" "$url" -mp="$isPrivate"
+    ssh -fn "$domain" repo import "$name" "$url" -n="$project" -d="$description" -mp="$private"
   fi
 done
