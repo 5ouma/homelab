@@ -34,7 +34,7 @@ services:
 
   database:
     container_name: immich_database
-    image: docker.io/tensorchord/pgvecto-rs:pg16-v0.4.0@sha256:8755adf883fa592781049ce3065f263a361b5c7e40d7e09f722ad42c3f334ae4
+    image: ghcr.io/immich-app/postgres:16-vectorchord0.3.0-pgvectors0.3.0@sha256:513890b7b5a5b73d88e8bb1fd9c0d44e01cba702ec8257ddea27a9303cf2ab07
     environment:
       POSTGRES_HOST: $DB_HOSTNAME
       POSTGRES_DB: $DB_DATABASE_NAME
@@ -43,8 +43,6 @@ services:
     volumes:
       - database:/var/lib/postgresql/data
       - backup:/tmp/backup
-    healthcheck:
-      test: pg_isready -d '$DB_DATABASE_NAME' -U '$DB_USERNAME' || exit 1
     labels:
       docker-volume-backup.archive-pre: pg_dump -d '$DB_DATABASE_NAME' -U '$DB_USERNAME' -f /tmp/backup/immich.sql
     restart: always
