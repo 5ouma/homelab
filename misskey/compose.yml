@@ -21,7 +21,7 @@ services:
 
   database:
     container_name: misskey_database
-    image: docker.io/postgres:16.9@sha256:fa7ffa8e8903cfc6be2d60499ad6c6fa8c0117304afe2de5368c75ae7a11d157
+    image: docker.io/postgres:16.9@sha256:2e7c735993bf456ee1977c40dd82e66875e25f7ee9dfe1e5118fb24887104d85
     environment:
       POSTGRES_HOST: $DB_HOSTNAME
       POSTGRES_DB: $DB_DATABASE_NAME
