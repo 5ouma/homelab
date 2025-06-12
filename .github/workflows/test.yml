@@ -28,31 +28,11 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: 🔄 Filter the Changed Files
-        id: filter
-        uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
-        with:
-          filters: |
-            compose: "**/compose.yml"
-            test: .github/workflows/test.yml
-          list-files: shell
-
-      - name: 📡 Collect the Compose Information
+      - name: 🔍 Detect Compose Files
         id: detect
-        env:
-          TEST_CHANGED: ${{ steps.filter.outputs.test }}
-          CHANGED_COMPOSE_FILES: ${{ steps.filter.outputs.compose_files }}
-        run: |
-          if "$TEST_CHANGED"; then
-            composes="$(find "$GITHUB_WORKSPACE" -name 'compose.yml')"
-          else
-            composes="$CHANGED_COMPOSE_FILES"
-          fi
-          for compose in $composes; do
-            dir="$(dirname "$compose")"
-            name="$(grep -Po '(?<=<!-- name: ).+(?= -->)' "$dir/README.md")"
-            echo "$name,$dir" | jq -Rc 'split(",") | { name: .[0], dir: .[1] }'
-          done | echo "composes=$(jq -sc)" | tee -a "$GITHUB_OUTPUT"
+        uses: ./.github/actions/detect-compose
+        with:
+          workflow: .github/workflows/test.yml
 
   test:
     name: ${{ matrix.compose.name }}
