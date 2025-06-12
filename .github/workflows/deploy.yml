@@ -11,9 +11,60 @@ on:
 permissions: {}
 
 jobs:
-  Deploy:
+  detect:
+    name: 🔍 Detect Compose Files Changed
+    runs-on: Ubuntu-Latest
+    timeout-minutes: 1
+    outputs:
+      composes: ${{ steps.detect.outputs.composes }}
+
+    steps:
+      - name: 🚚 Checkout Repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: 🔍 Detect Compose Files
+        id: detect
+        uses: ./.github/actions/detect-compose
+        with:
+          workflow: .github/workflows/deploy.yml
+
+  fetch:
+    name: 🔄 Fetch Repository
+    runs-on: Ubuntu-Latest
+    timeout-minutes: 1
+
+    steps:
+      - name: 🛣️ Setup Tailscale
+        uses: tailscale/github-action@6986d2c82a91fbac2949fe01f5bab95cf21b5102 # v3.2.2
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_CLIENT_SECRET }}
+          tags: "tag:actions"
+
+      - name: 🔐 SSH to Fetch
+        uses: appleboy/ssh-action@2ead5e36573f08b82fbfce1504f1a4b05a647c6f # v1.2.2
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            git -C "$GIT_PATH" fetch
+            git -C "$GIT_PATH" reset -q --hard origin/main
+          envs: GIT_PATH
+        env:
+          GIT_PATH: ${{ secrets.GIT_PATH }}
+
+  deploy:
+    name: ${{ matrix.compose.name }}
+    needs: [detect, fetch]
     runs-on: Ubuntu-Latest
     timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        compose: ${{ fromJson(needs.detect.outputs.composes) }}
 
     steps:
       - name: 🛣️ Setup Tailscale
@@ -29,14 +80,31 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: docker compose -f "$COMPOSE_DIR/compose.yml" up -d --quiet-pull
+          envs: COMPOSE_DIR
+        env:
+          COMPOSE_DIR: ${{ secrets.GIT_PATH }}/${{ matrix.compose.dir }}
+
+  cleanup:
+    name: 🧹 Cleanup Docker Images and Volumes
+    needs: deploy
+    runs-on: Ubuntu-Latest
+    timeout-minutes: 1
+
+    steps:
+      - name: 🛣️ Setup Tailscale
+        uses: tailscale/github-action@6986d2c82a91fbac2949fe01f5bab95cf21b5102 # v3.2.2
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_CLIENT_SECRET }}
+          tags: "tag:actions"
+
+      - name: 🔐 SSH to Cleanup
+        uses: appleboy/ssh-action@2ead5e36573f08b82fbfce1504f1a4b05a647c6f # v1.2.2
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            git -C "$GIT_PATH" fetch
-            git -C "$GIT_PATH" reset -q --hard origin/main
-            while read -r compose; do
-              docker compose -f "$compose" up -d --quiet-pull
-            done < <(find "$GIT_PATH" -name 'compose.yml')
             docker image prune -af
             docker volume prune -af
-          envs: GIT_PATH
-        env:
-          GIT_PATH: ${{ secrets.GIT_PATH }}
