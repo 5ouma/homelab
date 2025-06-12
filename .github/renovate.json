@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>5ouma/utils#v0.3.0"],
+  "extends": ["github>5ouma/utils#v0.4.0"],
   "packageRules": [
     {
       "groupName": "Immich",
