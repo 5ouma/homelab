@@ -16,11 +16,11 @@ permissions: {}
 
 jobs:
   detect:
-    name: 🔍 Detect Compose Files
+    name: 🔍 Detect Changed Compose Files
     runs-on: Ubuntu-Latest
     timeout-minutes: 1
     outputs:
-      composes: ${{ steps.detect.outputs.composes }}
+      compose_files: ${{ steps.detect.outputs.compose_files }}
 
     steps:
       - name: 🚚 Checkout Repository
@@ -28,11 +28,11 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: 🔍 Detect Compose Files
+      - name: 🔍 Detect changed compose files
         id: detect
-        uses: ./.github/actions/detect-compose
+        uses: ./.github/actions/detect-changed-compose
         with:
-          workflow: .github/workflows/test.yml
+          workflow_file: .github/workflows/test.yml
 
   test:
     name: ${{ matrix.compose.name }}
@@ -45,19 +45,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        compose: ${{ fromJson(needs.detect.outputs.composes) }}
+        compose: ${{ fromJson(needs.detect.outputs.compose_files) }}
 
     steps:
-      - name: 🚚 Checkout Repository
+      - name: 🚚 Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
 
-      - name: ♻️ Copy the .env
+      - name: ♻️ Copy .env
         run: |
           for dir in "$PWD" "$GITHUB_WORKSPACE"; do
             sed -e 's/=$/=./g' "$dir/.env.tmpl" >"$dir/.env"
           done
 
-      - name: 🐳 Start the Containers
+      - name: 🐳 Start containers
         run: docker compose up -d --quiet-pull

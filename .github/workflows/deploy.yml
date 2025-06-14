@@ -12,11 +12,11 @@ permissions: {}
 
 jobs:
   detect:
-    name: 🔍 Detect Compose Files Changed
+    name: 🔍 Detect Changed Compose Files
     runs-on: Ubuntu-Latest
     timeout-minutes: 1
     outputs:
-      composes: ${{ steps.detect.outputs.composes }}
+      compose_files: ${{ steps.detect.outputs.compose_files }}
 
     steps:
       - name: 🚚 Checkout Repository
@@ -24,11 +24,11 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: 🔍 Detect Compose Files
+      - name: 🔍 Detect changed compose files
         id: detect
-        uses: ./.github/actions/detect-compose
+        uses: ./.github/actions/detect-changed-compose
         with:
-          workflow: .github/workflows/deploy.yml
+          workflow_file: .github/workflows/deploy.yml
 
   fetch:
     name: 🔄 Fetch Repository
@@ -43,7 +43,7 @@ jobs:
           oauth-secret: ${{ secrets.TS_OAUTH_CLIENT_SECRET }}
           tags: "tag:actions"
 
-      - name: 🔐 SSH to Fetch
+      - name: 🔐 SSH to fetch
         uses: appleboy/ssh-action@2ead5e36573f08b82fbfce1504f1a4b05a647c6f # v1.2.2
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -64,7 +64,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        compose: ${{ fromJson(needs.detect.outputs.composes) }}
+        compose: ${{ fromJson(needs.detect.outputs.compose_files) }}
 
     steps:
       - name: 🛣️ Setup Tailscale
@@ -74,7 +74,7 @@ jobs:
           oauth-secret: ${{ secrets.TS_OAUTH_CLIENT_SECRET }}
           tags: "tag:actions"
 
-      - name: 🔐 SSH to Deploy
+      - name: 🔐 SSH to deploy
         uses: appleboy/ssh-action@2ead5e36573f08b82fbfce1504f1a4b05a647c6f # v1.2.2
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -99,7 +99,7 @@ jobs:
           oauth-secret: ${{ secrets.TS_OAUTH_CLIENT_SECRET }}
           tags: "tag:actions"
 
-      - name: 🔐 SSH to Cleanup
+      - name: 🔐 SSH to cleanup
         uses: appleboy/ssh-action@2ead5e36573f08b82fbfce1504f1a4b05a647c6f # v1.2.2
         with:
           host: ${{ secrets.SSH_HOST }}
