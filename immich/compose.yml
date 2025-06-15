@@ -18,6 +18,8 @@ services:
         target: /etc/localtime
       - source: immich_config
         target: /config/immich.json
+    ports:
+      - 2283:2283
     depends_on:
       database:
         condition: service_healthy
