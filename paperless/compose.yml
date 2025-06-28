@@ -12,6 +12,7 @@ services:
       PAPERLESS_DBPASS: $DB_PASSWORD
       PAPERLESS_FILENAME_FORMAT: "{{ created_year }}/{{ created_month }}-{{ created_day }}/{{ title }}"
       PAPERLESS_SECRET_KEY: $DB_PASSWORD
+      PAPERLESS_URL: $PAPERLESS_URL
       PAPERLESS_OCR_LANGUAGE: jpn+eng
       PAPERLESS_OCR_LANGUAGES: jpn
     volumes:
