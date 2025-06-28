@@ -16,8 +16,6 @@ services:
       PAPERLESS_OCR_LANGUAGES: jpn
     volumes:
       - ./media:/usr/src/paperless/media
-    ports:
-      - 8000:8000
     depends_on:
       database:
         condition: service_healthy
