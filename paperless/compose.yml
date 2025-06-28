@@ -1,0 +1,113 @@
+name: paperless
+
+services:
+  webserver:
+    container_name: paperless_webserver
+    image: ghcr.io/paperless-ngx/paperless-ngx:2.17.1@sha256:ab72a0ab42a792228cdbe83342b99a48acd49f7890ae54b1ae8e04401fba24ee
+    environment:
+      PAPERLESS_REDIS: redis://redis:6379
+      PAPERLESS_DBHOST: $DB_HOSTNAME
+      PAPERLESS_DBNAME: $DB_DATABASE_NAME
+      PAPERLESS_DBUSER: $DB_USERNAME
+      PAPERLESS_DBPASS: $DB_PASSWORD
+      PAPERLESS_FILENAME_FORMAT: "{{ created_year }}/{{ created_month }}-{{ created_day }}/{{ title }}"
+      PAPERLESS_SECRET_KEY: $DB_PASSWORD
+      PAPERLESS_OCR_LANGUAGE: jpn+eng
+      PAPERLESS_OCR_LANGUAGES: jpn
+    volumes:
+      - ./media:/usr/src/paperless/media
+    ports:
+      - 8000:8000
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: always
+
+  database:
+    container_name: paperless_database
+    image: docker.io/postgres:16.9@sha256:2e7c735993bf456ee1977c40dd82e66875e25f7ee9dfe1e5118fb24887104d85
+    environment:
+      POSTGRES_HOST: $DB_HOSTNAME
+      POSTGRES_DB: $DB_DATABASE_NAME
+      POSTGRES_USER: $DB_USERNAME
+      POSTGRES_PASSWORD: $DB_PASSWORD
+    volumes:
+      - database:/var/lib/postgresql/data
+      - backup:/tmp/backup
+    healthcheck:
+      test: pg_isready -d '$DB_DATABASE_NAME' -U '$DB_USERNAME' || exit 1
+    labels:
+      docker-volume-backup.archive-pre: pg_dump -d '$DB_DATABASE_NAME' -U '$DB_USERNAME' -f /tmp/backup/paperless.sql
+    restart: always
+
+  redis:
+    container_name: paperless_redis
+    image: docker.io/redis:7.2.5-alpine3.19@sha256:8f157725f8eee31e65a8d4765f1f986d76aedc1a0503345dfb63a2b1b5a441ee
+    healthcheck:
+      test: redis-cli ping || exit 1
+    restart: always
+
+  backup-database: &backup
+    container_name: paperless_backup-database
+    image: docker.io/offen/docker-volume-backup:v2.43.4@sha256:bdb9b5dffee440a7d21b1b210cd704fd1696a2c29d7cbc6f0f3b13b77264a26a
+    environment:
+      BACKUP_CRON_EXPRESSION: 0 5 * * *
+      BACKUP_FILENAME: paperless_database_%Y%m%d.{{ .Extension }}
+      BACKUP_SKIP_BACKENDS_FROM_PRUNE: s3
+      AWS_S3_BUCKET_NAME: $R2_BUCKET_NAME
+      AWS_S3_PATH: $R2_PATH
+      BACKUP_ARCHIVE: /archive/database
+      BACKUP_RETENTION_DAYS: 7
+      GPG_PASSPHRASE: $DB_PASSWORD
+    env_file:
+      - path: ../.env
+        required: true
+    volumes:
+      - backup:/backup:ro
+      - $BACKUP_DIR/database:/archive/database
+    configs:
+      - source: docker-socket
+        target: /var/run/docker.sock
+      - source: timezone
+        target: /etc/localtime
+    depends_on:
+      database:
+        condition: service_healthy
+    restart: always
+
+  backup-media:
+    <<: *backup
+    container_name: paperless_backup-media
+    environment:
+      BACKUP_CRON_EXPRESSION: 0 5 * * *
+      BACKUP_FILENAME: paperless_media_%Y%m%d.{{ .Extension }}
+      BACKUP_SKIP_BACKENDS_FROM_PRUNE: s3
+      AWS_S3_BUCKET_NAME: $R2_BUCKET_NAME
+      AWS_S3_PATH: $R2_PATH
+      BACKUP_SOURCES: /media
+      BACKUP_ARCHIVE: /archive/media
+      BACKUP_RETENTION_DAYS: 7
+      GPG_PASSPHRASE: $DB_PASSWORD
+    volumes:
+      - ./media:/media:ro
+      - $BACKUP_DIR/media:/archive/media
+
+  cloudflare-tunnel:
+    container_name: paperless_cloudflare-tunnel
+    image: docker.io/cloudflare/cloudflared:2025.6.1@sha256:175aee7e8b548f983f7e3b79ace217676d2a79255a73c074dacb491e59603679
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: $TUNNEL_TOKEN
+    restart: always
+
+volumes:
+  database:
+  backup:
+
+configs:
+  docker-socket:
+    file: /var/run/docker.sock
+  timezone:
+    file: /etc/localtime

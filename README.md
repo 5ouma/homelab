@@ -44,6 +44,7 @@
 
    - [🌸 Immich](./immich)
    - [🪐 Misskey](./misskey)
+   - [🍃 Paperless](./paperless)
    - [🍦 Soft Serve](./soft-serve)
    - [🐇 Speedtest Tracker](./speedtest-tracker)
    - [⏱️ Time Machine](./timemachine)
