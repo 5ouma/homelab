@@ -13,13 +13,12 @@
 
 1. 🏔️ Copy the [`.env.tmpl`](./.env.tmpl) file to `.env` and Edit it
 
-   |       Name       |           Value           |
-   | :--------------: | :-----------------------: |
-   |    `APP_KEY`     |     [Encryption Key]      |
-   |  `DB_PASSWORD`   | Random Database Password  |
-   | `R2_BUCKET_NAME` | Cloudflare R2 Bucket Name |
-   |   `BACKUP_DIR`   |  Local Backup Directory   |
-   |  `TUNNEL_TOKEN`  | [Cloudflare Tunnel Token] |
+   |      Name      |           Value           |
+   | :------------: | :-----------------------: |
+   |   `APP_KEY`    |     [Encryption Key]      |
+   | `DB_PASSWORD`  | Random Database Password  |
+   |  `BACKUP_DIR`  |  Local Backup Directory   |
+   | `TUNNEL_TOKEN` | [Cloudflare Tunnel Token] |
 
    [Encryption Key]: https://speedtest-tracker.dev
    [Cloudflare Tunnel Token]: https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/
