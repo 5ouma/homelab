@@ -93,6 +93,7 @@ services:
       BACKUP_ARCHIVE: /archive/library
       BACKUP_RETENTION_DAYS: 5
       GPG_PASSPHRASE: $DB_PASSWORD
+    env_file: []
     volumes:
       - ./library:/library:ro
       - $BACKUP_DIR/library:/archive/library
