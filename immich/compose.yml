@@ -61,7 +61,7 @@ services:
     image: docker.io/offen/docker-volume-backup:v2.43.4@sha256:bdb9b5dffee440a7d21b1b210cd704fd1696a2c29d7cbc6f0f3b13b77264a26a
     environment:
       BACKUP_CRON_EXPRESSION: 0 5 * * *
-      BACKUP_FILENAME: immich_database_%Y%m%d.{{ .Extension }}
+      BACKUP_FILENAME: immich_%Y%m%d.{{ .Extension }}
       BACKUP_SKIP_BACKENDS_FROM_PRUNE: s3
       AWS_S3_PATH: $R2_PATH
       BACKUP_ARCHIVE: /archive/database
@@ -88,7 +88,7 @@ services:
     container_name: immich_backup-library
     environment:
       BACKUP_CRON_EXPRESSION: 0 5 * * *
-      BACKUP_FILENAME: immich_library_%Y%m%d.{{ .Extension }}
+      BACKUP_FILENAME: immich_%Y%m%d.{{ .Extension }}
       BACKUP_SOURCES: /library
       BACKUP_ARCHIVE: /archive/library
       BACKUP_RETENTION_DAYS: 5

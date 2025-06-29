@@ -53,9 +53,9 @@ services:
     image: docker.io/offen/docker-volume-backup:v2.43.4@sha256:bdb9b5dffee440a7d21b1b210cd704fd1696a2c29d7cbc6f0f3b13b77264a26a
     environment:
       BACKUP_CRON_EXPRESSION: 0 5 * * *
-      BACKUP_FILENAME: paperless_database_%Y%m%d.{{ .Extension }}
+      BACKUP_FILENAME: paperless_%Y%m%d.{{ .Extension }}
       BACKUP_SKIP_BACKENDS_FROM_PRUNE: s3
-      AWS_S3_PATH: $R2_PATH
+      AWS_S3_PATH: $R2_PATH/database
       BACKUP_ARCHIVE: /archive/database
       BACKUP_RETENTION_DAYS: 7
       GPG_PASSPHRASE: $DB_PASSWORD
@@ -80,9 +80,9 @@ services:
     container_name: paperless_backup-media
     environment:
       BACKUP_CRON_EXPRESSION: 0 5 * * *
-      BACKUP_FILENAME: paperless_media_%Y%m%d.{{ .Extension }}
+      BACKUP_FILENAME: paperless_%Y%m%d.{{ .Extension }}
       BACKUP_SKIP_BACKENDS_FROM_PRUNE: s3
-      AWS_S3_PATH: $R2_PATH
+      AWS_S3_PATH: $R2_PATH/media
       BACKUP_SOURCES: /media
       BACKUP_ARCHIVE: /archive/media
       BACKUP_RETENTION_DAYS: 7
