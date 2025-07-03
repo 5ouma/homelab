@@ -11,12 +11,19 @@ services:
       DB_USERNAME: $DB_USERNAME
       DB_PASSWORD: $DB_PASSWORD
     volumes:
-      - ./library:/usr/src/app/upload
+      - type: bind
+        source: ./library
+        target: &library /usr/src/app/upload
     configs:
       - source: timezone
         target: /etc/localtime
       - source: immich_config
         target: *immich_config
+    post_start:
+      - command: bash -c '
+          mkdir -p upload thumbs encoded-video profile backups &&
+          touch {upload,thumbs,encoded-video,profile,backups}/.immich'
+        working_dir: *library
     ports:
       - 2283:2283
     depends_on:
@@ -90,13 +97,16 @@ services:
     environment:
       BACKUP_CRON_EXPRESSION: 0 5 * * *
       BACKUP_FILENAME: immich_%Y%m%d.{{ .Extension }}
-      BACKUP_SOURCES: /library
+      BACKUP_SOURCES: &backup_library_source /library
       BACKUP_ARCHIVE: &backup_library_archive /archive/library
       BACKUP_RETENTION_DAYS: 5
       GPG_PASSPHRASE: $DB_PASSWORD
     env_file: []
     volumes:
-      - ./library:/library:ro
+      - type: bind
+        source: ./library/library
+        target: *backup_library_source
+        read_only: true
       - type: bind
         source: $BACKUP_DIR/library
         target: *backup_library_archive

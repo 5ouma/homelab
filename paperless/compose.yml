@@ -16,7 +16,7 @@ services:
       PAPERLESS_OCR_LANGUAGE: jpn+eng
       PAPERLESS_OCR_LANGUAGES: jpn
     volumes:
-      - ./media:/usr/src/paperless/media/documents/originals
+      - ./media:/usr/src/paperless/media
     depends_on:
       database:
         condition: service_healthy
@@ -85,12 +85,15 @@ services:
       BACKUP_FILENAME: paperless_%Y%m%d.{{ .Extension }}
       BACKUP_SKIP_BACKENDS_FROM_PRUNE: s3
       AWS_S3_PATH: $R2_PATH/media
-      BACKUP_SOURCES: /media
+      BACKUP_SOURCES: &backup_media_source /media
       BACKUP_ARCHIVE: &backup_media_archive /archive/media
       BACKUP_RETENTION_DAYS: 7
       GPG_PASSPHRASE: $DB_PASSWORD
     volumes:
-      - ./media:/media:ro
+      - type: bind
+        source: ./media/documents/originals
+        target: *backup_media_source
+        read_only: true
       - type: bind
         source: $BACKUP_DIR/media
         target: *backup_media_archive
