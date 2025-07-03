@@ -28,3 +28,12 @@ searchable online archive**
    ```sh
    docker compose up -d
    ```
+
+<br />
+
+## ⚙️ Regenerate Assets
+
+```sh
+docker compose exec webserver bash -c 'document_thumbnails'
+docker compose exec webserver bash -c 'document_archiver --overwrite'
+```

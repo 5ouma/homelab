@@ -16,7 +16,7 @@ services:
       PAPERLESS_OCR_LANGUAGE: jpn+eng
       PAPERLESS_OCR_LANGUAGES: jpn
     volumes:
-      - ./media:/usr/src/paperless/media
+      - ./media:/usr/src/paperless/media/documents/originals
     depends_on:
       database:
         condition: service_healthy

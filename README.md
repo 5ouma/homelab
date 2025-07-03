@@ -51,7 +51,7 @@
 
 <br />
 
-## 💾 Restoring Data
+## 💾 Restore Data
 
 1. 🗝️ Decrypt the Data
 
