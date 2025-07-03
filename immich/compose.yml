@@ -5,7 +5,6 @@ services:
     container_name: immich_server
     image: ghcr.io/immich-app/immich-server:v1.135.3@sha256:df5bbf4e29eff4688063a005708f8b96f13073200b4a7378f7661568459b31e9
     environment:
-      UPLOAD_LOCATION: ./library
       IMMICH_CONFIG_FILE: /config/immich.json
       DB_HOSTNAME: $DB_HOSTNAME
       DB_DATABASE_NAME: $DB_DATABASE_NAME
