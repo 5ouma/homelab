@@ -56,7 +56,7 @@ services:
       BACKUP_FILENAME: paperless_%Y%m%d.{{ .Extension }}
       BACKUP_SKIP_BACKENDS_FROM_PRUNE: s3
       AWS_S3_PATH: $R2_PATH/database
-      BACKUP_ARCHIVE: /archive/database
+      BACKUP_ARCHIVE: &backup_database_archive /archive/database
       BACKUP_RETENTION_DAYS: 7
       GPG_PASSPHRASE: $DB_PASSWORD
     env_file:
@@ -64,7 +64,9 @@ services:
         required: true
     volumes:
       - backup:/backup:ro
-      - $BACKUP_DIR/database:/archive/database
+      - type: bind
+        source: $BACKUP_DIR/database
+        target: *backup_database_archive
     configs:
       - source: docker-socket
         target: /var/run/docker.sock
@@ -84,12 +86,14 @@ services:
       BACKUP_SKIP_BACKENDS_FROM_PRUNE: s3
       AWS_S3_PATH: $R2_PATH/media
       BACKUP_SOURCES: /media
-      BACKUP_ARCHIVE: /archive/media
+      BACKUP_ARCHIVE: &backup_media_archive /archive/media
       BACKUP_RETENTION_DAYS: 7
       GPG_PASSPHRASE: $DB_PASSWORD
     volumes:
       - ./media:/media:ro
-      - $BACKUP_DIR/media:/archive/media
+      - type: bind
+        source: $BACKUP_DIR/media
+        target: *backup_media_archive
 
   cloudflare-tunnel:
     container_name: paperless_cloudflare-tunnel

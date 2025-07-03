@@ -5,7 +5,7 @@ services:
     container_name: immich_server
     image: ghcr.io/immich-app/immich-server:v1.135.3@sha256:df5bbf4e29eff4688063a005708f8b96f13073200b4a7378f7661568459b31e9
     environment:
-      IMMICH_CONFIG_FILE: /config/immich.json
+      IMMICH_CONFIG_FILE: &immich_config /config/immich.json
       DB_HOSTNAME: $DB_HOSTNAME
       DB_DATABASE_NAME: $DB_DATABASE_NAME
       DB_USERNAME: $DB_USERNAME
@@ -16,7 +16,7 @@ services:
       - source: timezone
         target: /etc/localtime
       - source: immich_config
-        target: /config/immich.json
+        target: *immich_config
     ports:
       - 2283:2283
     depends_on:
@@ -63,7 +63,7 @@ services:
       BACKUP_FILENAME: immich_%Y%m%d.{{ .Extension }}
       BACKUP_SKIP_BACKENDS_FROM_PRUNE: s3
       AWS_S3_PATH: $R2_PATH
-      BACKUP_ARCHIVE: /archive/database
+      BACKUP_ARCHIVE: &backup_database_archive /archive/database
       BACKUP_RETENTION_DAYS: 7
       GPG_PASSPHRASE: $DB_PASSWORD
     env_file:
@@ -71,7 +71,9 @@ services:
         required: true
     volumes:
       - backup:/backup:ro
-      - $BACKUP_DIR/database:/archive/database
+      - type: bind
+        source: $BACKUP_DIR/database
+        target: *backup_database_archive
     configs:
       - source: docker-socket
         target: /var/run/docker.sock
@@ -89,13 +91,15 @@ services:
       BACKUP_CRON_EXPRESSION: 0 5 * * *
       BACKUP_FILENAME: immich_%Y%m%d.{{ .Extension }}
       BACKUP_SOURCES: /library
-      BACKUP_ARCHIVE: /archive/library
+      BACKUP_ARCHIVE: &backup_library_archive /archive/library
       BACKUP_RETENTION_DAYS: 5
       GPG_PASSPHRASE: $DB_PASSWORD
     env_file: []
     volumes:
       - ./library:/library:ro
-      - $BACKUP_DIR/library:/archive/library
+      - type: bind
+        source: $BACKUP_DIR/library
+        target: *backup_library_archive
 
   cloudflare-tunnel:
     container_name: immich_cloudflare-tunnel
