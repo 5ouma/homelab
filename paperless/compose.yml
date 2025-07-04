@@ -25,7 +25,7 @@ services:
     restart: always
 
   database:
-    container_name: paperless_database
+    container_name: &paperless_database paperless_database
     image: docker.io/postgres:16.9@sha256:918e8e72b35b5370901965ce3da5a355c3537cb5e10c38e82c2b6f174b758334
     environment:
       POSTGRES_HOST: $DB_HOSTNAME
@@ -38,6 +38,7 @@ services:
     healthcheck:
       test: pg_isready -d '$DB_DATABASE_NAME' -U '$DB_USERNAME' || exit 1
     labels:
+      docker-volume-backup.exec-label: *paperless_database
       docker-volume-backup.archive-pre: pg_dump -d '$DB_DATABASE_NAME' -U '$DB_USERNAME' -f /tmp/backup/paperless.sql
     restart: always
 
@@ -59,6 +60,7 @@ services:
       BACKUP_ARCHIVE: &backup_database_archive /archive/database
       BACKUP_RETENTION_DAYS: 7
       GPG_PASSPHRASE: $DB_PASSWORD
+      EXEC_LABEL: *paperless_database
     env_file:
       - path: ../.env
         required: true
@@ -85,6 +87,7 @@ services:
       AWS_S3_PATH: $R2_PATH/media
       BACKUP_SOURCES: &backup_media_source /media
       BACKUP_ARCHIVE: &backup_media_archive /archive/media
+      EXEC_LABEL: none
     volumes:
       - type: bind
         source: ./media/documents/originals
