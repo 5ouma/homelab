@@ -7,6 +7,7 @@ on:
     paths:
       - "**/compose.yml"
       - .github/workflows/test.yml
+      - .env.tmpl
   pull_request:
     paths:
       - "**/compose.yml"
@@ -32,7 +33,7 @@ jobs:
         id: detect
         uses: ./.github/actions/detect-changed-compose
         with:
-          workflow_file: .github/workflows/test.yml
+          workflow_file: "[.github/workflows/test.yml, .env.tmpl]"
 
   test:
     name: ${{ matrix.compose.name }}

@@ -7,6 +7,7 @@ on:
     paths:
       - "**/compose.yml"
       - .github/workflows/deploy.yml
+      - .env.tmpl
 
 permissions: {}
 
@@ -28,7 +29,7 @@ jobs:
         id: detect
         uses: ./.github/actions/detect-changed-compose
         with:
-          workflow_file: .github/workflows/deploy.yml
+          workflow_file: "[.github/workflows/deploy.yml, .env.tmpl]"
 
   fetch:
     name: 🔄 Fetch Repository
