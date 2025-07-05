@@ -34,11 +34,14 @@
 
 2. 🏔️ Copy the [`.env.tmpl`](./.env.tmpl) file to `.env` and Edit it
 
-   |          Name           |              Value              |
-   | :---------------------: | :-----------------------------: |
-   |   `AWS_ACCESS_KEY_ID`   |   Cloudflare R2 Access Key ID   |
-   | `AWS_SECRET_ACCESS_KEY` | Cloudflare R2 Secret Access Key |
-   |     `AWS_ENDPOINT`      |  Cloudflare R2 Endpoint Domain  |
+   |          Name           |                  Value                   |
+   | :---------------------: | :--------------------------------------: |
+   |   `AWS_ACCESS_KEY_ID`   |       Cloudflare R2 Access Key ID        |
+   | `AWS_SECRET_ACCESS_KEY` |     Cloudflare R2 Secret Access Key      |
+   |     `AWS_ENDPOINT`      |      Cloudflare R2 Endpoint Domain       |
+   |   `NOTIFICATION_URLS`   | Notification URLs of [Shoutrrr Services] |
+
+   [Shoutrrr Services]: https://containrrr.dev/shoutrrr/dev/services/overview
 
 3. 📝 Follow the instructions below
 
