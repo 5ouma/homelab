@@ -69,10 +69,9 @@ services:
     environment: &backup_environment
       BACKUP_CRON_EXPRESSION: 0 5 * * *
       BACKUP_FILENAME: immich_%Y%m%d.{{ .Extension }}
-      BACKUP_SKIP_BACKENDS_FROM_PRUNE: s3
       AWS_S3_PATH: $R2_PATH
       BACKUP_ARCHIVE: &backup_database_archive /archive/database
-      BACKUP_RETENTION_DAYS: 7
+      BACKUP_RETENTION_DAYS: 14
       GPG_PASSPHRASE: $DB_PASSWORD
       EXEC_LABEL: *immich_database
     env_file:
@@ -100,7 +99,6 @@ services:
       <<: *backup_environment
       BACKUP_SOURCES: /library
       BACKUP_ARCHIVE: &backup_library_archive /archive/library
-      BACKUP_RETENTION_DAYS: 5
       EXEC_LABEL: none
     env_file: []
     volumes:

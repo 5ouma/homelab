@@ -44,9 +44,8 @@ services:
     environment:
       BACKUP_CRON_EXPRESSION: 0 5 * * *
       BACKUP_FILENAME: speedtest-tracker_%Y%m%d.{{ .Extension }}
-      BACKUP_SKIP_BACKENDS_FROM_PRUNE: s3
       AWS_S3_PATH: $R2_PATH
-      BACKUP_RETENTION_DAYS: 7
+      BACKUP_RETENTION_DAYS: 14
       GPG_PASSPHRASE: $DB_PASSWORD
       EXEC_LABEL: *speedtest-tracker_database
     env_file:

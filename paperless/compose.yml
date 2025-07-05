@@ -55,10 +55,9 @@ services:
     environment: &backup_environment
       BACKUP_CRON_EXPRESSION: 0 5 * * *
       BACKUP_FILENAME: paperless_%Y%m%d.{{ .Extension }}
-      BACKUP_SKIP_BACKENDS_FROM_PRUNE: s3
       AWS_S3_PATH: $R2_PATH/database
       BACKUP_ARCHIVE: &backup_database_archive /archive/database
-      BACKUP_RETENTION_DAYS: 7
+      BACKUP_RETENTION_DAYS: 14
       GPG_PASSPHRASE: $DB_PASSWORD
       EXEC_LABEL: *paperless_database
     env_file:
