@@ -21,8 +21,8 @@ services:
         target: *immich_config
     post_start:
       - command: bash -c '
-          mkdir -p upload thumbs encoded-video backups &&
-          touch {upload,thumbs,encoded-video,backups}/.immich'
+          mkdir -p upload library thumbs encoded-video profile backups &&
+          touch {upload,library,thumbs,encoded-video,profile,backups}/.immich'
         working_dir: *library
     ports:
       - 2283:2283
