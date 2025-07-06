@@ -63,51 +63,35 @@ services:
       test: redis-cli ping || exit 1
     restart: always
 
-  backup-database: &backup
-    container_name: immich_backup-database
+  backup:
+    container_name: immich_backup
     image: docker.io/offen/docker-volume-backup:v2.43.4@sha256:bdb9b5dffee440a7d21b1b210cd704fd1696a2c29d7cbc6f0f3b13b77264a26a
-    environment: &backup_environment
+    environment:
       BACKUP_CRON_EXPRESSION: 0 5 * * *
       BACKUP_FILENAME: immich_%Y%m%d.{{ .Extension }}
       AWS_S3_PATH: $R2_PATH
-      BACKUP_ARCHIVE: &backup_database_archive /archive/database
       BACKUP_RETENTION_DAYS: 14
       GPG_PASSPHRASE: $DB_PASSWORD
-      EXEC_LABEL: *immich_database
     env_file:
       - path: ../.env
         required: true
     volumes:
-      - backup:/backup:ro
-      - type: bind
-        source: $BACKUP_DIR/database
-        target: *backup_database_archive
+      - backup:/backup/database:ro
+      - $BACKUP_DIR/database:/archive/database
+      - ./library/library:/backup/library/library:ro
+      - ./library/profile:/backup/library/profile:ro
+      - $BACKUP_DIR/library:/archive/library
     configs:
       - source: docker-socket
         target: /var/run/docker.sock
       - source: timezone
         target: /etc/localtime
+      - source: backup_config
+        target: /etc/dockervolumebackup/conf.d
     depends_on:
       database:
         condition: service_healthy
     restart: always
-
-  backup-library:
-    <<: *backup
-    container_name: immich_backup-library
-    environment:
-      <<: *backup_environment
-      BACKUP_SOURCES: /library
-      BACKUP_ARCHIVE: &backup_library_archive /archive/library
-      EXEC_LABEL: none
-    env_file: []
-    volumes:
-      - ./library/library:/library/library:ro
-      - ./library/profile:/library/profile:ro
-      - type: bind
-        source: $BACKUP_DIR/library
-        target: *backup_library_archive
-    depends_on: []
 
   cloudflare-tunnel:
     container_name: immich_cloudflare-tunnel
@@ -129,3 +113,5 @@ configs:
     file: /etc/localtime
   immich_config:
     file: ./config/immich.json
+  backup_config:
+    file: ./config/backup

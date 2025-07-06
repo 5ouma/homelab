@@ -49,53 +49,34 @@ services:
       test: redis-cli ping || exit 1
     restart: always
 
-  backup-database: &backup
-    container_name: paperless_backup-database
+  backup:
+    container_name: paperless_backup
     image: docker.io/offen/docker-volume-backup:v2.43.4@sha256:bdb9b5dffee440a7d21b1b210cd704fd1696a2c29d7cbc6f0f3b13b77264a26a
-    environment: &backup_environment
+    environment:
       BACKUP_CRON_EXPRESSION: 0 5 * * *
       BACKUP_FILENAME: paperless_%Y%m%d.{{ .Extension }}
-      AWS_S3_PATH: $R2_PATH/database
-      BACKUP_ARCHIVE: &backup_database_archive /archive/database
+      R2_PATH: $R2_PATH
       BACKUP_RETENTION_DAYS: 14
       GPG_PASSPHRASE: $DB_PASSWORD
-      EXEC_LABEL: *paperless_database
     env_file:
       - path: ../.env
         required: true
     volumes:
-      - backup:/backup:ro
-      - type: bind
-        source: $BACKUP_DIR/database
-        target: *backup_database_archive
+      - backup:/backup/database:ro
+      - $BACKUP_DIR/database:/archive/database
+      - ./media/documents/originals:/backup/media:ro
+      - $BACKUP_DIR/media:/archive/media
     configs:
       - source: docker-socket
         target: /var/run/docker.sock
       - source: timezone
         target: /etc/localtime
+      - source: backup_config
+        target: /etc/dockervolumebackup/conf.d
     depends_on:
       database:
         condition: service_healthy
     restart: always
-
-  backup-media:
-    <<: *backup
-    container_name: paperless_backup-media
-    environment:
-      <<: *backup_environment
-      AWS_S3_PATH: $R2_PATH/media
-      BACKUP_SOURCES: &backup_media_source /media
-      BACKUP_ARCHIVE: &backup_media_archive /archive/media
-      EXEC_LABEL: none
-    volumes:
-      - type: bind
-        source: ./media/documents/originals
-        target: *backup_media_source
-        read_only: true
-      - type: bind
-        source: $BACKUP_DIR/media
-        target: *backup_media_archive
-    depends_on: []
 
   cloudflare-tunnel:
     container_name: paperless_cloudflare-tunnel
@@ -114,3 +95,5 @@ configs:
     file: /var/run/docker.sock
   timezone:
     file: /etc/localtime
+  backup_config:
+    file: ./config/backup
