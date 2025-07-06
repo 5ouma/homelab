@@ -13,15 +13,11 @@
 
 1. 🏔️ Copy the [`.env.tmpl`](./.env.tmpl) file to `.env` and Edit it
 
-   |       Name        |             Value              |
-   | :---------------: | :----------------------------: |
-   |   `DB_PASSWORD`   |    Random Database Password    |
-   |   `WEBDAV_URL`    |    URL of the WebDAV server    |
-   |   `WEBDAV_PATH`   |   Path to the WebDAV server    |
-   | `WEBDAV_USERNAME` | Username for the WebDAV server |
-   | `WEBDAV_PASSWORD` | Password for the WebDAV server |
-   |   `BACKUP_DIR`    |     Local Backup Directory     |
-   |  `TUNNEL_TOKEN`   |   [Cloudflare Tunnel Token]    |
+   |      Name      |           Value           |
+   | :------------: | :-----------------------: |
+   | `DB_PASSWORD`  | Random Database Password  |
+   |  `BACKUP_DIR`  |  Local Backup Directory   |
+   | `TUNNEL_TOKEN` | [Cloudflare Tunnel Token] |
 
    [Cloudflare Tunnel Token]: https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/
 

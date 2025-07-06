@@ -97,10 +97,6 @@ services:
     container_name: immich_backup-library
     environment:
       <<: *backup_environment
-      WEBDAV_URL: $WEBDAV_URL
-      WEBDAV_PATH: $WEBDAV_PATH
-      WEBDAV_USERNAME: $WEBDAV_USERNAME
-      WEBDAV_PASSWORD: $WEBDAV_PASSWORD
       BACKUP_SOURCES: /library
       BACKUP_ARCHIVE: &backup_library_archive /archive/library
       EXEC_LABEL: none
