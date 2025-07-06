@@ -81,7 +81,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: docker compose -f "$COMPOSE_DIR/compose.yml" up -d --quiet-pull
+          script: docker compose -f "$COMPOSE_DIR/compose.yml" up -d --quiet-pull --remove-orphans
           envs: COMPOSE_DIR
         env:
           COMPOSE_DIR: ${{ secrets.GIT_PATH }}/${{ matrix.compose.dir }}
