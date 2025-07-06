@@ -30,7 +30,7 @@ services:
       POSTGRES_PASSWORD: $DB_PASSWORD
     volumes:
       - database:/var/lib/postgresql/data
-      - backup:/tmp/backup
+      - database-backup:/tmp/backup
     healthcheck:
       test: pg_isready -d '$DB_DATABASE_NAME' -U '$DB_USERNAME' || exit 1
     labels:
@@ -45,6 +45,8 @@ services:
       BACKUP_CRON_EXPRESSION: 0 5 * * *
       BACKUP_FILENAME: speedtest-tracker_%Y%m%d.{{ .Extension }}
       AWS_S3_PATH: $R2_PATH
+      BACKUP_SOURCES: &backup_database_source /backup/database
+      BACKUP_ARCHIVE: &backup_database_archive /archive/database
       BACKUP_RETENTION_DAYS: 14
       GPG_PASSPHRASE: $DB_PASSWORD
       EXEC_LABEL: *speedtest-tracker_database
@@ -52,8 +54,13 @@ services:
       - path: ../.env
         required: true
     volumes:
-      - backup:/backup:ro
-      - $BACKUP_DIR/database:/archive
+      - type: volume
+        source: database-backup
+        target: *backup_database_source
+        read_only: true
+      - type: bind
+        source: $BACKUP_DIR/database
+        target: *backup_database_archive
     configs:
       - source: docker-socket
         target: /var/run/docker.sock
@@ -74,7 +81,7 @@ services:
 
 volumes:
   database:
-  backup:
+  database-backup:
 
 configs:
   docker-socket:

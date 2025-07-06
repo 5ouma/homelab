@@ -34,7 +34,7 @@ services:
       POSTGRES_PASSWORD: $DB_PASSWORD
     volumes:
       - database:/var/lib/postgresql/data
-      - backup:/tmp/backup
+      - database-backup:/tmp/backup
     healthcheck:
       test: pg_isready -d '$DB_DATABASE_NAME' -U '$DB_USERNAME' || exit 1
     labels:
@@ -62,7 +62,7 @@ services:
       - path: ../.env
         required: true
     volumes:
-      - backup:/backup/database:ro
+      - database-backup:/backup/database:ro
       - $BACKUP_DIR/database:/archive/database
       - ./media/documents/originals:/backup/media:ro
       - $BACKUP_DIR/media:/archive/media
@@ -88,7 +88,7 @@ services:
 
 volumes:
   database:
-  backup:
+  database-backup:
 
 configs:
   docker-socket:

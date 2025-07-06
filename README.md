@@ -69,6 +69,6 @@
    ```sh
    docker compose create
    docker compose start database
-   docker compose cp ./backup/service.sql database:/tmp/backup.sql
+   docker compose cp ./backup/database/<service>.sql database:/tmp/backup.sql
    docker compose exec database bash -c 'psql -d "$POSTGRES_DB" -U "$POSTGRES_USER" -f /tmp/backup.sql'
    ```

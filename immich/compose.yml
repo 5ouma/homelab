@@ -50,7 +50,7 @@ services:
       POSTGRES_PASSWORD: $DB_PASSWORD
     volumes:
       - database:/var/lib/postgresql/data
-      - backup:/tmp/backup
+      - database-backup:/tmp/backup
     labels:
       docker-volume-backup.exec-label: *immich_database
       docker-volume-backup.archive-pre: pg_dump -d '$DB_DATABASE_NAME' -U '$DB_USERNAME' -f /tmp/backup/immich.sql
@@ -76,7 +76,7 @@ services:
       - path: ../.env
         required: true
     volumes:
-      - backup:/backup/database:ro
+      - database-backup:/backup/database:ro
       - $BACKUP_DIR/database:/archive/database
       - ./library/library:/backup/library/library:ro
       - ./library/profile:/backup/library/profile:ro
@@ -104,7 +104,7 @@ services:
 volumes:
   model-cache:
   database:
-  backup:
+  database-backup:
 
 configs:
   docker-socket:
