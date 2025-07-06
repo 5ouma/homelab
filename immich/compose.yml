@@ -68,8 +68,7 @@ services:
     image: docker.io/offen/docker-volume-backup:v2.43.4@sha256:bdb9b5dffee440a7d21b1b210cd704fd1696a2c29d7cbc6f0f3b13b77264a26a
     environment:
       BACKUP_CRON_EXPRESSION: 0 5 * * *
-      BACKUP_FILENAME: immich_%Y%m%d.{{ .Extension }}
-      AWS_S3_PATH: $R2_PATH
+      R2_PATH: $R2_PATH
       BACKUP_RETENTION_DAYS: 14
       GPG_PASSPHRASE: $DB_PASSWORD
     env_file:
