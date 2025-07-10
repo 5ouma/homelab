@@ -15,7 +15,7 @@ runs:
       uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
       with:
         filters: |
-          compose: ["**/compose.yml", "**/config"]
+          compose: ["**/compose.yml", "**/config/**"]
         list-files: shell
 
     - name: 📡 Collect compose information
@@ -24,7 +24,7 @@ runs:
         if [[ -z "$CHANGED_COMPOSE" ]]; then
           composes="$(find "$GITHUB_WORKSPACE" -name 'compose.yml' | xargs dirname)"
         else
-          composes="$(echo "$CHANGED_COMPOSE" | xargs dirname | sort | uniq)"
+          composes="$(echo "$CHANGED_COMPOSE" | sed -E 's/\/(compose\.yml|config\/.+)//' | sort | uniq)"
         fi
         for compose in $composes; do
           dir="$(basename "$compose")"

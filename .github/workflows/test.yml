@@ -6,13 +6,13 @@ on:
       - main
     paths:
       - "**/compose.yml"
-      - "**/config/"
+      - "**/config/**"
       - .github/workflows/test.yml
       - .env.tmpl
   pull_request:
     paths:
       - "**/compose.yml"
-      - "**/config/"
+      - "**/config/**"
       - .github/workflows/test.yml
       - .env.tmpl
 
