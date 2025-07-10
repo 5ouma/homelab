@@ -35,8 +35,6 @@ jobs:
       - name: 🔍 Detect changed compose files
         id: detect
         uses: ./.github/actions/detect-changed-compose
-        with:
-          trigger_files: "[.github/workflows/test.yml, .env.tmpl]"
 
   test:
     name: ${{ matrix.compose.name }}

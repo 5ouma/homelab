@@ -1,11 +1,6 @@
 name: 🔍 Detect Changed Compose
 description: Detect changed compose
 
-inputs:
-  trigger_files:
-    description: YAML formatted array of files to trigger all compose
-    required: true
-
 outputs:
   compose:
     description: Compose that are changed
@@ -21,13 +16,12 @@ runs:
       with:
         filters: |
           compose: ["**/compose.yml", "**/config"]
-          triggers: ${{ inputs.trigger_files }}
         list-files: shell
 
     - name: 📡 Collect compose information
       id: collect
       run: |
-        if "$TRIGGER_CHANGED"; then
+        if [[ -z "$CHANGED_COMPOSE" ]]; then
           composes="$(find "$GITHUB_WORKSPACE" -name 'compose.yml' | xargs dirname)"
         else
           composes="$(echo "$CHANGED_COMPOSE" | xargs dirname | sort | uniq)"
@@ -40,4 +34,3 @@ runs:
       shell: bash
       env:
         CHANGED_COMPOSE: ${{ steps.filter.outputs.compose_files }}
-        TRIGGER_CHANGED: ${{ steps.filter.outputs.triggers }}
