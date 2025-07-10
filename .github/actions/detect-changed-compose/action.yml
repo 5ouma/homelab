@@ -1,15 +1,15 @@
-name: 🔍 Detect Changed Compose Files
-description: Detect changed compose files
+name: 🔍 Detect Changed Compose
+description: Detect changed compose
 
 inputs:
-  workflow_file:
-    description: GitHub Actions workflow file to run this action
+  trigger_files:
+    description: YAML formatted array of files to trigger all compose
     required: true
 
 outputs:
-  compose_files:
-    description: Compose files that are changed
-    value: ${{ steps.collect.outputs.compose_files }}
+  compose:
+    description: Compose that are changed
+    value: ${{ steps.collect.outputs.compose }}
 
 runs:
   using: composite
@@ -20,24 +20,24 @@ runs:
       uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
       with:
         filters: |
-          compose: "**/compose.yml"
-          workflow: ${{ inputs.workflow_file }}
+          compose: ["**/compose.yml", "**/config"]
+          triggers: ${{ inputs.trigger_files }}
         list-files: shell
 
     - name: 📡 Collect compose information
       id: collect
       run: |
-        if "$WORKFLOW_CHANGED"; then
-          compose_files="$(find "$GITHUB_WORKSPACE" -name 'compose.yml')"
+        if "$TRIGGER_CHANGED"; then
+          composes="$(find "$GITHUB_WORKSPACE" -name 'compose.yml' | xargs dirname)"
         else
-          compose_files="$CHANGED_COMPOSE_FILES"
+          composes="$(echo "$CHANGED_COMPOSE" | xargs dirname | sort | uniq)"
         fi
-        for compose_file in $compose_files; do
-          dir="$(dirname "$compose_file" | xargs basename)"
+        for compose in $composes; do
+          dir="$(basename "$compose")"
           name="$(grep -Po '(?<=<!-- name: ).+(?= -->)' "$dir/README.md")"
           echo "$name,$dir" | jq -Rc 'split(",") | { name: .[0], dir: .[1] }'
-        done | echo "compose_files=$(jq -sc)" | tee -a "$GITHUB_OUTPUT"
+        done | echo "compose=$(jq -sc)" | tee -a "$GITHUB_OUTPUT"
       shell: bash
       env:
-        CHANGED_COMPOSE_FILES: ${{ steps.filter.outputs.compose_files }}
-        WORKFLOW_CHANGED: ${{ steps.filter.outputs.workflow }}
+        CHANGED_COMPOSE: ${{ steps.filter.outputs.compose_files }}
+        TRIGGER_CHANGED: ${{ steps.filter.outputs.triggers }}

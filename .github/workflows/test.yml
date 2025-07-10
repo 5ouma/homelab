@@ -6,12 +6,15 @@ on:
       - main
     paths:
       - "**/compose.yml"
+      - "**/config/"
       - .github/workflows/test.yml
       - .env.tmpl
   pull_request:
     paths:
       - "**/compose.yml"
+      - "**/config/"
       - .github/workflows/test.yml
+      - .env.tmpl
 
 permissions: {}
 
@@ -21,7 +24,7 @@ jobs:
     runs-on: Ubuntu-Latest
     timeout-minutes: 1
     outputs:
-      compose_files: ${{ steps.detect.outputs.compose_files }}
+      compose: ${{ steps.detect.outputs.compose }}
 
     steps:
       - name: 🚚 Checkout Repository
@@ -33,7 +36,7 @@ jobs:
         id: detect
         uses: ./.github/actions/detect-changed-compose
         with:
-          workflow_file: "[.github/workflows/test.yml, .env.tmpl]"
+          trigger_files: "[.github/workflows/test.yml, .env.tmpl]"
 
   test:
     name: ${{ matrix.compose.name }}
@@ -46,7 +49,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        compose: ${{ fromJson(needs.detect.outputs.compose_files) }}
+        compose: ${{ fromJson(needs.detect.outputs.compose) }}
 
     steps:
       - name: 🚚 Checkout repository

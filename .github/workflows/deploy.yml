@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - "**/compose.yml"
+      - "**/config/"
       - .github/workflows/deploy.yml
       - .env.tmpl
 
@@ -17,7 +18,7 @@ jobs:
     runs-on: Ubuntu-Latest
     timeout-minutes: 1
     outputs:
-      compose_files: ${{ steps.detect.outputs.compose_files }}
+      compose: ${{ steps.detect.outputs.compose }}
 
     steps:
       - name: 🚚 Checkout Repository
@@ -29,7 +30,7 @@ jobs:
         id: detect
         uses: ./.github/actions/detect-changed-compose
         with:
-          workflow_file: "[.github/workflows/deploy.yml, .env.tmpl]"
+          trigger_files: "[.github/workflows/deploy.yml, .env.tmpl]"
 
   fetch:
     name: 🔄 Fetch Repository
@@ -65,7 +66,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        compose: ${{ fromJson(needs.detect.outputs.compose_files) }}
+        compose: ${{ fromJson(needs.detect.outputs.compose) }}
 
     steps:
       - name: 🛣️ Setup Tailscale
