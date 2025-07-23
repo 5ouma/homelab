@@ -22,7 +22,7 @@ runs:
       id: collect
       run: |
         if [[ -z "$CHANGED_COMPOSE" ]]; then
-          composes="$(find "$GITHUB_WORKSPACE" -name 'compose.yml' | xargs dirname)"
+          composes="$(find "$GITHUB_WORKSPACE" -name 'compose.yml' -exec dirname {} +)"
         else
           composes="$(echo "$CHANGED_COMPOSE" | sed -E 's/\/(compose\.yml|config\/.+)//g' | tr ' ' '\n' | sort | uniq)"
         fi
