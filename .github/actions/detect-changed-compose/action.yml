@@ -24,13 +24,13 @@ runs:
         if [[ -z "$CHANGED_COMPOSE" ]]; then
           composes="$(find "$GITHUB_WORKSPACE" -name 'compose.yml' | xargs dirname)"
         else
-          composes="$(echo "$CHANGED_COMPOSE" | sed -E 's/\/(compose\.yml|config\/.+)//' | sort | uniq)"
+          composes="$(echo "$CHANGED_COMPOSE" | sed -E 's/\/(compose\.yml|config\/.+)//g' | tr ' ' '\n' | sort | uniq)"
         fi
-        for compose in $composes; do
+        while IFS= read -r compose; do
           dir="$(basename "$compose")"
           name="$(grep -Po '(?<=<!-- name: ).+(?= -->)' "$dir/README.md")"
           echo "$name,$dir" | jq -Rc 'split(",") | { name: .[0], dir: .[1] }'
-        done | echo "compose=$(jq -sc)" | tee -a "$GITHUB_OUTPUT"
+        done <<<"$composes" | echo "compose=$(jq -sc)" | tee -a "$GITHUB_OUTPUT"
       shell: bash
       env:
         CHANGED_COMPOSE: ${{ steps.filter.outputs.compose_files }}
