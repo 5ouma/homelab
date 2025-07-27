@@ -22,7 +22,7 @@ services:
 
   database:
     container_name: &speedtest-tracker_database speedtest-tracker_database
-    image: docker.io/postgres:16.9@sha256:fec2740c517838d4f582e48a8a9a1cb51082af3dcae59e9b12a66ec262302b97
+    image: docker.io/postgres:17.5@sha256:4d89c904835259bc58876520e56267ca07a4ebd6a027f7814bbbf91b50d685be
     environment:
       POSTGRES_HOST: $DB_HOSTNAME
       POSTGRES_DB: $DB_DATABASE_NAME
