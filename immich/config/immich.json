@@ -1,129 +1,33 @@
 {
-  "oauth": {
-    "enabled": false,
-    "issuerUrl": "",
-    "clientId": "",
-    "clientSecret": "",
-    "scope": "openid email profile",
-    "signingAlgorithm": "RS256",
-    "profileSigningAlgorithm": "none",
-    "storageLabelClaim": "preferred_username",
-    "storageQuotaClaim": "immich_quota",
-    "defaultStorageQuota": 0,
-    "buttonText": "Login with OAuth",
-    "autoRegister": true,
-    "autoLaunch": false,
-    "mobileOverrideEnabled": false,
-    "mobileRedirectUri": ""
-  },
-  "backup": {
-    "database": {
-      "enabled": false,
-      "cronExpression": "0 02 * * *",
-      "keepLastAmount": 14
-    }
-  },
-  "passwordLogin": { "enabled": true },
+  "backup": { "database": { "enabled": false } },
   "image": {
     "thumbnail": { "format": "webp", "size": 1080, "quality": 80 },
-    "preview": { "format": "jpeg", "size": 2160, "quality": 100 },
-    "colorspace": "p3",
+    "preview": { "format": "webp", "size": 2160, "quality": 100 },
+    "fullsize": { "enabled": true, "format": "webp", "quality": 100 },
     "extractEmbedded": true
   },
   "job": {
-    "thumbnailGeneration": { "concurrency": 5 },
-    "metadataExtraction": { "concurrency": 5 },
-    "library": { "concurrency": 5 },
-    "sidecar": { "concurrency": 5 },
-    "search": { "concurrency": 5 },
-    "smartSearch": { "concurrency": 2 },
-    "faceDetection": { "concurrency": 2 },
-    "videoConversion": { "concurrency": 1 },
-    "migration": { "concurrency": 5 },
-    "backgroundTask": { "concurrency": 5 },
-    "notifications": { "concurrency": 5 }
+    "thumbnailGeneration": { "concurrency": 10 },
+    "metadataExtraction": { "concurrency": 10 },
+    "library": { "concurrency": 10 },
+    "sidecar": { "concurrency": 10 },
+    "smartSearch": { "concurrency": 5 },
+    "faceDetection": { "concurrency": 5 },
+    "videoConversion": { "concurrency": 3 },
+    "migration": { "concurrency": 10 }
   },
+  "library": { "scan": { "enabled": false } },
   "metadata": { "faces": { "import": true } },
-  "library": {
-    "watch": { "enabled": false },
-    "scan": { "enabled": true, "cronExpression": "0 0 * * *" }
-  },
-  "logging": { "enabled": true, "level": "log" },
-  "machineLearning": {
-    "enabled": true,
-    "urls": ["http://immich-machine-learning:3003"],
-    "clip": { "enabled": true, "modelName": "ViT-B-32__openai" },
-    "duplicateDetection": { "enabled": true, "maxDistance": 0.01 },
-    "facialRecognition": {
-      "enabled": true,
-      "modelName": "buffalo_l",
-      "minScore": 0.7,
-      "maxDistance": 0.5,
-      "minFaces": 3
-    }
-  },
-  "map": {
-    "enabled": true,
-    "lightStyle": "https://tiles.immich.cloud/v1/style/light.json",
-    "darkStyle": "https://tiles.immich.cloud/v1/style/dark.json"
-  },
-  "reverseGeocoding": { "enabled": true },
-  "notifications": {
-    "smtp": {
-      "enabled": false,
-      "transport": {
-        "host": "",
-        "port": 587,
-        "username": "",
-        "password": "",
-        "ignoreCert": false
-      },
-      "from": "",
-      "replyTo": ""
-    }
-  },
-  "templates": {
-    "email": {
-      "welcomeTemplate": "",
-      "albumInviteTemplate": "",
-      "albumUpdateTemplate": ""
-    }
-  },
-  "server": {
-    "externalDomain": "",
-    "loginPageMessage": "",
-    "publicUsers": true
-  },
+  "nightlyTasks": { "startTime": "04:00" },
   "storageTemplate": {
     "enabled": true,
     "hashVerificationEnabled": true,
     "template": "{{y}}/{{MM}}-{{dd}}/{{filename}}"
   },
-  "theme": { "customCss": "" },
-  "trash": { "enabled": true, "days": 30 },
-  "user": { "deleteDelay": 7 },
-  "newVersionCheck": { "enabled": true },
   "ffmpeg": {
-    "crf": 23,
-    "preset": "ultrafast",
-    "targetVideoCodec": "h264",
-    "targetAudioCodec": "aac",
-    "acceptedVideoCodecs": ["h264", "hevc", "vp9", "av1"],
-    "acceptedAudioCodecs": ["aac", "mp3", "libopus", "pcm_s16le"],
-    "acceptedContainers": ["mov", "ogg", "webm"],
-    "targetResolution": "original",
-    "maxBitrate": "0",
-    "threads": 0,
     "transcode": "all",
-    "tonemap": "hable",
-    "twoPass": false,
-    "accel": "disabled",
-    "accelDecode": false,
-    "cqMode": "auto",
-    "temporalAQ": false,
-    "preferredHwDevice": "auto",
-    "bframes": -1,
-    "refs": 0,
-    "gopSize": 0
+    "acceptedVideoCodecs": ["h264", "hevc", "vp9", "av1"],
+    "targetResolution": "original",
+    "twoPass": true
   }
 }
