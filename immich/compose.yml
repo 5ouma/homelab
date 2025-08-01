@@ -12,8 +12,8 @@ services:
       DB_PASSWORD: $DB_PASSWORD
     volumes:
       - type: bind
-        source: ./library
-        target: &library /usr/src/app/upload
+        source: ./data
+        target: &data /data
     configs:
       - source: timezone
         target: /etc/localtime
@@ -23,7 +23,7 @@ services:
       - command: bash -c '
           mkdir -p upload library thumbs encoded-video profile backups &&
           touch {upload,library,thumbs,encoded-video,profile,backups}/.immich'
-        working_dir: *library
+        working_dir: *data
     ports:
       - 2283:2283
     depends_on:
@@ -77,9 +77,9 @@ services:
     volumes:
       - database-backup:/backup/database:ro
       - $BACKUP_DIR/database:/archive/database
-      - ./library/library:/backup/library/library:ro
-      - ./library/profile:/backup/library/profile:ro
-      - $BACKUP_DIR/library:/archive/library
+      - ./data/library:/backup/data/library:ro
+      - ./data/profile:/backup/data/profile:ro
+      - $BACKUP_DIR/data:/archive/data
     configs:
       - source: docker-socket
         target: /var/run/docker.sock
