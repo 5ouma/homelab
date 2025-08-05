@@ -17,6 +17,7 @@
     "migration": { "concurrency": 10 }
   },
   "library": { "scan": { "enabled": false } },
+  "machineLearning": { "urls": ["http://machine-learning:3003"] },
   "metadata": { "faces": { "import": true } },
   "nightlyTasks": { "startTime": "04:00" },
   "storageTemplate": {
