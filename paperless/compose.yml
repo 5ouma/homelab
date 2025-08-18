@@ -26,7 +26,7 @@ services:
 
   database:
     container_name: &paperless_database paperless_database
-    image: docker.io/postgres:16.9@sha256:ddfe3e8713e3ee5b8f286082cb12512488dfbf3f5a1ecb0b74a42e6055af0a5f
+    image: docker.io/postgres:16.10@sha256:66a5efb5677ffac1037774a0e141fd3a4c035c9c0c0e624c9cc980dfa10f45e5
     environment:
       POSTGRES_HOST: $DB_HOSTNAME
       POSTGRES_DB: $DB_DATABASE_NAME
