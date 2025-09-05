@@ -10,6 +10,8 @@ services:
       DATABASE_USER: $DB_USERNAME
       DATABASE_PASSWORD: $DB_PASSWORD
     configs:
+      - source: timezone
+        target: /etc/localtime
       - source: misskey_config
         target: /misskey/.config/default.yml
     depends_on:
