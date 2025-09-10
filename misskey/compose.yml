@@ -3,7 +3,7 @@ name: misskey
 services:
   web:
     container_name: misskey_web
-    image: docker.io/misskey/misskey:2025.8.0@sha256:661ac1aec5fa29241626d05ef502858229dd44fed0290d8b5564ce68b2c305f5
+    image: docker.io/misskey/misskey:2025.9.0@sha256:8730fee9e8897fd120be5900aebd98d58611864e1e4db465485c4d0a108f0564
     environment:
       MISSKEY_URL: $MISSKEY_URL
       DATABASE_DB: $DB_DATABASE_NAME
