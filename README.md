@@ -54,6 +54,19 @@
 
 <br />
 
+## 🖥️ Server Setup
+
+Run the [setup](./setup) script.
+
+```sh
+bash <(curl https://home-server.deno.dev)
+```
+
+> [!NOTE]
+> I'm using [EndeavourOS](https://endeavouros.com)
+
+<br />
+
 ## 💾 Restore Data
 
 1. 🗝️ Decrypt the Data

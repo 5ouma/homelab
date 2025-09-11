@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+sudo pacman -Syu
+yay -Syu
+sudo pacman -S docker docker-compose tailscale
+yay -S newrelic-infra
+sudo systemctl enable --now docker newrelic-infra sshd tailscaled
+
+sudo usermod -aG docker "$USER"
+
+if [[ -z "$(hostnamectl status --pretty)" ]]; then
+  read -rp 'Hostname: ' hostname
+  sudo hostnamectl set-hostname "${hostname// /-}"
+  sudo hostnamectl set-hostname --pretty "$hostname"
+fi
+
+if (! sudo firewall-cmd --list-all | grep -q 5353/udp || ! sudo firewall-cmd --list-all | grep -q samba); then
+  sudo firewall-cmd --add-port=5353/udp --permanent
+  sudo firewall-cmd --add-service=samba --permanent
+  sudo firewall-cmd --reload
+fi
+
+if [[ ! -f /etc/newrelic-infra/newrelic-infra.yml ]]; then
+  read -rp 'New Relic license key: ' newRelicLicenseKey
+  sudo tee /etc/newrelic-infra/newrelic-infra.yml >/dev/null <<EOF
+license_key: $newRelicLicenseKey
+display_name: $(hostnamectl status --pretty)
+EOF
+  sudo systemctl restart newrelic-infra
+fi
+
+if (! tailscale status &>/dev/null); then
+  sudo tailscale up --accept-routes --advertise-exit-node
+  sudo tailscale set --hostname="$(hostnamectl status --pretty)"
+fi
+
+if (! grep -q /mnt/backup /etc/fstab); then
+  sudo blkid
+  read -rp 'Backup drive UUID: ' backupDriveUUID
+  echo "UUID=$backupDriveUUID /mnt/backup    ext4    defaults   0 0" | sudo tee -a /etc/fstab
+fi
+
+if [[ ! -d "$HOME/homelab" ]]; then
+  git clone https://github.com/5ouma/homelab "$HOME/homelab"
+fi
