@@ -6,7 +6,7 @@ sudo pacman -Syu
 yay -Syu
 sudo pacman -S docker docker-compose tailscale
 yay -S newrelic-infra
-sudo systemctl enable --now docker newrelic-infra sshd tailscaled
+sudo systemctl enable --now docker newrelic-infra paccache.timer sshd tailscaled
 
 sudo usermod -aG docker "$USER"
 
