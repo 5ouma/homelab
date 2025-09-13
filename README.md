@@ -66,7 +66,7 @@
 Run the [setup](./setup) script.
 
 ```sh
-bash <(curl https://home-server.deno.dev)
+bash <(curl https://lab.5ouma.me)
 ```
 
 > [!NOTE]
