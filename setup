@@ -1,47 +1,224 @@
 #!/usr/bin/env bash
 
 set -euo pipefail
+shopt -s expand_aliases
 
-sudo pacman -Syu
-yay -Syu
-sudo pacman -S docker docker-compose tailscale
-yay -S newrelic-infra
-sudo systemctl enable --now docker newrelic-infra paccache.timer sshd tailscaled
+declare -r githubUrl='https://github.com/5ouma/homelab'
+declare -r homelab="$HOME/homelab"
+TMPDIR="$(mktemp -d)" && declare -r TMPDIR
 
-sudo usermod -aG docker "$USER"
+export GUM_CONFIRM_SELECTED_BACKGROUND='27'
+export GUM_FORMAT_THEME="$TMPDIR/blue.json"
+export GUM_INPUT_CURSOR_FOREGROUND='33'
+export GUM_WRITE_CURSOR_FOREGROUND='33'
+export GUM_SPIN_SPINNER_FOREGROUND='27'
 
-if [[ -z "$(hostnamectl status --pretty)" ]]; then
-  read -rp 'Hostname: ' hostname
-  sudo hostnamectl set-hostname "${hostname// /-}"
-  sudo hostnamectl set-hostname --pretty "$hostname"
+declare executed=false
+declare skipped=false
+declare goThrough=false
+
+getGum() {
+  declare -r gumVer='0.17.0'
+  declare -r gumDir="gum_${gumVer}_$(uname)_$(uname -m)"
+  declare -r gumUrl="https://github.com/charmbracelet/gum/releases/download/v$gumVer/$gumDir.tar.gz"
+  declare -r gumThemeUrl="https://raw.githubusercontent.com/5ouma/dotfiles/main/data/blue.json"
+
+  printf '  🚚💨 Now delivering...'
+  # shellcheck disable=SC2139
+  curl -sL "$gumUrl" | tar --strip-components=1 -zxC "$TMPDIR" "$gumDir/gum" && alias gumCom="$TMPDIR/gum"
+  printf '\r                        '
+
+  curl -s "$gumThemeUrl" -o "$GUM_FORMAT_THEME"
+} && getGum
+
+gum() {
+  case $1 in
+  confirm) gumCom confirm "$2" --affirmative="$3" --negative="$4" ;;
+  format) gumCom format "${@:2}" ;;
+  input) gumCom input --placeholder="$2" ;;
+  spin) gumCom spin --title="$2" -- "${@:4}" ;;
+  style) gumCom style --foreground="$2" "${@:3}" ;;
+  write) gumCom write --placeholder="$2" ;;
+  executed)
+    echo -en '\n  ' && gumCom format '✅ Done!'
+    executed=true
+    ;;
+  skipped) echo -en '\n  ' && gumCom format '🟡 Skipped' ;;
+  esac
+}
+
+alias skip='skipped=true && return'
+
+shouldProceed() {
+  ($goThrough || gum confirm 'Proceed?' 'Yes' 'No')
+}
+
+run() {
+  gum format "$2"
+  eval '$1'
+  if ($skipped); then
+    skipped=false
+    gum skipped
+  else
+    gum executed
+  fi
+}
+
+helpMsg() {
+  gum format <<EOM
+## Usage: setup
+
+> 🥼 Self-hosted personal laboratory
+
+## Commands:
+-  help    Print help information
+
+## Flags:
+-  -y, --yes    Start without confirmation
+EOM
+}
+
+errMsg() {
+  declare -r stat=$1 func="${2/"$HOME"/~}" line=$3
+  gum format <<EOM
+> **$(gum style 1 'Error')**
+> Unknown error has occurred!
+
+> - Status:           $stat
+> - File or Function: $func
+> - Line Number:      $line
+> - Process ID:       $$
+EOM
+} && trap 'errMsg $? "$0" $LINENO' ERR
+
+
+
+if [[ ! -x $0 ]]; then
+  gum format <<EOM
+# Welcome to 🥼 Homelab setup!
+> $githubUrl
+---
+EOM
 fi
 
-if (! sudo firewall-cmd --list-all | grep -q 5353/udp || ! sudo firewall-cmd --list-all | grep -q samba); then
-  sudo firewall-cmd --add-port=5353/udp --permanent
-  sudo firewall-cmd --add-service=samba --permanent
-  sudo firewall-cmd --reload
+if (($# > 0)); then
+  case "$1" in
+  'help')
+    helpMsg
+    exit
+    ;;
+  '-y' | '--yes')
+    goThrough=true
+    ;;
+  *)
+    gum format <<EOM
+> **$(gum style 1 'Error')**
+> Unknown flag $1
+EOM
+    helpMsg
+    exit 1
+    ;;
+  esac
 fi
 
-if [[ ! -f /etc/newrelic-infra/newrelic-infra.yml ]]; then
-  read -rp 'New Relic license key: ' newRelicLicenseKey
-  sudo tee /etc/newrelic-infra/newrelic-infra.yml >/dev/null <<EOF
+if (! $goThrough); then
+  gum confirm "Let's start setup!" 'Yes!' 'No' || exit 1
+fi
+
+if [[ ! -d "$homelab" ]]; then
+  # shellcheck disable=SC2016
+  gum spin 'Cloning the repository into `~/homelab`...' -- git clone "$githubUrl" "$homelab"
+else
+  gum spin 'Pulling the homelab repository...' -- git -C "$homelab" pull
+fi
+
+
+updateSystem() {
+  (! shouldProceed) && skip
+
+  sudo pacman -Syu
+  yay -Syu
+} && run 'updateSystem' '## 🔧 Update system'
+
+installPackages() {
+  (! shouldProceed) && skip
+
+  sudo pacman -S docker docker-compose firewalld tailscale pacman-contrib
+  yay -S newrelic-infra
+} && run 'installPackages' '## 📦 Install packages'
+
+enableServices() {
+  (! shouldProceed) && skip
+
+  gum spin 'Enabling services...' -- sudo systemctl enable --now docker firewalld newrelic-infra paccache.timer sshd tailscaled
+  gum spin 'Adding user to Docker group...' -- sudo usermod -aG docker "$USER"
+} && run 'enableServices' '## 🎽 Enable system services'
+
+setHostname() {
+  if [[ -n "$(hostnamectl status --pretty)" ]] || ! shouldProceed; then
+    skip
+  fi
+
+  hostname=$(gum input 'Enter hostname')
+  gum spin 'Setting hostname...' -- sudo hostnamectl set-hostname "${hostname// /-}"
+  gum spin 'Setting pretty hostname...' -- sudo hostnamectl set-hostname --pretty "$hostname"
+} && run 'setHostname' '## 🖥️ Set system hostname'
+
+configureFirewall() {
+  if (sudo firewall-cmd --list-all | grep -q 5353/udp && sudo firewall-cmd --list-all | grep -q samba || ! shouldProceed); then
+    skip
+  fi
+
+  gum spin 'Configuring firewall rules...' -- sudo firewall-cmd --add-port=5353/udp --permanent
+  gum spin 'Adding Samba service...' -- sudo firewall-cmd --add-service=samba --permanent
+  gum spin 'Reloading firewall...' -- sudo firewall-cmd --reload
+} && run 'configureFirewall' '## 🔥 Configure firewall'
+
+configureSshKeys() {
+  if [[ -f "$HOME/.ssh/authorized_keys" ]] || ! shouldProceed; then
+    skip
+  fi
+
+  mkdir -p "$HOME/.ssh"
+  gum write 'Enter SSH public key' >>"$HOME/.ssh/authorized_keys"
+  gum spin 'Restarting SSH service...' -- sudo systemctl restart sshd
+} && run 'configureSshKeys' '## 🔑 Configure SSH keys'
+
+configureBackupDrive() {
+  if (grep -q /mnt/backup /etc/fstab) || ! shouldProceed; then
+    skip
+  fi
+
+  sudo blkid
+  backupDriveUUID="$(gum input 'Enter backup drive UUID')"
+  echo "UUID=$backupDriveUUID /mnt/backup    ext4    defaults   0 0" | sudo tee -a /etc/fstab
+} && run 'configureBackupDrive' '## 💾 Configure backup drive'
+
+configureNewRelic() {
+  if [[ -f /etc/newrelic-infra/newrelic-infra.yml ]] || ! shouldProceed; then
+    skip
+  fi
+
+  newRelicLicenseKey="$(gum input 'Enter New Relic license key')"
+  gum spin 'Creating New Relic configuration...' -- sudo tee /etc/newrelic-infra/newrelic-infra.yml >/dev/null <<EOF
 license_key: $newRelicLicenseKey
 display_name: $(hostnamectl status --pretty)
 EOF
-  sudo systemctl restart newrelic-infra
-fi
+  gum spin 'Restarting New Relic service...' -- sudo systemctl restart newrelic-infra
+} && run 'configureNewRelic' '## 📊 Configure New Relic'
 
-if (! tailscale status &>/dev/null); then
+configureTailscale() {
+  if (tailscale status &>/dev/null || ! shouldProceed); then
+    skip
+  fi
+
   sudo tailscale up --accept-routes --advertise-exit-node
-  sudo tailscale set --hostname="$(hostnamectl status --pretty)"
-fi
+  gum spin 'Setting Tailscale hostname...' -- sudo tailscale set --hostname="$(hostnamectl status --pretty)"
+} && run 'configureTailscale' '## 🛣️ Configure Tailscale'
 
-if (! grep -q /mnt/backup /etc/fstab); then
-  sudo blkid
-  read -rp 'Backup drive UUID: ' backupDriveUUID
-  echo "UUID=$backupDriveUUID /mnt/backup    ext4    defaults   0 0" | sudo tee -a /etc/fstab
-fi
 
-if [[ ! -d "$HOME/homelab" ]]; then
-  git clone https://github.com/5ouma/homelab "$HOME/homelab"
+if ($executed); then
+  gum format '# 🎉 Homelab setup completed!'
+else
+  gum format '# 🧊 Nothing has changed'
 fi

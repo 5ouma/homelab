@@ -18,5 +18,15 @@
       "matchUpdateTypes": ["digest"],
       "automerge": true
     }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["setup"],
+      "matchStrings": ["gumVir='(?<currentValue>[0-9]+\\.[0-9]+\\.[0-9]+)'"],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "charmbracelet/gum",
+      "extractVersionTemplate": "v(?<version>.+)"
+    }
   ]
 }

@@ -56,6 +56,13 @@
 
 ## 🖥️ Server Setup
 
+### 🔐 Requirements
+
+- Arch Linux with yay installed
+- `$USER` has sudo privilege
+
+## 📥 Installation
+
 Run the [setup](./setup) script.
 
 ```sh
