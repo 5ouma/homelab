@@ -187,7 +187,7 @@ configureFirewall() {
 } && run 'configureFirewall' '## 🔥 Configure firewall'
 
 configureSshKeys() {
-  if [[ -f "$HOME/.ssh/authorized_keys" ]] && (grep -q 'PasswordAuthentication no' /etc/ssh/sshd_config && grep -q 'PermitRootLogin no' /etc/ssh/sshd_config) || ! shouldProceed; then
+  if [[ -f "$HOME/.ssh/authorized_keys" ]] && (grep -q 'PasswordAuthentication no' /etc/ssh/sshd_config && grep -q 'PermitRootLogin no' /etc/ssh/sshd_config || ! shouldProceed); then
     skip
   fi
 
@@ -199,7 +199,7 @@ configureSshKeys() {
 } && run 'configureSshKeys' '## 🔑 Configure SSH keys'
 
 configureBackupDrive() {
-  if (grep -q /mnt/backup /etc/fstab) || ! shouldProceed; then
+  if (grep -q /mnt/backup /etc/fstab || ! shouldProceed); then
     skip
   fi
 
