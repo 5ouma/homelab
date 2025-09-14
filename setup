@@ -142,7 +142,7 @@ updateSystem() {
 } && run 'updateSystem' '## 🔧 Update system'
 
 installPackages() {
-  declare -r packages=(docker docker-compose firewalld newrelic-infra pacman-contrib tailscale)
+  declare -r packages=(docker docker-compose firewalld newrelic-infra pacman-contrib reflector tailscale)
   if (yay -Q "${packages[@]}" &>/dev/null || ! shouldProceed); then
     skip
   fi
@@ -151,13 +151,23 @@ installPackages() {
 } && run 'installPackages' '## 📦 Install packages'
 
 enableServices() {
-  declare -r services=(docker firewalld newrelic-infra paccache.timer sshd tailscaled)
+  declare -r services=(docker firewalld newrelic-infra paccache.timer reflector.timer sshd tailscaled)
   if (systemctl is-enabled "${services[@]}" | awk '$0 == "disabled" { exit 1 }' || ! shouldProceed); then
     skip
   fi
 
   gum spin 'Enabling services...' -- sudo systemctl enable --now "${services[@]}"
 } && run 'enableServices' '## 🎽 Enable system services'
+
+configureReflector() {
+  declare -r country="$(curl -s https://ipapi.co/country_name)"
+  if (grep -q -- "--country $country" /etc/xdg/reflector/reflector.conf && grep -q -- '--sort rate' /etc/xdg/reflector/reflector.conf || ! shouldProceed); then
+    skip
+  fi
+
+  gum spin 'Setting auto country selection...' -- sudo sed -i "s/^# --country France,Germany/--country $country/" /etc/xdg/reflector/reflector.conf
+  gum spin 'Setting sorting by rate...' -- sudo sed -i 's/^--sort age/--sort rate/' /etc/xdg/reflector/reflector.conf
+} && run 'configureReflector' '## 🪞 Configure Reflector'
 
 addToDockerGroup() {
   if (groups "$USER" | grep -q docker || ! shouldProceed); then
