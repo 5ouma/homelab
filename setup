@@ -187,12 +187,14 @@ configureFirewall() {
 } && run 'configureFirewall' '## 🔥 Configure firewall'
 
 configureSshKeys() {
-  if [[ -f "$HOME/.ssh/authorized_keys" ]] || ! shouldProceed; then
+  if [[ -f "$HOME/.ssh/authorized_keys" ]] && (grep -q 'PasswordAuthentication no' /etc/ssh/sshd_config && grep -q 'PermitRootLogin no' /etc/ssh/sshd_config) || ! shouldProceed; then
     skip
   fi
 
   mkdir -p "$HOME/.ssh"
   gum write 'Enter SSH public key' >>"$HOME/.ssh/authorized_keys"
+  gum spin 'Disabling password authentication...' -- sudo sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+  gum spin 'Disabling root login...' -- sudo sed -i 's/^#PermitRootLogin prohibit-password/PermitRootLogin no/' /etc/ssh/sshd_config
   gum spin 'Restarting SSH service...' -- sudo systemctl restart sshd
 } && run 'configureSshKeys' '## 🔑 Configure SSH keys'
 
