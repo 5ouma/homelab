@@ -149,8 +149,15 @@ enableServices() {
   (! shouldProceed) && skip
 
   gum spin 'Enabling services...' -- sudo systemctl enable --now docker firewalld newrelic-infra paccache.timer sshd tailscaled
-  gum spin 'Adding user to Docker group...' -- sudo usermod -aG docker "$USER"
 } && run 'enableServices' '## 🎽 Enable system services'
+
+addToDockerGroup() {
+  if (groups "$USER" | grep -q docker || ! shouldProceed); then
+    skip
+  fi
+
+  gum spin 'Adding user to Docker group...' -- sudo usermod -aG docker "$USER"
+} && run 'addToDockerGroup' '## 🐳 Add user to Docker group'
 
 setHostname() {
   if [[ -n "$(hostnamectl status --pretty)" ]] || ! shouldProceed; then
