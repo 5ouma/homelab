@@ -10,8 +10,8 @@ TMPDIR="$(mktemp -d)" && declare -r TMPDIR
 export GUM_CONFIRM_SELECTED_BACKGROUND='27'
 export GUM_FORMAT_THEME="$TMPDIR/blue.json"
 export GUM_INPUT_CURSOR_FOREGROUND='33'
-export GUM_WRITE_CURSOR_FOREGROUND='33'
 export GUM_SPIN_SPINNER_FOREGROUND='27'
+export GUM_WRITE_CURSOR_FOREGROUND='33'
 
 declare executed=false
 declare skipped=false
