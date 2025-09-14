@@ -18,9 +18,8 @@
 
 ## 🔐 Requirements
 
-- 🐳 Docker Compose
-
-  > I use [🔮 OrbStack](https://orbstack.dev).
+- 🐳 Docker
+- 🐙 Docker Compose
 
 <br /><br />
 
