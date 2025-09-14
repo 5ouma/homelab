@@ -18,6 +18,7 @@ services:
         condition: service_healthy
     healthcheck:
       test: curl -f http://speedtest-tracker/api/healthcheck | jq -r .message || exit 1
+      interval: 5s
     restart: always
 
   database:
@@ -33,6 +34,7 @@ services:
       - database-backup:/tmp/backup
     healthcheck:
       test: pg_isready -d '$DB_DATABASE_NAME' -U '$DB_USERNAME' || exit 1
+      interval: 5s
     labels:
       docker-volume-backup.exec-label: *speedtest-tracker_database
       docker-volume-backup.archive-pre: pg_dump -d '$DB_DATABASE_NAME' -U '$DB_USERNAME' -f /tmp/backup/speedtest-tracker.sql
