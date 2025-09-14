@@ -136,15 +136,13 @@ fi
 updateSystem() {
   (! shouldProceed) && skip
 
-  sudo pacman -Syu
   yay -Syu
 } && run 'updateSystem' '## 🔧 Update system'
 
 installPackages() {
   (! shouldProceed) && skip
 
-  sudo pacman -S docker docker-compose firewalld tailscale pacman-contrib
-  yay -S newrelic-infra
+  yay -S docker docker-compose firewalld newrelic-infra pacman-contrib tailscale
 } && run 'installPackages' '## 📦 Install packages'
 
 enableServices() {
