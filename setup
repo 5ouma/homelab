@@ -132,6 +132,8 @@ else
   gum spin 'Pulling the homelab repository...' -- git -C "$homelab" pull
 fi
 
+sudo -v
+
 
 updateSystem() {
   if (! yay -Qu &>/dev/null || ! shouldProceed); then
