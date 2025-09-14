@@ -165,12 +165,11 @@ setHostname() {
 } && run 'setHostname' '## 🖥️ Set system hostname'
 
 configureFirewall() {
-  if (sudo firewall-cmd --list-all | grep -q 5353/udp && sudo firewall-cmd --list-all | grep -q samba || ! shouldProceed); then
+  if (sudo firewall-cmd -q --query-service=mdns && sudo firewall-cmd -q --query-service=samba || ! shouldProceed); then
     skip
   fi
 
-  gum spin 'Configuring firewall rules...' -- sudo firewall-cmd --add-port=5353/udp --permanent
-  gum spin 'Adding Samba service...' -- sudo firewall-cmd --add-service=samba --permanent
+  gum spin 'Adding Samba and mDNS services...' -- sudo firewall-cmd --add-service={mdns,samba} --permanent
   gum spin 'Reloading firewall...' -- sudo firewall-cmd --reload
 } && run 'configureFirewall' '## 🔥 Configure firewall'
 
