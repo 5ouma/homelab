@@ -17,7 +17,7 @@ services:
       database:
         condition: service_healthy
     healthcheck:
-      test: curl -f http://speedtest-tracker/api/healthcheck | jq -r .message || exit 1
+      test: curl -f http://localhost/api/healthcheck | jq -r .message || exit 1
       interval: 5s
     restart: always
 
