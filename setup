@@ -134,21 +134,29 @@ fi
 
 
 updateSystem() {
-  (! shouldProceed) && skip
+  if (! yay -Qu &>/dev/null || ! shouldProceed); then
+    skip
+  fi
 
   yay -Syu
 } && run 'updateSystem' '## 🔧 Update system'
 
 installPackages() {
-  (! shouldProceed) && skip
+  declare -r packages=(docker docker-compose firewalld newrelic-infra pacman-contrib tailscale)
+  if (yay -Q "${packages[@]}" &>/dev/null || ! shouldProceed); then
+    skip
+  fi
 
-  yay -S docker docker-compose firewalld newrelic-infra pacman-contrib tailscale
+  yay -S --needed "${packages[@]}"
 } && run 'installPackages' '## 📦 Install packages'
 
 enableServices() {
-  (! shouldProceed) && skip
+  declare -r services=(docker firewalld newrelic-infra paccache.timer sshd tailscaled)
+  if (systemctl is-enabled "${services[@]}" | awk '$0 == "disabled" { exit 1 }' || ! shouldProceed); then
+    skip
+  fi
 
-  gum spin 'Enabling services...' -- sudo systemctl enable --now docker firewalld newrelic-infra paccache.timer sshd tailscaled
+  gum spin 'Enabling services...' -- sudo systemctl enable --now "${services[@]}"
 } && run 'enableServices' '## 🎽 Enable system services'
 
 addToDockerGroup() {
