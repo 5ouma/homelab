@@ -15,6 +15,9 @@ services:
         target: /etc/localtime
       - source: git_config
         target: /root/.gitconfig
+    healthcheck:
+      test: wget --spider -q http://localhost:23232/readyz || exit 1
+      interval: 5s
     restart: always
 
   cloudflare-tunnel:
