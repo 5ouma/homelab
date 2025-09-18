@@ -136,11 +136,12 @@ sudo -v
 
 
 updateSystem() {
+  yay -Sy
   if (! yay -Qu &>/dev/null || ! shouldProceed); then
     skip
   fi
 
-  yay -Syu
+  yay -Su
 } && run 'updateSystem' '## 🔧 Update system'
 
 installPackages() {
