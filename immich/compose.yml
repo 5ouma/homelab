@@ -42,7 +42,7 @@ services:
 
   database:
     container_name: &immich_database immich_database
-    image: ghcr.io/immich-app/postgres:16-vectorchord0.4.3-pgvectors0.3.0@sha256:ccfc11981f663018d125ee055b378134cf3dd20b02d391178d5bcefa0fa049c2
+    image: ghcr.io/immich-app/postgres:17-vectorchord0.4.3-pgvectors0.3.0@sha256:69bbf29d20c8de255c5a5b16ffb05133065ecfd21dd90e54d07977e7f16bedf3
     environment:
       POSTGRES_HOST: $DB_HOSTNAME
       POSTGRES_DB: $DB_DATABASE_NAME
