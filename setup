@@ -136,7 +136,7 @@ sudo -v
 
 
 updateSystem() {
-  yay -Sy
+  gum spin 'Synchronizing package databases...' -- yay -Sy
   if (! yay -Qu &>/dev/null || ! shouldProceed); then
     skip
   fi
