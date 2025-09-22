@@ -31,14 +31,14 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    restart: always
+    restart: unless-stopped
 
   machine-learning:
     container_name: immich_machine-learning
     image: ghcr.io/immich-app/immich-machine-learning:v1.142.1@sha256:9855f6a0a998db508ca97894997b17f3a0a61e9388b204d861110c19c42814eb
     volumes:
       - model-cache:/cache
-    restart: always
+    restart: unless-stopped
 
   database:
     container_name: &immich_database immich_database
@@ -54,7 +54,7 @@ services:
     labels:
       docker-volume-backup.exec-label: *immich_database
       docker-volume-backup.archive-pre: pg_dump -d '$DB_DATABASE_NAME' -U '$DB_USERNAME' -f /tmp/backup/immich.sql
-    restart: always
+    restart: unless-stopped
 
   redis:
     container_name: immich_redis
@@ -62,7 +62,7 @@ services:
     healthcheck:
       test: redis-cli ping || exit 1
       interval: 5s
-    restart: always
+    restart: unless-stopped
 
   backup:
     container_name: immich_backup
@@ -91,7 +91,7 @@ services:
     depends_on:
       database:
         condition: service_healthy
-    restart: always
+    restart: unless-stopped
 
   cloudflare-tunnel:
     container_name: immich_cloudflare-tunnel
@@ -99,7 +99,7 @@ services:
     command: tunnel --no-autoupdate run
     environment:
       TUNNEL_TOKEN: $TUNNEL_TOKEN
-    restart: always
+    restart: unless-stopped
 
 volumes:
   model-cache:

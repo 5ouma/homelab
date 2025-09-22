@@ -19,7 +19,7 @@ services:
     healthcheck:
       test: curl -f http://localhost/api/healthcheck | jq -r .message || exit 1
       interval: 5s
-    restart: always
+    restart: unless-stopped
 
   database:
     container_name: &speedtest-tracker_database speedtest-tracker_database
@@ -38,7 +38,7 @@ services:
     labels:
       docker-volume-backup.exec-label: *speedtest-tracker_database
       docker-volume-backup.archive-pre: pg_dump -d '$DB_DATABASE_NAME' -U '$DB_USERNAME' -f /tmp/backup/speedtest-tracker.sql
-    restart: always
+    restart: unless-stopped
 
   backup:
     container_name: speedtest-tracker_backup
@@ -71,7 +71,7 @@ services:
     depends_on:
       database:
         condition: service_healthy
-    restart: always
+    restart: unless-stopped
 
   cloudflare-tunnel:
     container_name: speedtest-tracker_cloudflare-tunnel
@@ -79,7 +79,7 @@ services:
     command: tunnel --no-autoupdate run
     environment:
       TUNNEL_TOKEN: $TUNNEL_TOKEN
-    restart: always
+    restart: unless-stopped
 
 volumes:
   database:

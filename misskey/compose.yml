@@ -19,7 +19,7 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    restart: always
+    restart: unless-stopped
 
   database:
     container_name: &misskey_database misskey_database
@@ -38,7 +38,7 @@ services:
     labels:
       docker-volume-backup.exec-label: *misskey_database
       docker-volume-backup.archive-pre: pg_dump -d '$DB_DATABASE_NAME' -U '$DB_USERNAME' -f /tmp/backup/misskey.sql
-    restart: always
+    restart: unless-stopped
 
   redis:
     container_name: misskey_redis
@@ -46,7 +46,7 @@ services:
     healthcheck:
       test: redis-cli ping || exit 1
       interval: 5s
-    restart: always
+    restart: unless-stopped
 
   backup:
     container_name: misskey_backup
@@ -79,7 +79,7 @@ services:
     depends_on:
       database:
         condition: service_healthy
-    restart: always
+    restart: unless-stopped
 
   cloudflare-tunnel:
     container_name: misskey_cloudflare-tunnel
@@ -87,7 +87,7 @@ services:
     command: tunnel --no-autoupdate run
     environment:
       TUNNEL_TOKEN: $TUNNEL_TOKEN
-    restart: always
+    restart: unless-stopped
 
 volumes:
   database:
