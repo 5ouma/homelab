@@ -81,7 +81,7 @@ services:
 
   cloudflare-tunnel:
     container_name: paperless_cloudflare-tunnel
-    image: docker.io/cloudflare/cloudflared:2025.9.0@sha256:f9af3635e01536d28ca54186d3b945ed6ae494246e9b7045dedfa5a3747d4ccc
+    image: docker.io/cloudflare/cloudflared:2025.9.1@sha256:4604b477520dc8322af5427da68b44f0bf814938e9d2e4814f2249ee4b03ffdf
     command: tunnel --no-autoupdate run
     environment:
       TUNNEL_TOKEN: $TUNNEL_TOKEN
