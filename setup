@@ -145,13 +145,26 @@ updateSystem() {
 } && run 'updateSystem' '## 🔧 Update system'
 
 installPackages() {
-  declare -r packages=(docker docker-compose firewalld newrelic-infra pacman-contrib reflector tailscale)
+  declare -r packages=(docker docker-compose firewalld jq newrelic-infra pacman-contrib reflector tailscale)
   if (yay -Q "${packages[@]}" &>/dev/null || ! shouldProceed); then
     skip
   fi
 
   yay -S --needed "${packages[@]}"
 } && run 'installPackages' '## 📦 Install packages'
+
+updateNewRelicInfra() {
+  declare -r installed="$(yay -Q newrelic-infra | awk '{split($2, version, "-"); print version[1]}')"
+  declare -r latest="$(curl -s https://api.github.com/repos/newrelic/infrastructure-agent/releases/latest | jq -r '.tag_name')"
+  if [[ "$installed" == "$latest" ]] || ! shouldProceed; then
+    skip
+  fi
+
+  cd "$HOME/.cache/yay/newrelic-infra"
+  ./update.sh
+  makepkg -sic
+  yay -Sc
+} && run 'updateNewRelicInfra' '## ⬆️ Update New Relic infrastructure agent'
 
 enableServices() {
   declare -r services=(docker firewalld newrelic-infra paccache.timer reflector.timer sshd tailscaled)
