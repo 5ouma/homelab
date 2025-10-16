@@ -37,7 +37,7 @@ jobs:
 
     steps:
       - name: 🛣️ Set up Tailscale
-        uses: tailscale/github-action@2976a889fced77bb9d364be5297d56cbd6f178d8 # v4.0.0
+        uses: tailscale/github-action@ac425ca19416ebb90dd453776414ffb1cdba8f91 # v4.0.1
         with:
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
           oauth-secret: ${{ secrets.TS_OAUTH_CLIENT_SECRET }}
@@ -68,7 +68,7 @@ jobs:
 
     steps:
       - name: 🛣️ Set up Tailscale
-        uses: tailscale/github-action@2976a889fced77bb9d364be5297d56cbd6f178d8 # v4.0.0
+        uses: tailscale/github-action@ac425ca19416ebb90dd453776414ffb1cdba8f91 # v4.0.1
         with:
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
           oauth-secret: ${{ secrets.TS_OAUTH_CLIENT_SECRET }}
@@ -93,7 +93,7 @@ jobs:
 
     steps:
       - name: 🛣️ Set up Tailscale
-        uses: tailscale/github-action@2976a889fced77bb9d364be5297d56cbd6f178d8 # v4.0.0
+        uses: tailscale/github-action@ac425ca19416ebb90dd453776414ffb1cdba8f91 # v4.0.1
         with:
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
           oauth-secret: ${{ secrets.TS_OAUTH_CLIENT_SECRET }}
