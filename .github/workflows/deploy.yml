@@ -15,7 +15,7 @@ permissions: {}
 jobs:
   detect:
     name: 🔍 Detect Changed Compose Files
-    runs-on: Ubuntu-Latest
+    runs-on: Ubuntu-Slim
     timeout-minutes: 1
     outputs:
       compose: ${{ steps.detect.outputs.compose }}
