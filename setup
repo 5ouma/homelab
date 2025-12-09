@@ -241,7 +241,7 @@ configureBackupDrive() {
 
   sudo blkid
   backupDriveUUID="$(gum input 'Enter backup drive UUID')"
-  echo "UUID=$backupDriveUUID /mnt/backup    ext4    defaults   0 0" | sudo tee -a /etc/fstab
+  echo "UUID=$backupDriveUUID /mnt/backup ext4 defaults 0 0" | sudo tee -a /etc/fstab >/dev/null
 } && run 'configureBackupDrive' '## 💾 Configure backup drive'
 
 configureNewRelic() {
