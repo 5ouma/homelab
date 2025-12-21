@@ -52,7 +52,7 @@ jobs:
     needs: filter
     if: ${{ needs.filter.outputs.test == 'true' || needs.filter.outputs.setup == 'true' }}
     runs-on: Ubuntu-Latest
-    container: greyltc/archlinux-aur:yay-20251221.0.405@sha256:1cfc969e221d9f745e7ec00372be27d168ae0fd81e8157a40e17c906d4318c5e
+    container: greyltc/archlinux-aur:yay-20251221.0.405@sha256:5db489cedbdf6fe40e03caec96f7a324a2c9beb7d665639c74ceb9b5f029bb61
     timeout-minutes: 5
 
     steps:
