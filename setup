@@ -141,7 +141,7 @@ updateSystem() {
     skip
   fi
 
-  yay -Su
+  yay -Su "$($goThrough && echo '--noconfirm')"
 } && run 'updateSystem' '## 🔧 Update system'
 
 installPackages() {
@@ -150,7 +150,7 @@ installPackages() {
     skip
   fi
 
-  yay -S --needed "${packages[@]}"
+  yay -S --needed "$($goThrough && echo '--noconfirm')" "${packages[@]}"
 } && run 'installPackages' '## 📦 Install packages'
 
 updateNewRelicInfra() {
@@ -162,8 +162,8 @@ updateNewRelicInfra() {
 
   cd "$HOME/.cache/yay/newrelic-infra"
   ./update.sh
-  makepkg -sic
-  yay -Sc
+  makepkg -sic "$($goThrough && echo '--noconfirm')"
+  yay -Sc "$($goThrough && echo '--noconfirm')"
 } && run 'updateNewRelicInfra' '## ⬆️ Update New Relic infrastructure agent'
 
 enableServices() {
