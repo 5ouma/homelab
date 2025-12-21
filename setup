@@ -36,12 +36,19 @@ gum() {
   confirm) gumCom confirm "$2" --affirmative="$3" --negative="$4" ;;
   format) gumCom format "${@:2}" ;;
   input) gumCom input --placeholder="$2" ;;
-  spin) gumCom spin --title="$2" -- "${@:4}" ;;
   style) gumCom style --foreground="$2" "${@:3}" ;;
   write) gumCom write --placeholder="$2" ;;
   executed)
     echo -en '\n  ' && gumCom format '✅ Done!'
     executed=true
+    ;;
+  run)
+    if (tty &>/dev/null); then
+      gumCom spin --title="$2" -- "${@:4}"
+    else
+      echo && gumCom log --level='info' "$2"
+      "${@:4}"
+    fi
     ;;
   skipped) echo -en '\n  ' && gumCom format '🟡 Skipped' ;;
   esac
@@ -127,16 +134,16 @@ fi
 
 if [[ ! -d "$homelab" ]]; then
   # shellcheck disable=SC2016
-  gum spin 'Cloning the repository into `~/homelab`...' -- git clone "$githubUrl" "$homelab"
+  gum run 'Cloning the repository into `~/homelab`...' -- git clone "$githubUrl" "$homelab"
 else
-  gum spin 'Pulling the homelab repository...' -- git -C "$homelab" pull
+  gum run 'Pulling the homelab repository...' -- git -C "$homelab" pull
 fi
 
 sudo -v
 
 
 updateSystem() {
-  gum spin 'Synchronizing package databases...' -- yay -Sy
+  gum run 'Synchronizing package databases...' -- yay -Sy
   if (! yay -Qu &>/dev/null || ! shouldProceed); then
     skip
   fi
@@ -172,7 +179,7 @@ enableServices() {
     skip
   fi
 
-  gum spin 'Enabling services...' -- sudo systemctl enable --now "${services[@]}"
+  gum run 'Enabling services...' -- sudo systemctl enable --now "${services[@]}"
 } && run 'enableServices' '## 🎽 Enable system services'
 
 configureReflector() {
@@ -181,8 +188,8 @@ configureReflector() {
     skip
   fi
 
-  gum spin 'Setting auto country selection...' -- sudo sed -i "s/^# --country France,Germany/--country $country/" /etc/xdg/reflector/reflector.conf
-  gum spin 'Setting sorting by rate...' -- sudo sed -i 's/^--sort age/--sort rate/' /etc/xdg/reflector/reflector.conf
+  gum run 'Setting auto country selection...' -- sudo sed -i "s/^# --country France,Germany/--country $country/" /etc/xdg/reflector/reflector.conf
+  gum run 'Setting sorting by rate...' -- sudo sed -i 's/^--sort age/--sort rate/' /etc/xdg/reflector/reflector.conf
 } && run 'configureReflector' '## 🪞 Configure Reflector'
 
 addToDockerGroup() {
@@ -190,7 +197,7 @@ addToDockerGroup() {
     skip
   fi
 
-  gum spin 'Adding user to Docker group...' -- sudo usermod -aG docker "$USER"
+  gum run 'Adding user to Docker group...' -- sudo usermod -aG docker "$USER"
 } && run 'addToDockerGroup' '## 🐳 Add user to Docker group'
 
 setHostname() {
@@ -199,8 +206,8 @@ setHostname() {
   fi
 
   hostname=$(gum input 'Enter hostname')
-  gum spin 'Setting hostname...' -- sudo hostnamectl set-hostname "${hostname// /-}"
-  gum spin 'Setting pretty hostname...' -- sudo hostnamectl set-hostname --pretty "$hostname"
+  gum run 'Setting hostname...' -- sudo hostnamectl set-hostname "${hostname// /-}"
+  gum run 'Setting pretty hostname...' -- sudo hostnamectl set-hostname --pretty "$hostname"
 } && run 'setHostname' '## 🖥️ Set system hostname'
 
 configureFirewall() {
@@ -208,8 +215,8 @@ configureFirewall() {
     skip
   fi
 
-  gum spin 'Adding Samba and mDNS services...' -- sudo firewall-cmd --add-service={mdns,samba} --permanent
-  gum spin 'Reloading firewall...' -- sudo firewall-cmd --reload
+  gum run 'Adding Samba and mDNS services...' -- sudo firewall-cmd --add-service={mdns,samba} --permanent
+  gum run 'Reloading firewall...' -- sudo firewall-cmd --reload
 } && run 'configureFirewall' '## 🔥 Configure firewall'
 
 configureSshKeys() {
@@ -219,9 +226,9 @@ configureSshKeys() {
 
   mkdir -p "$HOME/.ssh"
   gum write 'Enter SSH public key' >>"$HOME/.ssh/authorized_keys"
-  gum spin 'Disabling password authentication...' -- sudo sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
-  gum spin 'Disabling root login...' -- sudo sed -i 's/^#PermitRootLogin prohibit-password/PermitRootLogin no/' /etc/ssh/sshd_config
-  gum spin 'Restarting SSH service...' -- sudo systemctl restart sshd
+  gum run 'Disabling password authentication...' -- sudo sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+  gum run 'Disabling root login...' -- sudo sed -i 's/^#PermitRootLogin prohibit-password/PermitRootLogin no/' /etc/ssh/sshd_config
+  gum run 'Restarting SSH service...' -- sudo systemctl restart sshd
 } && run 'configureSshKeys' '## 🔑 Configure SSH keys'
 
 configureSudoWithSshAgent() {
@@ -250,11 +257,11 @@ configureNewRelic() {
   fi
 
   newRelicLicenseKey="$(gum input 'Enter New Relic license key')"
-  gum spin 'Creating New Relic configuration...' -- sudo tee /etc/newrelic-infra/newrelic-infra.yml >/dev/null <<EOF
+  gum run 'Creating New Relic configuration...' -- sudo tee /etc/newrelic-infra/newrelic-infra.yml >/dev/null <<EOF
 license_key: $newRelicLicenseKey
 display_name: $(hostnamectl status --pretty)
 EOF
-  gum spin 'Restarting New Relic service...' -- sudo systemctl restart newrelic-infra
+  gum run 'Restarting New Relic service...' -- sudo systemctl restart newrelic-infra
 } && run 'configureNewRelic' '## 📊 Configure New Relic'
 
 configureTailscale() {
@@ -263,7 +270,7 @@ configureTailscale() {
   fi
 
   sudo tailscale up --accept-routes --advertise-exit-node
-  gum spin 'Setting Tailscale hostname...' -- sudo tailscale set --hostname="$(hostnamectl status --pretty)"
+  gum run 'Setting Tailscale hostname...' -- sudo tailscale set --hostname="$(hostnamectl status --pretty)"
 } && run 'configureTailscale' '## 🛣️ Configure Tailscale'
 
 
