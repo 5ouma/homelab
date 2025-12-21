@@ -61,7 +61,13 @@ shouldProceed() {
 }
 
 run() {
+  declare -r func="$(echo "$1" | tr '[:lower:]' '[:upper:]')"
   gum format "$2"
+  if (eval '${SETUP_SKIP_'"$func"':-false}'); then
+    gum skipped
+    return
+  fi
+
   eval '$1'
   if ($skipped); then
     skipped=false
