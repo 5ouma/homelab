@@ -5,12 +5,14 @@ on:
     branches:
       - main
     paths:
+      - setup
       - "**/compose.yml"
       - "**/config/**"
       - .github/workflows/test.yml
       - .env.tmpl
   pull_request:
     paths:
+      - setup
       - "**/compose.yml"
       - "**/config/**"
       - .github/workflows/test.yml
@@ -19,8 +21,59 @@ on:
 permissions: {}
 
 jobs:
-  detect:
+  filter:
+    name: 🔄 Filter Changed Files
+    runs-on: Ubuntu-Slim
+    timeout-minutes: 1
+    outputs:
+      setup: ${{ steps.filter.outputs.setup }}
+      compose: ${{ steps.filter.outputs.compose }}
+      test: ${{ steps.filter.outputs.test }}
+
+    steps:
+      - name: 🚚 Check out repository
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          persist-credentials: false
+
+      - name: 🔄 Filter changed files
+        id: filter
+        uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
+        with:
+          filters: |
+            setup: setup
+            compose:
+              - added|modified: ["**/compose.yml", "**/config/**"]
+            test: .github/workflows/test.yml
+          list-files: shell
+
+  test-setup:
+    name: 🧪 Test setup
+    needs: filter
+    if: ${{ needs.filter.outputs.test == 'true' || needs.filter.outputs.setup == 'true' }}
+    runs-on: Ubuntu-Latest
+    container: greyltc/archlinux-aur:yay-20251221.0.405@sha256:1cfc969e221d9f745e7ec00372be27d168ae0fd81e8157a40e17c906d4318c5e
+    timeout-minutes: 5
+
+    steps:
+      - name: 🚚 Check out repository
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          persist-credentials: false
+
+      - name: 📥 Install with setup
+        run: bash <(curl "https://lab.5ouma.me/${GITHUB_HEAD_REF:-HEAD}") --yes
+        env:
+          SETUP_SKIP_SETHOSTNAME: true
+          SETUP_SKIP_CONFIGURESSHKEYS: true
+          SETUP_SKIP_CONFIGUREBACKUPDRIVE: true
+          SETUP_SKIP_CONFIGURENEWRELIC: true
+          SETUP_SKIP_CONFIGURETAILSCALE: true
+
+  detect-compose:
     name: 🔍 Detect Changed Compose Files
+    needs: filter
+    if: ${{ needs.filter.outputs.test == 'true' || needs.filter.outputs.compose == 'true' }}
     runs-on: Ubuntu-Slim
     timeout-minutes: 1
     outputs:
@@ -38,7 +91,7 @@ jobs:
 
   test:
     name: ${{ matrix.compose.name }}
-    needs: detect
+    needs: detect-compose
     runs-on: Ubuntu-Latest
     defaults:
       run:
@@ -47,7 +100,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        compose: ${{ fromJson(needs.detect.outputs.compose) }}
+        compose: ${{ fromJson(needs.detect-compose.outputs.compose) }}
 
     steps:
       - name: 🚚 Check out repository
