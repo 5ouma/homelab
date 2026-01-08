@@ -62,6 +62,7 @@ services:
     healthcheck:
       test: redis-cli ping || exit 1
       interval: 5s
+      retries: 3
     restart: unless-stopped
 
   backup:

@@ -18,6 +18,7 @@ services:
     healthcheck:
       test: wget --spider -q http://localhost:23232/readyz || exit 1
       interval: 5s
+      retries: 3
     restart: unless-stopped
 
   cloudflare-tunnel:

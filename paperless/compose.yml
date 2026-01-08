@@ -38,6 +38,7 @@ services:
     healthcheck:
       test: pg_isready -d '$DB_DATABASE_NAME' -U '$DB_USERNAME' || exit 1
       interval: 5s
+      retries: 3
     labels:
       docker-volume-backup.exec-label: *paperless_database
       docker-volume-backup.archive-pre: pg_dump -d '$DB_DATABASE_NAME' -U '$DB_USERNAME' -f /tmp/backup/paperless.sql
@@ -49,6 +50,7 @@ services:
     healthcheck:
       test: redis-cli ping || exit 1
       interval: 5s
+      retries: 3
     restart: unless-stopped
 
   backup:
