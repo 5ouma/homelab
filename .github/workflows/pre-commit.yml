@@ -11,7 +11,7 @@ permissions: {}
 jobs:
   pre-commit:
     name: 🚸 pre-commit
-    runs-on: Ubuntu-Slim
+    runs-on: Ubuntu-Latest
     timeout-minutes: 5
 
     steps:
