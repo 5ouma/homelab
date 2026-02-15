@@ -16,6 +16,6 @@ jobs:
 
     steps:
       - name: 🚸 Run pre-commit
-        uses: 5ouma/utils/pre-commit@e3ddd062e52b578a512e70d94994624f5fa914cd # v0.9.0
+        uses: 5ouma/utils/pre-commit@2823e679f753e4f03cd986c2f610757cfaecfd44 # v0.9.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
