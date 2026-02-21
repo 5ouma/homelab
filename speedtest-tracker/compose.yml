@@ -12,6 +12,7 @@ services:
       DB_USERNAME: $DB_USERNAME
       DB_PASSWORD: $DB_PASSWORD
       SPEEDTEST_SCHEDULE: 0 * * * *
+      SPEEDTEST_SERVERS: $SPEEDTEST_SERVERS
       DISPLAY_TIMEZONE: JST
     depends_on:
       database:
