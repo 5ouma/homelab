@@ -16,6 +16,7 @@ export GUM_WRITE_CURSOR_FOREGROUND='33'
 declare executed=false
 declare skipped=false
 declare goThrough=false
+declare pacmanArgs=(--noconfirm)
 
 getGum() {
   declare -r gumVer='0.17.0'
@@ -124,6 +125,7 @@ fi
 
 if (! $goThrough); then
   gum confirm "Let's start setup!" 'Yes!' 'No' || exit 1
+  pacmanArgs=()
 fi
 
 if [[ ! -d "$homelab" ]]; then
@@ -142,7 +144,7 @@ updateSystem() {
     skip
   fi
 
-  yay -Su "$($goThrough && echo '--noconfirm')"
+  yay -Su "${pacmanArgs[@]}"
 } && run 'updateSystem' '## 🔧 Update system'
 
 installPackages() {
@@ -151,7 +153,7 @@ installPackages() {
     skip
   fi
 
-  yay -S --needed "$($goThrough && echo '--noconfirm')" "${packages[@]}"
+  yay -S --needed "${pacmanArgs[@]}" "${packages[@]}"
 } && run 'installPackages' '## 📦 Install packages'
 
 updateNewRelicInfra() {
@@ -163,8 +165,8 @@ updateNewRelicInfra() {
 
   cd "$HOME/.cache/yay/newrelic-infra"
   ./update.sh
-  makepkg -sic "$($goThrough && echo '--noconfirm')"
-  yay -Sc "$($goThrough && echo '--noconfirm')"
+  makepkg -sic "${pacmanArgs[@]}"
+  yay -Sc "${pacmanArgs[@]}"
 } && run 'updateNewRelicInfra' '## ⬆️ Update New Relic infrastructure agent'
 
 enableServices() {
