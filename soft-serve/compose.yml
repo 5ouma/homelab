@@ -3,7 +3,7 @@ name: soft-serve
 services:
   server:
     container_name: soft-serve_server
-    image: docker.io/charmcli/soft-serve:v0.11.3@sha256:c65248271a9546e2fba9478900dd6114154339aca132c72f495b853c6b1d71b2
+    image: docker.io/charmcli/soft-serve:v0.11.5@sha256:96542841967259b00d3352fcf1c68b8a26ec73e08942317cc332b22ec8d70a6d
     environment:
       SOFT_SERVE_INITIAL_ADMIN_KEYS: $SOFT_SERVE_INITIAL_ADMIN_KEYS
       SOFT_SERVE_NAME: $SOFT_SERVE_NAME
