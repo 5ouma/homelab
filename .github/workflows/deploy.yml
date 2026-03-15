@@ -33,6 +33,7 @@ jobs:
   fetch:
     name: 🔄 Fetch Repository
     runs-on: Ubuntu-Latest
+    environment: Deploy
     timeout-minutes: 1
 
     steps:
@@ -60,6 +61,7 @@ jobs:
     name: ${{ matrix.compose.name }}
     needs: [detect, fetch]
     runs-on: Ubuntu-Latest
+    environment: Deploy
     timeout-minutes: 5
     strategy:
       fail-fast: false
@@ -89,6 +91,7 @@ jobs:
     name: 🧹 Cleanup Docker Images and Volumes
     needs: deploy
     runs-on: Ubuntu-Latest
+    environment: Deploy
     timeout-minutes: 1
 
     steps:
