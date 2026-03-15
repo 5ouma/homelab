@@ -24,8 +24,6 @@ services:
           mkdir -p upload library thumbs encoded-video profile backups &&
           touch {upload,library,thumbs,encoded-video,profile,backups}/.immich'
         working_dir: *data
-    ports:
-      - 2283:2283
     depends_on:
       database:
         condition: service_healthy
