@@ -32,6 +32,8 @@ jobs:
 
   fetch:
     name: 🔄 Fetch Repository
+    permissions:
+      id-token: write
     runs-on: Ubuntu-Latest
     environment: Deploy
     timeout-minutes: 1
@@ -41,7 +43,7 @@ jobs:
         uses: tailscale/github-action@306e68a486fd2350f2bfc3b19fcd143891a4a2d8 # v4.1.2
         with:
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-          oauth-secret: ${{ secrets.TS_OAUTH_CLIENT_SECRET }}
+          audience: ${{ secrets.TS_AUDIENCE }}
           tags: tag:actions
 
       - name: 🔐 SSH to fetch
@@ -59,6 +61,8 @@ jobs:
 
   deploy:
     name: ${{ matrix.compose.name }}
+    permissions:
+      id-token: write
     needs: [detect, fetch]
     runs-on: Ubuntu-Latest
     environment: Deploy
@@ -73,7 +77,7 @@ jobs:
         uses: tailscale/github-action@306e68a486fd2350f2bfc3b19fcd143891a4a2d8 # v4.1.2
         with:
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-          oauth-secret: ${{ secrets.TS_OAUTH_CLIENT_SECRET }}
+          audience: ${{ secrets.TS_AUDIENCE }}
           tags: tag:actions
 
       - name: 🔐 SSH to deploy
@@ -89,6 +93,8 @@ jobs:
 
   cleanup:
     name: 🧹 Cleanup Docker Images and Volumes
+    permissions:
+      id-token: write
     needs: deploy
     runs-on: Ubuntu-Latest
     environment: Deploy
@@ -99,7 +105,7 @@ jobs:
         uses: tailscale/github-action@306e68a486fd2350f2bfc3b19fcd143891a4a2d8 # v4.1.2
         with:
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-          oauth-secret: ${{ secrets.TS_OAUTH_CLIENT_SECRET }}
+          audience: ${{ secrets.TS_AUDIENCE }}
           tags: tag:actions
 
       - name: 🔐 SSH to cleanup
