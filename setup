@@ -148,7 +148,7 @@ updateSystem() {
 } && run 'updateSystem' '## 🔧 Update system'
 
 installPackages() {
-  declare -r packages=(docker docker-compose firewalld jq newrelic-infra pacman-contrib pam_ssh_agent_auth reflector tailscale)
+  declare -r packages=(docker docker-compose firewalld jq newrelic-infra pacman-contrib reflector tailscale)
   if (yay -Q "${packages[@]}" &>/dev/null || ! shouldProceed); then
     skip
   fi
@@ -170,7 +170,7 @@ updateNewRelicInfra() {
 } && run 'updateNewRelicInfra' '## ⬆️ Update New Relic infrastructure agent'
 
 enableServices() {
-  declare -r services=(docker firewalld newrelic-infra paccache.timer reflector.timer sshd tailscaled)
+  declare -r services=(docker firewalld newrelic-infra paccache.timer reflector.timer tailscaled)
   if (systemctl is-enabled "${services[@]}" | awk '$0 == "disabled" { exit 1 }' || ! shouldProceed); then
     skip
   fi
@@ -215,28 +215,6 @@ configureFirewall() {
   gum spin 'Reloading firewall...' -- sudo firewall-cmd --reload
 } && run 'configureFirewall' '## 🔥 Configure firewall'
 
-configureSshKeys() {
-  if [[ -f "$HOME/.ssh/authorized_keys" ]] && (grep -q 'PasswordAuthentication no' /etc/ssh/sshd_config && grep -q 'PermitRootLogin no' /etc/ssh/sshd_config || ! shouldProceed); then
-    skip
-  fi
-
-  mkdir -p "$HOME/.ssh"
-  gum write 'Enter SSH public key' >>"$HOME/.ssh/authorized_keys"
-  gum spin 'Disabling password authentication...' -- sudo sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
-  gum spin 'Disabling root login...' -- sudo sed -i 's/^#PermitRootLogin prohibit-password/PermitRootLogin no/' /etc/ssh/sshd_config
-  gum spin 'Restarting SSH service...' -- sudo systemctl restart sshd
-} && run 'configureSshKeys' '## 🔑 Configure SSH keys'
-
-configureSudoWithSshAgent() {
-  declare -r sudoPam='auth sufficient pam_ssh_agent_auth.so file=~/.ssh/authorized_keys' sudoersSshEnv='Defaults env_keep += "SSH_AUTH_SOCK"'
-  if (sudo grep -q "$sudoPam" /etc/pam.d/sudo && sudo grep -q "$sudoersSshEnv" /etc/sudoers || ! shouldProceed); then
-    skip
-  fi
-
-  sudo grep -q "$sudoPam" /etc/pam.d/sudo || sudo sed -i "/#%PAM-*/a $sudoPam" /etc/pam.d/sudo
-  sudo grep -q "$sudoersSshEnv" /etc/sudoers || echo "$sudoersSshEnv" | sudo tee -a /etc/sudoers >/dev/null
-} && run 'configureSudoWithSshAgent' '## 👑 Configure sudo with SSH agent'
-
 configureBackupDrive() {
   if (grep -q /mnt/backup /etc/fstab || ! shouldProceed); then
     skip
@@ -265,7 +243,7 @@ configureTailscale() {
     skip
   fi
 
-  sudo tailscale up --accept-routes --advertise-exit-node
+  sudo tailscale up --accept-routes --advertise-exit-node --ssh
   gum spin 'Setting Tailscale hostname...' -- sudo tailscale set --hostname="$(hostnamectl status --pretty)"
 } && run 'configureTailscale' '## 🛣️ Configure Tailscale'
 
