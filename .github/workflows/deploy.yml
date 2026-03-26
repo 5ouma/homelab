@@ -35,7 +35,9 @@ jobs:
     permissions:
       id-token: write
     runs-on: Ubuntu-Latest
-    environment: Deploy
+    environment:
+      name: Deploy
+      deployment: false
     timeout-minutes: 1
 
     steps:
@@ -65,7 +67,9 @@ jobs:
       id-token: write
     needs: [detect, fetch]
     runs-on: Ubuntu-Latest
-    environment: Deploy
+    environment:
+      name: Deploy
+      deployment: false
     timeout-minutes: 5
     strategy:
       fail-fast: false
@@ -97,7 +101,9 @@ jobs:
       id-token: write
     needs: deploy
     runs-on: Ubuntu-Latest
-    environment: Deploy
+    environment:
+      name: Deploy
+      deployment: false
     timeout-minutes: 1
 
     steps:
