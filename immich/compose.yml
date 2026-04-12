@@ -25,6 +25,8 @@ services:
           touch {upload,library,thumbs,encoded-video,profile,backups}/.immich'
         working_dir: *data
     depends_on:
+      machine-learning:
+        condition: service_healthy
       database:
         condition: service_healthy
       redis:
