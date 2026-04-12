@@ -24,14 +24,14 @@ services:
 
   database:
     container_name: &speedtest-tracker_database speedtest-tracker_database
-    image: docker.io/postgres:17.9@sha256:7ad98329d513dd497293b951c195ca354274a77f12ddbbbbf85e68a811823d72
+    image: docker.io/postgres:18.3@sha256:52e6ffd11fddd081ae63880b635b2a61c14008c17fc98cdc7ce5472265516dd0
     environment:
       POSTGRES_HOST: $DB_HOSTNAME
       POSTGRES_DB: $DB_DATABASE_NAME
       POSTGRES_USER: $DB_USERNAME
       POSTGRES_PASSWORD: $DB_PASSWORD
     volumes:
-      - database:/var/lib/postgresql/data
+      - database:/var/lib/postgresql
       - database-backup:/tmp/backup
     healthcheck:
       test: pg_isready -d '$DB_DATABASE_NAME' -U '$DB_USERNAME' || exit 1
