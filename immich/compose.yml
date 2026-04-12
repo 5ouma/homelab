@@ -40,14 +40,14 @@ services:
 
   database:
     container_name: &immich_database immich_database
-    image: ghcr.io/immich-app/postgres:17-vectorchord0.4.3-pgvectors0.3.0@sha256:6b725ce331a1db016c75ca13e4cfc35435718f3fe975ff75a9c11debebbe21d7
+    image: ghcr.io/immich-app/postgres:18-vectorchord0.5.3-pgvector0.8.1@sha256:115130d0dbada418430f33f798fe8b9dbb8e98f54def25d06d671da795c2e7ce
     environment:
       POSTGRES_HOST: $DB_HOSTNAME
       POSTGRES_DB: $DB_DATABASE_NAME
       POSTGRES_USER: $DB_USERNAME
       POSTGRES_PASSWORD: $DB_PASSWORD
     volumes:
-      - database:/var/lib/postgresql/data
+      - database:/var/lib/postgresql
       - database-backup:/tmp/backup
     labels:
       docker-volume-backup.exec-label: *immich_database
