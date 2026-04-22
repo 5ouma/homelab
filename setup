@@ -250,6 +250,7 @@ configureTailscale() {
 
 if ($executed); then
   gum format '# 🎉 Homelab setup completed!'
+  gum confirm "Reboot the system?" 'Yes' 'No' && sudo reboot
 else
   gum format '# 🧊 Nothing has changed'
 fi
