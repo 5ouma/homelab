@@ -16,7 +16,7 @@ services:
       - source: git_config
         target: /root/.gitconfig
     healthcheck:
-      test: wget --spider -q http://localhost:23232/readyz || exit 1
+      test: [CMD, wget, --spider, -q, http://localhost:23232/readyz]
       interval: 5s
       retries: 3
     restart: unless-stopped
@@ -24,7 +24,7 @@ services:
   cloudflare-tunnel:
     container_name: soft-serve_cloudflare-tunnel
     image: docker.io/cloudflare/cloudflared:2026.3.0@sha256:6b599ca3e974349ead3286d178da61d291961182ec3fe9c505e1dd02c8ac31b0
-    command: tunnel --no-autoupdate run
+    command: [tunnel, --no-autoupdate, run]
     environment:
       TUNNEL_TOKEN: $TUNNEL_TOKEN
     restart: unless-stopped
