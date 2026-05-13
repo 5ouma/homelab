@@ -43,7 +43,7 @@ jobs:
     defaults:
       run:
         working-directory: ${{ matrix.compose.dir }}
-    timeout-minutes: 3
+    timeout-minutes: 5
     strategy:
       fail-fast: false
       matrix:
@@ -58,8 +58,11 @@ jobs:
       - name: ♻️ Copy .env
         run: |
           for dir in "$PWD" "$GITHUB_WORKSPACE"; do
-            sed -e 's/=$/=./g' "$dir/.env.tmpl" >"$dir/.env"
+            sed \
+              -e 's@_URL=$@_URL=http://example.com@' \
+              -e 's/=$/=./g' \
+              "$dir/.env.tmpl" >"$dir/.env"
           done
 
       - name: 🐳 Start containers
-        run: docker compose up -d --quiet-pull
+        run: docker compose up --quiet-pull --wait
