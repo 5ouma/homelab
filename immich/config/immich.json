@@ -1,21 +1,5 @@
 {
   "backup": { "database": { "enabled": false } },
-  "image": {
-    "thumbnail": { "format": "webp", "size": 1080, "quality": 80 },
-    "preview": { "format": "webp", "size": 2160, "quality": 100 },
-    "fullsize": { "enabled": true, "format": "webp", "quality": 100 },
-    "extractEmbedded": true
-  },
-  "job": {
-    "thumbnailGeneration": { "concurrency": 10 },
-    "metadataExtraction": { "concurrency": 10 },
-    "library": { "concurrency": 10 },
-    "sidecar": { "concurrency": 10 },
-    "smartSearch": { "concurrency": 5 },
-    "faceDetection": { "concurrency": 5 },
-    "videoConversion": { "concurrency": 3 },
-    "migration": { "concurrency": 10 }
-  },
   "library": { "scan": { "enabled": false } },
   "machineLearning": { "urls": ["http://machine-learning:3003"] },
   "metadata": { "faces": { "import": true } },
@@ -25,10 +9,5 @@
     "hashVerificationEnabled": true,
     "template": "{{y}}/{{MM}}-{{dd}}/{{filename}}"
   },
-  "ffmpeg": {
-    "transcode": "all",
-    "acceptedVideoCodecs": ["h264", "hevc", "vp9", "av1"],
-    "targetResolution": "original",
-    "twoPass": true
-  }
+  "ffmpeg": { "targetResolution": "original" }
 }
