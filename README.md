@@ -44,6 +44,7 @@
 
 3. 📝 Follow the instructions below
 
+   - [🟠 Grafana](./grafana)
    - [🌸 Immich](./immich)
    - [🪐 Misskey](./misskey)
    - [🍃 Paperless](./paperless)

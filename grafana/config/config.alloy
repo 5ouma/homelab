@@ -1,0 +1,223 @@
+local.file "hostname" {
+  filename = "/etc/hostname"
+}
+
+prometheus.exporter.unix "node" {
+  rootfs_path  = "/rootfs"
+  sysfs_path   = "/sys"
+  procfs_path  = "/proc"
+
+  disable_collectors = ["btrfs", "xfs", "zfs", "ipvs", "infiniband"]
+  enable_collectors  = ["meminfo", "processes", "hwmon", "systemd"]
+
+  filesystem {
+    mount_points_exclude = "^/(dev|proc|run/credentials/.+|sys|var/lib/docker/.+)($|/)"
+  }
+}
+
+prometheus.exporter.process "procs" {
+  matcher {
+    name    = "{{.Comm}}"
+    cmdline = [".+"]
+  }
+  track_children = false
+  track_threads  = false
+}
+
+discovery.relabel "node" {
+  targets = prometheus.exporter.unix.node.targets
+  rule {
+    target_label = "job"
+    replacement  = "node"
+  }
+  rule {
+    target_label = "instance"
+    replacement  = local.file.hostname.content
+  }
+}
+
+discovery.relabel "procs" {
+  targets = prometheus.exporter.process.procs.targets
+  rule {
+    target_label = "job"
+    replacement  = "processes"
+  }
+  rule {
+    target_label = "instance"
+    replacement  = local.file.hostname.content
+  }
+}
+
+prometheus.scrape "node" {
+  targets         = discovery.relabel.node.output
+  forward_to      = [prometheus.remote_write.cloud.receiver]
+  scrape_interval = "15s"
+}
+
+prometheus.scrape "procs" {
+  targets         = discovery.relabel.procs.output
+  forward_to      = [prometheus.remote_write.cloud.receiver]
+  scrape_interval = "15s"
+}
+
+prometheus.scrape "smartctl" {
+  targets = [{
+    __address__ = "smartctl-exporter:9633",
+    job         = "smartctl",
+    instance    = local.file.hostname.content,
+  }]
+  forward_to      = [prometheus.remote_write.cloud.receiver]
+  scrape_interval = "15s"
+}
+
+prometheus.scrape "cadvisor" {
+  targets = [{
+    __address__ = "cadvisor:8080",
+    job         = "cadvisor",
+    instance    = local.file.hostname.content,
+  }]
+  forward_to      = [prometheus.relabel.cadvisor.receiver]
+  scrape_interval = "15s"
+}
+
+prometheus.relabel "cadvisor" {
+  forward_to = [prometheus.remote_write.cloud.receiver]
+
+  rule {
+    source_labels = ["__name__"]
+    action        = "keep"
+    regex         = "container_(cpu|memory|network|fs)_.*|container_health_state|machine_.*"
+  }
+
+  rule {
+    source_labels = ["name"]
+    action        = "drop"
+    regex         = "^$"
+  }
+
+  rule {
+    source_labels = ["id"]
+    action        = "keep"
+    regex         = ".+\\.scope"
+  }
+
+  rule {
+    regex  = "__name__|job|instance|name|id|image|container_label_com_docker_compose_service|container_label_com_docker_compose_project"
+    action = "labelkeep"
+  }
+}
+
+prometheus.remote_write "cloud" {
+  endpoint {
+    url = env("PROMETHEUS_URL")
+    basic_auth {
+      username = env("PROMETHEUS_USERNAME")
+      password = env("GRAFANA_CLOUD_API_KEY")
+    }
+  }
+}
+
+loki.source.journal "system" {
+  path       = "/var/log/journal"
+  max_age    = "12h"
+  forward_to = [loki.process.journal_level.receiver]
+  labels     = {
+    job      = "systemd-journal",
+    instance = local.file.hostname.content,
+  }
+}
+
+loki.process "journal_level" {
+  stage.match {
+    selector = `{job="systemd-journal"} |~ "(?i)\\bdebug\\b"`
+    stage.static_labels { values = { detected_level = "debug" } }
+  }
+  stage.match {
+    selector = `{job="systemd-journal"} |~ "(?i)\\binfo\\b"`
+    stage.static_labels { values = { detected_level = "info" } }
+  }
+  stage.match {
+    selector = `{job="systemd-journal"} |~ "(?i)\\bwarn(ing)?\\b"`
+    stage.static_labels { values = { detected_level = "warn" } }
+  }
+  stage.match {
+    selector = `{job="systemd-journal"} |~ "(?i)\\b(error|err|critical|fatal|emerg)\\b"`
+    stage.static_labels { values = { detected_level = "error" } }
+  }
+  forward_to = [loki.write.cloud.receiver]
+}
+
+discovery.docker "containers" {
+  host = "unix:///var/run/docker.sock"
+}
+
+discovery.relabel "docker_logs" {
+  targets = discovery.docker.containers.targets
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex         = "/(.*)"
+    target_label  = "container"
+  }
+  rule {
+    source_labels = ["__meta_docker_container_image"]
+    target_label  = "image"
+  }
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_project"]
+    target_label  = "compose_stack"
+  }
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_service"]
+    target_label  = "compose_service"
+  }
+  rule {
+    target_label = "job"
+    replacement  = "docker"
+  }
+  rule {
+    target_label = "instance"
+    replacement  = local.file.hostname.content
+  }
+}
+
+loki.source.docker "containers" {
+  host       = "unix:///var/run/docker.sock"
+  targets    = discovery.relabel.docker_logs.output
+  forward_to = [loki.process.docker_level.receiver]
+}
+
+loki.process "docker_level" {
+  stage.json {
+    expressions = { detected_level = "level" }
+  }
+  stage.labels {
+    values = { detected_level = "detected_level" }
+  }
+  stage.match {
+    selector = `{job="docker", detected_level=""} |~ "(?i)\\bdebug\\b"`
+    stage.static_labels { values = { detected_level = "debug" } }
+  }
+  stage.match {
+    selector = `{job="docker", detected_level=""} |~ "(?i)\\binfo\\b"`
+    stage.static_labels { values = { detected_level = "info" } }
+  }
+  stage.match {
+    selector = `{job="docker", detected_level=""} |~ "(?i)\\bwarn(ing)?\\b"`
+    stage.static_labels { values = { detected_level = "warn" } }
+  }
+  stage.match {
+    selector = `{job="docker", detected_level=""} |~ "(?i)\\b(error|critical|fatal)\\b"`
+    stage.static_labels { values = { detected_level = "error" } }
+  }
+  forward_to = [loki.write.cloud.receiver]
+}
+
+loki.write "cloud" {
+  endpoint {
+    url = env("LOKI_URL")
+    basic_auth {
+      username = env("LOKI_USERNAME")
+      password = env("GRAFANA_CLOUD_API_KEY")
+    }
+  }
+}
