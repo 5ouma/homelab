@@ -62,7 +62,7 @@ prometheus.scrape "procs" {
 
 prometheus.scrape "smartctl" {
   targets = [{
-    __address__ = "smartctl-exporter:9633",
+    __address__ = "localhost:9633",
     job         = "smartctl",
     instance    = local.file.hostname.content,
   }]
@@ -72,7 +72,7 @@ prometheus.scrape "smartctl" {
 
 prometheus.scrape "cadvisor" {
   targets = [{
-    __address__ = "cadvisor:8080",
+    __address__ = "localhost:8080",
     job         = "cadvisor",
     instance    = local.file.hostname.content,
   }]

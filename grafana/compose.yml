@@ -31,6 +31,7 @@ services:
         target: /etc/hostname
       - source: alloy_config
         target: /etc/alloy/config.alloy
+    network_mode: host
     privileged: true
     healthcheck:
       test: [CMD, echo, GET /-/healthy, ">/dev/tcp/localhost/12345"]
@@ -48,6 +49,8 @@ services:
     image: docker.io/prometheuscommunity/smartctl-exporter:v0.14.0@sha256:cfe22c36d7d2fac48ebf619707305acb65eb0fb670656eb80f356e606d782bc1
     volumes:
       - /dev:/dev
+    ports:
+      - 9633:9633
     user: root
     privileged: true
     healthcheck:
@@ -70,6 +73,8 @@ services:
         target: /var/run
       - source: disk
         target: /dev/disk
+    ports:
+      - 8080:8080
     privileged: true
     healthcheck:
       test: [CMD, wget, --spider, -q, http://localhost:8080/healthz]
