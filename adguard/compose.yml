@@ -1,0 +1,62 @@
+name: adguard
+
+services:
+  home:
+    container_name: adguard_home
+    image: docker.io/adguard/adguardhome:v0.107.78@sha256:1ea34eafe5dc691007946e8eaab7bf46b0de9412f39213d8c06e48b53bf9a6c5
+    volumes:
+      - work:/opt/adguardhome/work
+      - ./config/adguard:/opt/adguardhome/conf
+    healthcheck:
+      test:
+        [
+          CMD-SHELL,
+          nslookup example.com 127.0.0.1 || wget --spider -q http://localhost:3000,
+        ]
+      interval: 5s
+      retries: 3
+    restart: unless-stopped
+
+  backup:
+    container_name: adguard_backup
+    image: docker.io/offen/docker-volume-backup:v2.48.2@sha256:19102d8e59eb1d598cf8c647c2b21100abaadc5a1c808ac643fa612e323c3013
+    environment:
+      BACKUP_CRON_EXPRESSION: 0 5 * * *
+      R2_PATH: $R2_PATH
+      BACKUP_RETENTION_DAYS: 14
+      GPG_PASSPHRASE: $PASSPHRASE
+    env_file:
+      - path: ../.env
+        required: true
+    volumes:
+      - work-backup:/backup/work:ro
+      - $BACKUP_DIR/work:/archive/work
+      - ./config/adguard:/backup/config:ro
+      - $BACKUP_DIR/config:/archive/config
+    configs:
+      - source: timezone
+        target: /etc/localtime
+      - source: backup_config
+        target: /etc/dockervolumebackup/conf.d
+    depends_on:
+      home:
+        condition: service_healthy
+    restart: unless-stopped
+
+  cloudflare-tunnel:
+    container_name: adguard_cloudflare-tunnel
+    image: docker.io/cloudflare/cloudflared:2026.7.2@sha256:4f6655284ab3d252b7f28fedb19fe6c8fc82ee5b1295c20ac74d475e5398a52d
+    command: [tunnel, --no-autoupdate, run]
+    environment:
+      TUNNEL_TOKEN: $TUNNEL_TOKEN
+    restart: unless-stopped
+
+volumes:
+  work:
+  work-backup:
+
+configs:
+  timezone:
+    file: /etc/localtime
+  backup_config:
+    file: ./config/backup

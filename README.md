@@ -44,6 +44,7 @@
 
 3. 📝 Follow the instructions below
 
+   - [🛡️ AdGuard](./adguard)
    - [🟠 Grafana](./grafana)
    - [🌸 Immich](./immich)
    - [🪐 Misskey](./misskey)
