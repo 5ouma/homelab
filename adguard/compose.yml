@@ -25,6 +25,7 @@ services:
       R2_PATH: $R2_PATH
       BACKUP_RETENTION_DAYS: 14
       GPG_PASSPHRASE: $PASSPHRASE
+      TZ: Asia/Tokyo
     env_file:
       - path: ../.env
         required: true
@@ -34,8 +35,6 @@ services:
       - ./config/adguard:/backup/config:ro
       - $BACKUP_DIR/config:/archive/config
     configs:
-      - source: timezone
-        target: /etc/localtime
       - source: backup_config
         target: /etc/dockervolumebackup/conf.d
     depends_on:
@@ -55,7 +54,5 @@ volumes:
   work:
 
 configs:
-  timezone:
-    file: /etc/localtime
   backup_config:
     file: ./config/backup

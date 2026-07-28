@@ -73,6 +73,7 @@ services:
       R2_PATH: $R2_PATH
       BACKUP_RETENTION_DAYS: 14
       GPG_PASSPHRASE: $DB_PASSWORD
+      TZ: Asia/Tokyo
     env_file:
       - path: ../.env
         required: true
@@ -85,8 +86,6 @@ services:
     configs:
       - source: docker-socket
         target: /var/run/docker.sock
-      - source: timezone
-        target: /etc/localtime
       - source: backup_config
         target: /etc/dockervolumebackup/conf.d
     depends_on:

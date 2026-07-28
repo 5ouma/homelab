@@ -54,6 +54,7 @@ services:
       BACKUP_RETENTION_DAYS: 14
       GPG_PASSPHRASE: $DB_PASSWORD
       EXEC_LABEL: *speedtest-tracker_database
+      TZ: Asia/Tokyo
     env_file:
       - path: ../.env
         required: true
@@ -68,8 +69,6 @@ services:
     configs:
       - source: docker-socket
         target: /var/run/docker.sock
-      - source: timezone
-        target: /etc/localtime
     depends_on:
       database:
         condition: service_healthy
@@ -90,5 +89,3 @@ volumes:
 configs:
   docker-socket:
     file: /var/run/docker.sock
-  timezone:
-    file: /etc/localtime
