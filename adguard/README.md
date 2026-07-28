@@ -24,7 +24,7 @@
 2. 📝 Enable insecure DoH
 
    ```sh
-   yq -i '.http.doh.insecure_enabled = true' AdGuardHome.yaml
+   yq -i '.http.doh.insecure_enabled = true' config/adguard/AdGuardHome.yaml
    ```
 
 3. 🚀 Start the Docker Compose
