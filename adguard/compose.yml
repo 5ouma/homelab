@@ -29,7 +29,7 @@ services:
       - path: ../.env
         required: true
     volumes:
-      - work-backup:/backup/work:ro
+      - work:/backup/work:ro
       - $BACKUP_DIR/work:/archive/work
       - ./config/adguard:/backup/config:ro
       - $BACKUP_DIR/config:/archive/config
@@ -53,7 +53,6 @@ services:
 
 volumes:
   work:
-  work-backup:
 
 configs:
   timezone:
