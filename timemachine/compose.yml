@@ -3,7 +3,7 @@ name: timemachine
 services:
   timemachine:
     container_name: timemachine
-    image: docker.io/mbentley/timemachine:smb-20260127@sha256:d76e9b8ca8870fc58694481e5981a6a1b96d0dfb6ff0bd5dbfb5747d436bb9c7
+    image: docker.io/mbentley/timemachine:smb-20260802@sha256:333d42234c281acd7f1b40bb7458780b246de3dd4f568eca1ff36354760550f6
     environment:
       TM_USERNAME: $TM_USERNAME
       PASSWORD: $TM_PASSWORD
