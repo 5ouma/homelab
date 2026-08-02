@@ -35,8 +35,8 @@ services:
     privileged: true
     healthcheck:
       test: [CMD, echo, GET /-/healthy, ">/dev/tcp/localhost/12345"]
-      interval: 5s
-      retries: 3
+      interval: 10s
+      retries: 5
     depends_on:
       smartctl-exporter:
         condition: service_healthy
@@ -55,8 +55,8 @@ services:
     privileged: true
     healthcheck:
       test: [CMD, wget, --spider, -q, http://localhost:9633/metrics]
-      interval: 5s
-      retries: 3
+      interval: 10s
+      retries: 5
     restart: unless-stopped
 
   cadvisor:
@@ -78,8 +78,8 @@ services:
     privileged: true
     healthcheck:
       test: [CMD, wget, --spider, -q, http://localhost:8080/healthz]
-      interval: 5s
-      retries: 3
+      interval: 10s
+      retries: 5
     restart: unless-stopped
 
 volumes:

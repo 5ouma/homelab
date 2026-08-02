@@ -17,8 +17,8 @@ services:
         target: /root/.gitconfig
     healthcheck:
       test: [CMD, wget, --spider, -q, http://localhost:23232/readyz]
-      interval: 5s
-      retries: 3
+      interval: 10s
+      retries: 5
     restart: unless-stopped
 
   cloudflare-tunnel:

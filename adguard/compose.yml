@@ -13,8 +13,8 @@ services:
           CMD-SHELL,
           nslookup example.com 127.0.0.1 || wget --spider -q http://localhost:3000,
         ]
-      interval: 5s
-      retries: 3
+      interval: 10s
+      retries: 5
     restart: unless-stopped
 
   backup:

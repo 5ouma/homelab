@@ -18,8 +18,8 @@ services:
         condition: service_healthy
     healthcheck:
       test: [CMD, curl, -f, http://localhost/api/healthcheck]
-      interval: 5s
-      retries: 3
+      interval: 10s
+      retries: 5
     restart: unless-stopped
 
   database:
@@ -35,8 +35,8 @@ services:
       - database-backup:/tmp/backup
     healthcheck:
       test: [CMD, pg_isready, -d, $DB_DATABASE_NAME, -U, $DB_USERNAME]
-      interval: 5s
-      retries: 3
+      interval: 10s
+      retries: 5
     labels:
       docker-volume-backup.exec-label: *speedtest-tracker_database
       docker-volume-backup.archive-pre: pg_dump -d '$DB_DATABASE_NAME' -U '$DB_USERNAME' -f /tmp/backup/speedtest-tracker.sql
