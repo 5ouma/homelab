@@ -1,0 +1,32 @@
+{
+  "ipp": {
+    "allowDownload": 1,
+    "showHomePage": false,
+    "gallery": {
+      "singleImage": true,
+      "singleItemAutoOpen": false,
+      "showDescription": true,
+      "showExpiryDate": true,
+      "expiryDateFormat": "MMMM D, YYYY",
+      "groupByDate": "day"
+    },
+    "showMetadata": {
+      "description": { "sidebar": true },
+      "exif": {
+        "dateTimeOriginal": true,
+        "timeZone": true,
+        "fileName": true,
+        "dimensions": true,
+        "fileSize": true,
+        "make": true,
+        "model": true,
+        "lensModel": true,
+        "exposureTime": true,
+        "iso": true,
+        "fNumber": true,
+        "focalLength": true
+      },
+      "location": { "city": true, "state": true, "country": true }
+    }
+  }
+}

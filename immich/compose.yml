@@ -65,6 +65,23 @@ services:
       retries: 5
     restart: unless-stopped
 
+  public-proxy:
+    container_name: immich_public-proxy
+    image: docker.io/alangrainger/immich-public-proxy:3.2.0@sha256:5af9a12815699942c3055f0f90608c75f955224963fc5912ea221f6ec26ccb8c
+    environment:
+      IMMICH_URL: http://server:2283
+    configs:
+      - source: public-proxy_config
+        target: /app/config.json
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost:3000/share/healthcheck]
+      start_period: 10s
+      timeout: 5s
+    depends_on:
+      server:
+        condition: service_healthy
+    restart: unless-stopped
+
   backup:
     container_name: immich_backup
     image: docker.io/offen/docker-volume-backup:v2.48.2@sha256:19102d8e59eb1d598cf8c647c2b21100abaadc5a1c808ac643fa612e323c3013
@@ -113,5 +130,7 @@ configs:
     file: /etc/localtime
   immich_config:
     file: ./config/immich.json
+  public-proxy_config:
+    file: ./config/public-proxy.json
   backup_config:
     file: ./config/backup
