@@ -3,9 +3,9 @@ local.file "hostname" {
 }
 
 prometheus.exporter.unix "node" {
-  rootfs_path  = "/rootfs"
-  sysfs_path   = "/sys"
-  procfs_path  = "/proc"
+  rootfs_path = "/rootfs"
+  sysfs_path  = "/sys"
+  procfs_path = "/proc"
 
   disable_collectors = ["btrfs", "xfs", "zfs", "ipvs", "infiniband"]
   enable_collectors  = ["meminfo", "processes", "hwmon", "systemd"]
@@ -26,10 +26,12 @@ prometheus.exporter.process "procs" {
 
 discovery.relabel "node" {
   targets = prometheus.exporter.unix.node.targets
+
   rule {
     target_label = "job"
     replacement  = "node"
   }
+
   rule {
     target_label = "instance"
     replacement  = local.file.hostname.content
@@ -38,10 +40,12 @@ discovery.relabel "node" {
 
 discovery.relabel "procs" {
   targets = prometheus.exporter.process.procs.targets
+
   rule {
     target_label = "job"
     replacement  = "processes"
   }
+
   rule {
     target_label = "instance"
     replacement  = local.file.hostname.content
@@ -110,6 +114,7 @@ prometheus.relabel "cadvisor" {
 prometheus.remote_write "cloud" {
   endpoint {
     url = env("PROMETHEUS_URL")
+
     basic_auth {
       username = env("PROMETHEUS_USERNAME")
       password = env("GRAFANA_CLOUD_API_KEY")
@@ -130,19 +135,34 @@ loki.source.journal "system" {
 loki.process "journal_level" {
   stage.match {
     selector = `{job="systemd-journal"} |~ "(?i)\\bdebug\\b"`
-    stage.static_labels { values = { detected_level = "debug" } }
+
+    stage.static_labels {
+      values = {detected_level = "debug"}
+    }
   }
+
   stage.match {
     selector = `{job="systemd-journal"} |~ "(?i)\\binfo\\b"`
-    stage.static_labels { values = { detected_level = "info" } }
+
+    stage.static_labels {
+      values = {detected_level = "info"}
+    }
   }
+
   stage.match {
     selector = `{job="systemd-journal"} |~ "(?i)\\bwarn(ing)?\\b"`
-    stage.static_labels { values = { detected_level = "warn" } }
+
+    stage.static_labels {
+      values = {detected_level = "warn"}
+    }
   }
+
   stage.match {
     selector = `{job="systemd-journal"} |~ "(?i)\\b(error|err|critical|fatal|emerg)\\b"`
-    stage.static_labels { values = { detected_level = "error" } }
+
+    stage.static_labels {
+      values = {detected_level = "error"}
+    }
   }
   forward_to = [loki.write.cloud.receiver]
 }
@@ -153,27 +173,33 @@ discovery.docker "containers" {
 
 discovery.relabel "docker_logs" {
   targets = discovery.docker.containers.targets
+
   rule {
     source_labels = ["__meta_docker_container_name"]
     regex         = "/(.*)"
     target_label  = "container"
   }
+
   rule {
     source_labels = ["__meta_docker_container_image"]
     target_label  = "image"
   }
+
   rule {
     source_labels = ["__meta_docker_container_label_com_docker_compose_project"]
     target_label  = "compose_stack"
   }
+
   rule {
     source_labels = ["__meta_docker_container_label_com_docker_compose_service"]
     target_label  = "compose_service"
   }
+
   rule {
     target_label = "job"
     replacement  = "docker"
   }
+
   rule {
     target_label = "instance"
     replacement  = local.file.hostname.content
@@ -188,26 +214,43 @@ loki.source.docker "containers" {
 
 loki.process "docker_level" {
   stage.json {
-    expressions = { detected_level = "level" }
+    expressions = {detected_level = "level"}
   }
+
   stage.labels {
-    values = { detected_level = "detected_level" }
+    values = {detected_level = "detected_level"}
   }
+
   stage.match {
     selector = `{job="docker", detected_level=""} |~ "(?i)\\bdebug\\b"`
-    stage.static_labels { values = { detected_level = "debug" } }
+
+    stage.static_labels {
+      values = {detected_level = "debug"}
+    }
   }
+
   stage.match {
     selector = `{job="docker", detected_level=""} |~ "(?i)\\binfo\\b"`
-    stage.static_labels { values = { detected_level = "info" } }
+
+    stage.static_labels {
+      values = {detected_level = "info"}
+    }
   }
+
   stage.match {
     selector = `{job="docker", detected_level=""} |~ "(?i)\\bwarn(ing)?\\b"`
-    stage.static_labels { values = { detected_level = "warn" } }
+
+    stage.static_labels {
+      values = {detected_level = "warn"}
+    }
   }
+
   stage.match {
     selector = `{job="docker", detected_level=""} |~ "(?i)\\b(error|critical|fatal)\\b"`
-    stage.static_labels { values = { detected_level = "error" } }
+
+    stage.static_labels {
+      values = {detected_level = "error"}
+    }
   }
   forward_to = [loki.write.cloud.receiver]
 }
@@ -215,6 +258,7 @@ loki.process "docker_level" {
 loki.write "cloud" {
   endpoint {
     url = env("LOKI_URL")
+
     basic_auth {
       username = env("LOKI_USERNAME")
       password = env("GRAFANA_CLOUD_API_KEY")
