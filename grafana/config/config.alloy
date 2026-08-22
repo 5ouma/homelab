@@ -111,6 +111,19 @@ prometheus.relabel "cadvisor" {
   }
 }
 
+prometheus.scrape "speedtest_tracker" {
+  targets = [{
+    __address__ = "localhost:9080",
+    job         = "speedtest-tracker",
+    instance    = local.file.hostname.content,
+  }]
+
+  metrics_path    = "/prometheus"
+  scrape_interval = "600s"
+
+  forward_to = [prometheus.remote_write.cloud.receiver]
+}
+
 prometheus.remote_write "cloud" {
   endpoint {
     url = env("PROMETHEUS_URL")

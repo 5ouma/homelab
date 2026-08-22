@@ -13,6 +13,8 @@ services:
       DB_PASSWORD: $DB_PASSWORD
       SPEEDTEST_SCHEDULE: "*/15 * * * *"
       DISPLAY_TIMEZONE: JST
+    ports:
+      - 9080:80
     depends_on:
       database:
         condition: service_healthy
