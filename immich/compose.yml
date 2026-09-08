@@ -84,7 +84,7 @@ services:
 
   backup:
     container_name: immich_backup
-    image: docker.io/offen/docker-volume-backup:v2.48.2@sha256:19102d8e59eb1d598cf8c647c2b21100abaadc5a1c808ac643fa612e323c3013
+    image: docker.io/offen/docker-volume-backup:v2.49.0@sha256:ca882e494b409297885a8429af2c311e627d69dc8897857159a84ef5efc1a05b
     environment:
       BACKUP_CRON_EXPRESSION: 0 5 * * *
       R2_PATH: $R2_PATH
