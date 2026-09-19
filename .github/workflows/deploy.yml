@@ -25,14 +25,9 @@ jobs:
       compose: ${{ steps.detect.outputs.compose }}
 
     steps:
-      - name: 🚚 Check out repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-
       - name: 🔍 Detect changed compose files
         id: detect
-        uses: ./.github/actions/detect-changed-compose
+        uses: $/.github/actions/detect-changed-compose
 
   fetch:
     name: 🔄 Fetch Repository
