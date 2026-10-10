@@ -67,7 +67,7 @@ services:
 
   public-proxy:
     container_name: immich_public-proxy
-    image: docker.io/alangrainger/immich-public-proxy:3.4.0@sha256:b442829bb99e25f39e2979bb45bb12a6db991d98a1cd90938799b84ab262692a
+    image: docker.io/alangrainger/immich-public-proxy:3.4.1@sha256:d29ffe35c81f784685b6e06bc8b7d62bfb654f6e6e7ef8db95bb8aa3d7122694
     environment:
       IMMICH_URL: http://server:2283
     configs:
