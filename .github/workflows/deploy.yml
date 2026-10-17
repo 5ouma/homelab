@@ -14,7 +14,7 @@ permissions: {}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   detect:
@@ -33,7 +33,7 @@ jobs:
     name: 🔄 Fetch Repository
     permissions:
       id-token: write
-    runs-on: Ubuntu-Latest
+    runs-on: Ubuntu-24.04
     environment:
       name: Deploy
       deployment: false
@@ -65,7 +65,7 @@ jobs:
     permissions:
       id-token: write
     needs: [detect, fetch]
-    runs-on: Ubuntu-Latest
+    runs-on: Ubuntu-24.04
     environment:
       name: Deploy
       deployment: false
@@ -99,7 +99,7 @@ jobs:
     permissions:
       id-token: write
     needs: deploy
-    runs-on: Ubuntu-Latest
+    runs-on: Ubuntu-24.04
     environment:
       name: Deploy
       deployment: false

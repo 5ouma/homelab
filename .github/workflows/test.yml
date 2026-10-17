@@ -22,6 +22,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   detect:
     name: 🔍 Detect Changed Compose Files
@@ -37,8 +41,10 @@ jobs:
 
   test:
     name: ${{ matrix.compose.name }}
+    permissions:
+      contents: read
     needs: detect
-    runs-on: Ubuntu-Latest
+    runs-on: Ubuntu-24.04
     defaults:
       run:
         working-directory: ${{ matrix.compose.dir }}
