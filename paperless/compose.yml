@@ -18,6 +18,9 @@ services:
       PAPERLESS_OCR_LANGUAGES: jpn
     volumes:
       - ./media:/usr/src/paperless/media
+    healthcheck:
+      interval: 10s
+      retries: 5
     depends_on:
       database:
         condition: service_healthy

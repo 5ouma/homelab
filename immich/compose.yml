@@ -24,6 +24,9 @@ services:
           mkdir -p upload library thumbs encoded-video profile backups &&
           touch {upload,library,thumbs,encoded-video,profile,backups}/.immich'
         working_dir: *data
+    healthcheck:
+      interval: 10s
+      retries: 5
     depends_on:
       machine-learning:
         condition: service_healthy
@@ -38,6 +41,9 @@ services:
     image: ghcr.io/immich-app/immich-machine-learning:v3.3.5@sha256:5b28c9352c8374b8a1ed96fbdd8d6755fea6e43510ec43fdf6538aa02ea40f56
     volumes:
       - model-cache:/cache
+    healthcheck:
+      interval: 10s
+      retries: 5
     restart: unless-stopped
 
   database:
@@ -54,6 +60,9 @@ services:
     labels:
       docker-volume-backup.exec-label: *immich_database
       docker-volume-backup.archive-pre: pg_dump -d '$DB_DATABASE_NAME' -U '$DB_USERNAME' -f /tmp/backup/immich.sql
+    healthcheck:
+      interval: 10s
+      retries: 5
     restart: unless-stopped
 
   redis:

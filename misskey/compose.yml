@@ -14,6 +14,9 @@ services:
         target: /etc/localtime
       - source: misskey_config
         target: /misskey/.config/default.yml
+    healthcheck:
+      interval: 10s
+      retries: 5
     depends_on:
       database:
         condition: service_healthy
