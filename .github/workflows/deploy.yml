@@ -19,7 +19,7 @@ concurrency:
 jobs:
   detect:
     name: 🔍 Detect Changed Compose Files
-    runs-on: Ubuntu-Slim
+    runs-on: ubuntu-slim
     timeout-minutes: 1
     outputs:
       compose: ${{ steps.detect.outputs.compose }}
