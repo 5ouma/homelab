@@ -3,7 +3,7 @@ name: grafana
 services:
   alloy:
     container_name: grafana_alloy
-    image: docker.io/grafana/alloy:v1.21.0@sha256:9726bfba078de9bc2212c60c6e643238c700b4fe0868ea78cbe03163d03d95bf
+    image: docker.io/grafana/alloy:v1.21.1@sha256:4039c971193053a84e53dd9ed3e7d4561c069256b024631cd3498a353ed7ece8
     environment:
       GRAFANA_CLOUD_API_KEY: $GRAFANA_CLOUD_API_KEY
       PROMETHEUS_URL: $PROMETHEUS_URL
