@@ -59,7 +59,7 @@ services:
 
   backup:
     container_name: paperless_backup
-    image: docker.io/offen/docker-volume-backup:v2.49.2@sha256:6630d1f122f42ada84566550e47647d2e7488ac3775176ee654b64e489ab6e40
+    image: docker.io/offen/docker-volume-backup:v2.49.3@sha256:570a4bea8c19f824b22a4ce31e01afdf418a7bb616dcb17052f0a78b504ac54c
     environment:
       BACKUP_CRON_EXPRESSION: 0 5 * * *
       R2_PATH: $R2_PATH
