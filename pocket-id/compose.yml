@@ -1,0 +1,91 @@
+name: Pocket ID
+
+services:
+  pocket-id:
+    container_name: pocket-id
+    image: docker.io/pocketid/pocket-id:v2.19.2@sha256:3ee23895d6a3adb5dd5de801a4fd31fc31b960e6dfbea9b5200e33cf477695eb
+    environment:
+      APP_URL: $APP_URL
+      ENCRYPTION_KEY: $DB_PASSWORD
+      TRUSTED_PLATFORM: CF-Connecting-IP
+      DB_CONNECTION_STRING: postgresql://$DB_USERNAME:$DB_PASSWORD@$DB_HOSTNAME:5432/$DB_DATABASE_NAME
+      FILE_BACKEND: database
+      ALLOW_INSECURE_CALLBACK_URLS: false
+      CLOUDFLARE_LOCATION_HEADERS: true
+      ANALYTICS_DISABLED: true
+      HOME_PAGE_URL: /settings/apps
+    healthcheck:
+      interval: 10s
+      retries: 5
+    depends_on:
+      database:
+        condition: service_healthy
+    restart: unless-stopped
+
+  database:
+    container_name: &pocket-id_database pocket-id_database
+    image: docker.io/postgres:18.6@sha256:edb0c08dc33befd0262ab3b5cf1c4f3f8cfd8b09e88c05b45adee29d6761ddb6
+    environment:
+      POSTGRES_HOST: $DB_HOSTNAME
+      POSTGRES_DB: $DB_DATABASE_NAME
+      POSTGRES_USER: $DB_USERNAME
+      POSTGRES_PASSWORD: $DB_PASSWORD
+    volumes:
+      - database:/var/lib/postgresql
+      - database-backup:/tmp/backup
+    healthcheck:
+      test: [CMD, pg_isready, -d, $DB_DATABASE_NAME, -U, $DB_USERNAME]
+      interval: 10s
+      retries: 5
+    labels:
+      docker-volume-backup.exec-label: *pocket-id_database
+      docker-volume-backup.archive-pre: pg_dump -d '$DB_DATABASE_NAME' -U '$DB_USERNAME' -f /tmp/backup/pocket-id.sql
+    restart: unless-stopped
+
+  backup:
+    container_name: pocket-id_backup
+    image: docker.io/offen/docker-volume-backup:v2.49.3@sha256:570a4bea8c19f824b22a4ce31e01afdf418a7bb616dcb17052f0a78b504ac54c
+    environment:
+      BACKUP_CRON_EXPRESSION: 0 5 * * *
+      BACKUP_FILENAME: pocket-id_database_%Y%m%d.{{ .Extension }}
+      AWS_S3_PATH: $R2_PATH/database
+      BACKUP_SOURCES: &backup_database_source /backup/database
+      BACKUP_ARCHIVE: &backup_database_archive /archive/database
+      BACKUP_RETENTION_DAYS: 14
+      GPG_PASSPHRASE: $DB_PASSWORD
+      EXEC_LABEL: *pocket-id_database
+      TZ: Asia/Tokyo
+    env_file:
+      - path: ../.env
+        required: true
+    volumes:
+      - type: volume
+        source: database-backup
+        target: *backup_database_source
+        read_only: true
+      - type: bind
+        source: $BACKUP_DIR/database
+        target: *backup_database_archive
+    configs:
+      - source: docker-socket
+        target: /var/run/docker.sock
+    depends_on:
+      database:
+        condition: service_healthy
+    restart: unless-stopped
+
+  cloudflare-tunnel:
+    container_name: pocket-id_cloudflare-tunnel
+    image: docker.io/cloudflare/cloudflared:2026.10.4@sha256:c6c7ae1d5dfdcb094ad344ed68ccffc26635c9c6be80965664c33baf064b0515
+    command: [tunnel, --no-autoupdate, run]
+    environment:
+      TUNNEL_TOKEN: $TUNNEL_TOKEN
+    restart: unless-stopped
+
+volumes:
+  database:
+  database-backup:
+
+configs:
+  docker-socket:
+    file: /var/run/docker.sock
