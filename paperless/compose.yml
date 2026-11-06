@@ -14,6 +14,8 @@ services:
       PAPERLESS_FILENAME_FORMAT: "{{ created_year }}/{{ created_month }}-{{ created_day }}/{{ title }}"
       PAPERLESS_SECRET_KEY: $DB_PASSWORD
       PAPERLESS_URL: $PAPERLESS_URL
+      PAPERLESS_SOCIALACCOUNT_PROVIDERS: '{"openid_connect":{"SCOPE":["openid","profile","email"],"OAUTH_PKCE_ENABLED":true,"APPS":[{"provider_id":"pocket-id","name":"Pocket ID","client_id":"$OIDC_CLIENT_ID","secret":"$OIDC_CLIENT_SECRET","settings":{"server_url":"$OIDC_ISSUER_URL"}}]}}'
+      PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
       PAPERLESS_OCR_LANGUAGE: jpn+eng
       PAPERLESS_OCR_LANGUAGES: jpn
     volumes:
