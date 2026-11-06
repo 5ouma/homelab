@@ -1,11 +1,35 @@
 name: immich
 
 services:
+  init:
+    container_name: immich_init
+    image: docker.io/busybox:1.38.0@sha256:a46257e06c82ad85242d0d38077d0a52d9896389ca60a1a59d3463db586e5fa4
+    command:
+      - sh
+      - -c
+      - |
+        sed \
+        -e "s|{{OIDC_ISSUER_URL}}|$$OIDC_ISSUER_URL|g" \
+        -e "s|{{OIDC_CLIENT_ID}}|$$OIDC_CLIENT_ID|g" \
+        -e "s|{{OIDC_CLIENT_SECRET}}|$$OIDC_CLIENT_SECRET|g" \
+        /template/immich.json >/config/immich.json
+    environment:
+      OIDC_ISSUER_URL: $OIDC_ISSUER_URL
+      OIDC_CLIENT_ID: $OIDC_CLIENT_ID
+      OIDC_CLIENT_SECRET: $OIDC_CLIENT_SECRET
+    volumes:
+      - type: volume
+        source: immich-config
+        target: /config
+    configs:
+      - source: immich_config-template
+        target: /template/immich.json
+
   server:
     container_name: immich_server
     image: ghcr.io/immich-app/immich-server:v3.3.5@sha256:485d546a2e31d6a8b4db8423fcba5c109de8c218d93410af115fd1ccfc4352a6
     environment:
-      IMMICH_CONFIG_FILE: &immich_config /config/immich.json
+      IMMICH_CONFIG_FILE: /config/immich.json
       DB_HOSTNAME: $DB_HOSTNAME
       DB_DATABASE_NAME: $DB_DATABASE_NAME
       DB_USERNAME: $DB_USERNAME
@@ -14,11 +38,12 @@ services:
       - type: bind
         source: ./data
         target: &data /data
+      - type: volume
+        source: immich-config
+        target: /config
     configs:
       - source: timezone
         target: /etc/localtime
-      - source: immich_config
-        target: *immich_config
     post_start:
       - command: bash -c '
           mkdir -p upload library thumbs encoded-video profile backups &&
@@ -28,6 +53,8 @@ services:
       interval: 10s
       retries: 5
     depends_on:
+      init:
+        condition: service_completed_successfully
       machine-learning:
         condition: service_healthy
       database:
@@ -131,13 +158,14 @@ volumes:
   model-cache:
   database:
   database-backup:
+  immich-config:
 
 configs:
   docker-socket:
     file: /var/run/docker.sock
   timezone:
     file: /etc/localtime
-  immich_config:
+  immich_config-template:
     file: ./config/immich.json
   public-proxy_config:
     file: ./config/public-proxy.json
