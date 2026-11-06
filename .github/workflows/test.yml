@@ -65,6 +65,7 @@ jobs:
           for dir in "$PWD" "$GITHUB_WORKSPACE"; do
             sed \
               -e 's@_URL=$@_URL=http://example.com@' \
+              -e 's/^DB_PASSWORD=$/DB_PASSWORD=test-password-123456/' \
               -e 's/=$/=./g' \
               "$dir/.env.tmpl" >"$dir/.env"
           done
