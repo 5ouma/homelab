@@ -44,7 +44,7 @@ services:
 
   backup:
     container_name: pocket-id_backup
-    image: docker.io/offen/docker-volume-backup:v2.49.3@sha256:570a4bea8c19f824b22a4ce31e01afdf418a7bb616dcb17052f0a78b504ac54c
+    image: docker.io/offen/docker-volume-backup:v2.50.1@sha256:06fccb4c6ff79c4d5e4a839ace17c174da82a9327f43594f8a2c6a15f43bc660
     environment:
       BACKUP_CRON_EXPRESSION: 0 5 * * *
       BACKUP_FILENAME: pocket-id_database_%Y%m%d.{{ .Extension }}
