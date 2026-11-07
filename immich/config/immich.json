@@ -3,7 +3,8 @@
     "enabled": true,
     "issuerUrl": "{{OIDC_ISSUER_URL}}",
     "clientId": "{{OIDC_CLIENT_ID}}",
-    "clientSecret": "{{OIDC_CLIENT_SECRET}}"
+    "clientSecret": "{{OIDC_CLIENT_SECRET}}",
+    "autoRegister": false
   },
   "backup": { "database": { "enabled": false } },
   "library": { "scan": { "enabled": false } },
