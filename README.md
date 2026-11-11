@@ -49,7 +49,6 @@
    - [🪐 Misskey](./misskey)
    - [🍃 Paperless](./paperless)
    - [🔒 Pocket ID](./pocket-id)
-   - [🍦 Soft Serve](./soft-serve)
    - [🐇 Speedtest Tracker](./speedtest-tracker)
    - [⏱️ Time Machine](./timemachine)
 
