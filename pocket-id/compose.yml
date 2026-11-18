@@ -14,6 +14,11 @@ services:
       CLOUDFLARE_LOCATION_HEADERS: true
       ANALYTICS_DISABLED: true
       HOME_PAGE_URL: /settings/apps
+      EMAILS_VERIFIED: true
+      EMAIL_LOGIN_NOTIFICATION_ENABLED: true
+      EMAIL_ONE_TIME_ACCESS_AS_ADMIN_ENABLED: true
+      EMAIL_API_KEY_EXPIRATION_ENABLED: true
+      EMAIL_VERIFICATION_ENABLED: true
     healthcheck:
       interval: 10s
       retries: 5
