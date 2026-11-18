@@ -20,6 +20,7 @@ prometheus.exporter.process "procs" {
     name    = "{{.Comm}}"
     cmdline = [".+"]
   }
+
   track_children = false
   track_threads  = false
 }
@@ -70,6 +71,7 @@ prometheus.scrape "smartctl" {
     job         = "smartctl",
     instance    = local.file.hostname.content,
   }]
+
   forward_to      = [prometheus.remote_write.cloud.receiver]
   scrape_interval = "15s"
 }
@@ -80,8 +82,21 @@ prometheus.scrape "cadvisor" {
     job         = "cadvisor",
     instance    = local.file.hostname.content,
   }]
+
   forward_to      = [prometheus.relabel.cadvisor.receiver]
   scrape_interval = "15s"
+}
+
+prometheus.scrape "speedtest_tracker" {
+  targets = [{
+    __address__ = "localhost:9080",
+    job         = "speedtest-tracker",
+    instance    = local.file.hostname.content,
+  }]
+
+  metrics_path    = "/prometheus"
+  scrape_interval = "600s"
+  forward_to      = [prometheus.remote_write.cloud.receiver]
 }
 
 prometheus.relabel "cadvisor" {
@@ -106,22 +121,9 @@ prometheus.relabel "cadvisor" {
   }
 
   rule {
-    regex  = "__name__|job|instance|name|id|image|container_label_com_docker_compose_service|container_label_com_docker_compose_project"
     action = "labelkeep"
+    regex  = "__name__|job|instance|name|id|image|container_label_com_docker_compose_service|container_label_com_docker_compose_project"
   }
-}
-
-prometheus.scrape "speedtest_tracker" {
-  targets = [{
-    __address__ = "localhost:9080",
-    job         = "speedtest-tracker",
-    instance    = local.file.hostname.content,
-  }]
-
-  metrics_path    = "/prometheus"
-  scrape_interval = "600s"
-
-  forward_to = [prometheus.remote_write.cloud.receiver]
 }
 
 prometheus.remote_write "cloud" {
@@ -135,49 +137,58 @@ prometheus.remote_write "cloud" {
   }
 }
 
-loki.source.journal "system" {
-  path       = "/var/log/journal"
-  max_age    = "12h"
-  forward_to = [loki.process.journal_level.receiver]
-  labels     = {
-    job      = "systemd-journal",
-    instance = local.file.hostname.content,
+loki.relabel "journal" {
+  forward_to = []
+
+  rule {
+    source_labels = ["__journal_priority_keyword"]
+    regex         = "emerg|alert|crit|err"
+    target_label  = "detected_level"
+    replacement   = "error"
+  }
+
+  rule {
+    source_labels = ["__journal_priority_keyword"]
+    regex         = "warning"
+    target_label  = "detected_level"
+    replacement   = "warn"
+  }
+
+  rule {
+    source_labels = ["__journal_priority_keyword"]
+    regex         = "notice|info"
+    target_label  = "detected_level"
+    replacement   = "info"
+  }
+
+  rule {
+    source_labels = ["__journal_priority_keyword"]
+    regex         = "debug"
+    target_label  = "detected_level"
+    replacement   = "debug"
+  }
+
+  rule {
+    source_labels = ["__journal__systemd_unit"]
+    target_label  = "unit"
+  }
+
+  rule {
+    source_labels = ["__journal_syslog_identifier"]
+    target_label  = "syslog_identifier"
   }
 }
 
-loki.process "journal_level" {
-  stage.match {
-    selector = `{job="systemd-journal"} |~ "(?i)\\bdebug\\b"`
+loki.source.journal "system" {
+  path          = "/var/log/journal"
+  max_age       = "12h"
+  relabel_rules = loki.relabel.journal.rules
+  forward_to    = [loki.write.cloud.receiver]
 
-    stage.static_labels {
-      values = {detected_level = "debug"}
-    }
+  labels = {
+    job      = "systemd-journal",
+    instance = local.file.hostname.content,
   }
-
-  stage.match {
-    selector = `{job="systemd-journal"} |~ "(?i)\\binfo\\b"`
-
-    stage.static_labels {
-      values = {detected_level = "info"}
-    }
-  }
-
-  stage.match {
-    selector = `{job="systemd-journal"} |~ "(?i)\\bwarn(ing)?\\b"`
-
-    stage.static_labels {
-      values = {detected_level = "warn"}
-    }
-  }
-
-  stage.match {
-    selector = `{job="systemd-journal"} |~ "(?i)\\b(error|err|critical|fatal|emerg)\\b"`
-
-    stage.static_labels {
-      values = {detected_level = "error"}
-    }
-  }
-  forward_to = [loki.write.cloud.receiver]
 }
 
 discovery.docker "containers" {
@@ -227,31 +238,27 @@ loki.source.docker "containers" {
 
 loki.process "docker_level" {
   stage.json {
-    expressions = {detected_level = "level"}
+    expressions = {
+      detected_level = "level",
+    }
   }
 
   stage.labels {
-    values = {detected_level = "detected_level"}
-  }
-
-  stage.match {
-    selector = `{job="docker", detected_level=""} |~ "(?i)\\bdebug\\b"`
-
-    stage.static_labels {
-      values = {detected_level = "debug"}
+    values = {
+      detected_level = "detected_level",
     }
   }
 
   stage.match {
-    selector = `{job="docker", detected_level=""} |~ "(?i)\\binfo\\b"`
+    selector = `{job="docker", detected_level=""} |~ "(?i)\\b(error|err|critical|crit|fatal|ftl|panic|pnc)\\b"`
 
     stage.static_labels {
-      values = {detected_level = "info"}
+      values = {detected_level = "error"}
     }
   }
 
   stage.match {
-    selector = `{job="docker", detected_level=""} |~ "(?i)\\bwarn(ing)?\\b"`
+    selector = `{job="docker", detected_level=""} |~ "(?i)\\b(warn|warning|wrn)\\b"`
 
     stage.static_labels {
       values = {detected_level = "warn"}
@@ -259,12 +266,29 @@ loki.process "docker_level" {
   }
 
   stage.match {
-    selector = `{job="docker", detected_level=""} |~ "(?i)\\b(error|critical|fatal)\\b"`
+    selector = `{job="docker", detected_level=""} |~ "(?i)\\b(info|inf|notice|log|done|statement|detail|hint)\\b"`
 
     stage.static_labels {
-      values = {detected_level = "error"}
+      values = {detected_level = "info"}
     }
   }
+
+  stage.match {
+    selector = `{job="docker", detected_level=""} |~ "(?i)\\b(debug|dbg|trace|trc|verbose|verb)\\b"`
+
+    stage.static_labels {
+      values = {detected_level = "debug"}
+    }
+  }
+
+  stage.match {
+    selector = `{job="docker", detected_level=""}`
+
+    stage.static_labels {
+      values = {detected_level = "info"}
+    }
+  }
+
   forward_to = [loki.write.cloud.receiver]
 }
 
